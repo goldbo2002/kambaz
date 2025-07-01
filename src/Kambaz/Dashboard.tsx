@@ -1,4 +1,4 @@
-import Sidebar from "./Sidebar";
+
 
 const courses = [
   { id: 1, title: "Web Dev 1", link: "/Kambaz/Course/1" },
@@ -8,8 +8,6 @@ const courses = [
 
 export default function Dashboard() {
   return (
-    <div className="d-flex">
-      <Sidebar />
       <div className="container mt-4">
         <h2>Dashboard</h2>
         <h4>Published Courses</h4>
@@ -21,6 +19,5 @@ export default function Dashboard() {
           )}
         </ul>
       </div>
-    </div>
   );
 }
