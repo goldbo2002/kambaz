@@ -10,13 +10,7 @@ export default function Labs() {
         <strong>Section:</strong> Section 3
       </div>
       <TOC />
-      <a
-        href="https://github.com/goldbo2002/kambaz.git"
-        id="wd-github"
-        target="_blank"
-        rel="noopener noreferrer"
-        style={{ display: "block", marginTop: 20 }}
-      >
+       <a href="https://github.com/goldbo2002/kambaz.git" target="_blank" rel="noopener noreferrer" id="wd-github" style={{ display: "block", marginTop: 20 }}>
         View Source Code on GitHub
       </a>
     </div>
