@@ -11,7 +11,7 @@ export default function Labs() {
       </div>
       <TOC />
       <a
-        href="https://github.com/YOUR_GITHUB_USERNAME/kambaz-react-web-app"
+        href="https://github.com/goldbo2002/kambaz.git"
         id="wd-github"
         target="_blank"
         rel="noopener noreferrer"
