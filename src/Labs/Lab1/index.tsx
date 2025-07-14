@@ -84,7 +84,7 @@ export default function Lab1() {
       <img src="https://www.staradvertiser.com/wp-content/uploads/2021/08/web1_Starship-gap2.jpg" width="400px" alt="Starship"/>
       <br />
       {/* Fix the path if it doesn't display */}
-      <img src="/images/teslabot.jpeg" height="200px" alt="Teslabot" />
+      <img src="/images/teslabot.jpg" height="200px" alt="Teslabot" />
 
       <h3>Form Elements Example</h3>
       <form>
