@@ -1,21 +1,19 @@
-import Labs from "./Labs";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import Lab1 from "./Labs/Lab1";
 import Lab2 from "./Labs/Lab2";
-import Lab1 from "./Labs/Lab1"; // <--- Add this if you want Lab1 separately
-import Kambaz from "./Kambaz";
-import { HashRouter, Routes, Route, Navigate } from "react-router-dom";
+import Kambaz from "./Kambaz"; // or adjust if it's in a subfolder
 
 function App() {
   return (
-    <HashRouter>
+    <BrowserRouter>
       <Routes>
-        <Route path="/" element={<Navigate to="/Kambaz" />} />
-        <Route path="/Labs" element={<Labs />} />
         <Route path="/Labs/Lab1" element={<Lab1 />} />
         <Route path="/Labs/Lab2" element={<Lab2 />} />
-        <Route path="/Kambaz/*" element={<Kambaz />} />
+        <Route path="/Kambaz" element={<Kambaz />} />
+        {/* Optionally: default route */}
+        <Route path="*" element={<Lab1 />} />
       </Routes>
-    </HashRouter>
+    </BrowserRouter>
   );
 }
-
 export default App;

@@ -1,6 +1,6 @@
 import TOC from "../TOC";
 
-export default function Labs() {
+export default function Lab1() {
   return (
     <div className="container">
       <h1>Labs Table of Contents</h1>
@@ -110,7 +110,8 @@ export default function Labs() {
           <button type="button" className="btn btn-success" onClick={() => alert('Life is Good!')}>Pop up alert</button>
         </div>
         <div className="mb-2">
-          <input type="file" className="form-control" />
+          <label htmlFor="file-upload">Upload file:</label>
+          <input type="file" id="file-upload" className="form-control" />
         </div>
         <div className="mb-2">
           <label>Favorite genre:</label>
