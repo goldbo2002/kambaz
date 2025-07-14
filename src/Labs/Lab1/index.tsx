@@ -12,6 +12,7 @@ export default function Lab1() {
       <TOC />
 
       <h2>Lab 1: HTML Basics and Forms</h2>
+      
       <h3>Heading Tags Example</h3>
       <h1>Heading 1 Example</h1>
       <h2>Heading 2 Example</h2>
@@ -82,7 +83,8 @@ export default function Lab1() {
       <h3>Image Example</h3>
       <img src="https://www.staradvertiser.com/wp-content/uploads/2021/08/web1_Starship-gap2.jpg" width="400px" alt="Starship"/>
       <br />
-      <img src="/images/teslabot.jpg" height="200px" alt="Teslabot" />
+      {/* Fix the path if it doesn't display */}
+      <img src="/images/teslabot.jpeg" height="200px" alt="Teslabot" />
 
       <h3>Form Elements Example</h3>
       <form>
