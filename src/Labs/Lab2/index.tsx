@@ -145,6 +145,100 @@ export default function Lab2() {
           <span role="img" aria-label="check">✅</span>
         </div>
       </section>
+            {/* Kanbas Modules Demo */}
+      <section>
+        <h3>Kanbas Modules Preview</h3>
+        <div style={{background: "#f8f9fa", borderRadius: 8, padding: 18, border: "1px solid #ccc", marginBottom: 16}}>
+          <div className="mb-2">
+            <button className="btn btn-outline-secondary btn-sm me-2">Collapse All</button>
+            <button className="btn btn-outline-secondary btn-sm me-2">View Progress</button>
+            <button className="btn btn-danger btn-sm">+ Module</button>
+          </div>
+          <div className="module" style={{background: "#ececec", borderRadius: 7, padding: 10, marginBottom: 7, display: "flex", alignItems: "center"}}>
+            <span style={{fontSize: "1.2em", marginRight: 7}}>📦</span>
+            <strong>Module 1: Intro to Web</strong>
+            <span className="ms-auto" style={{fontSize: "0.9em"}}>Controls ▶️</span>
+          </div>
+          <div style={{background: "#fff", borderLeft: "5px solid #42b983", padding: 8, marginBottom: 3, display: "flex", alignItems: "center"}}>
+            <span style={{fontSize: "1.1em", marginRight: 7}}>📄</span>
+            Lesson 1.1: What is the Web?
+            <span className="ms-auto" style={{fontSize: "0.9em"}}>📝</span>
+          </div>
+          <div style={{background: "#fff", borderLeft: "5px solid #42b983", padding: 8, marginBottom: 3, display: "flex", alignItems: "center"}}>
+            <span style={{fontSize: "1.1em", marginRight: 7}}>📄</span>
+            Lesson 1.2: How Browsers Work
+            <span className="ms-auto" style={{fontSize: "0.9em"}}>📝</span>
+          </div>
+          <div className="module" style={{background: "#ececec", borderRadius: 7, padding: 10, marginBottom: 7, display: "flex", alignItems: "center"}}>
+            <span style={{fontSize: "1.2em", marginRight: 7}}>📦</span>
+            <strong>Module 2: CSS Basics</strong>
+            <span className="ms-auto" style={{fontSize: "0.9em"}}>Controls ▶️</span>
+          </div>
+          <div style={{background: "#fff", borderLeft: "5px solid #42b983", padding: 8, marginBottom: 3, display: "flex", alignItems: "center"}}>
+            <span style={{fontSize: "1.1em", marginRight: 7}}>📄</span>
+            Lesson 2.1: Selectors
+            <span className="ms-auto" style={{fontSize: "0.9em"}}>📝</span>
+          </div>
+        </div>
+      </section>
+      {/* Kanbas Assignments Demo */}
+      <section>
+        <h3>Kanbas Assignments List Preview</h3>
+        <div style={{background: "#fafaff", borderRadius: 8, padding: 14, border: "1px solid #ddd"}}>
+          <div className="d-flex mb-2" style={{gap: 8}}>
+            <input className="form-control w-50" placeholder="Search for Assignment" />
+            <button className="btn btn-danger btn-sm ms-auto">+ Group</button>
+            <button className="btn btn-danger btn-sm">+ Assignment</button>
+          </div>
+          <ul className="list-group">
+            <li className="list-group-item d-flex align-items-center" style={{borderLeft: "5px solid #42b983"}}>
+              <span style={{fontSize: "1.2em", marginRight: 8}}>📝</span>
+              <span>
+                <strong>A1: HTML Intro</strong>
+                <div style={{fontSize: "0.88em", color: "#666"}}>Due 7/19 – 100 pts</div>
+              </span>
+            </li>
+            <li className="list-group-item d-flex align-items-center" style={{borderLeft: "5px solid #42b983"}}>
+              <span style={{fontSize: "1.2em", marginRight: 8}}>📝</span>
+              <span>
+                <strong>A2: CSS Lab</strong>
+                <div style={{fontSize: "0.88em", color: "#666"}}>Due 7/26 – 100 pts</div>
+              </span>
+            </li>
+          </ul>
+        </div>
+      </section>
+            {/* Kanbas People Demo */}
+      <section>
+        <h3>People (random classmates for demo)</h3>
+        <table className="table table-hover table-sm" style={{maxWidth: 430, margin: "auto"}}>
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Role</th>
+              <th>Email</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Kim Frank</td>
+              <td>Student</td>
+              <td>Kim@northeastern.edu</td>
+            </tr>
+            <tr>
+              <td>Chloe Byers</td>
+              <td>TA</td>
+              <td>Chloe@northeastern.edu</td>
+            </tr>
+            <tr>
+              <td>Jack Kennedy</td>
+              <td>Student</td>
+              <td>Jack@northeastern.edu</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
     </div>
   );
 }
