@@ -137,7 +137,6 @@ export default function Lab2() {
       <section>
         <h3>Just some icons (React Icons, see code)</h3>
         <div className="iconsFlex">
-          {/* Swap these out if you prefer another set! */}
           <span role="img" aria-label="house">🏠</span>
           <span role="img" aria-label="star">⭐</span>
           <span role="img" aria-label="book">📚</span>
