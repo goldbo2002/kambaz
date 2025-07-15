@@ -10,6 +10,10 @@ export default function Sidebar() {
         <li><Link to="/Kambaz/Course">Course</Link></li>
         <li><Link to="/Kambaz/Calendar">Calendar</Link></li>
         <li><Link to="/Kambaz/Inbox">Inbox</Link></li>
+        <li className="list-group-item">
+        <a href="/labs" className="nav-link">🧪 Labs</a>
+        </li>
+
         <li><Link to="/Labs/Lab1">Labs</Link></li>
       </ul>
     </nav>

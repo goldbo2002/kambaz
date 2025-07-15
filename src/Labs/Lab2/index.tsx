@@ -2,12 +2,14 @@ import "./index.css";
 
 export default function Lab2() {
   return (
-    <div>
+    
+    <div> <a href="/" style={{marginBottom: 18, display: "inline-block"}}>← Back to Kambaz App</a>
+
       <h2>Trying out a bunch of CSS stuff (Lab 2)</h2>
 
       {/*id slectors*/}
       <section>
-        <h3>Color IDs - Why not?</h3>
+        <h3>Color ID?</h3>
         <p id="crazyWhiteOnRed">ID white text, red bg</p>
         <p id="banana">Black words, yellow banana color bg (id)</p>
       </section>
@@ -21,7 +23,7 @@ export default function Lab2() {
 
       {/* Random doc structure */}
       <section>
-        <h3>Nested styling: structure experiment</h3>
+        <h3>Nested styling: structure </h3>
         <div id="structureDemoDiv">
           This whole box is white on red.  
           <span className="tinyBlueYellow">But this part goes blue/yellow.</span>
@@ -29,14 +31,14 @@ export default function Lab2() {
       </section>
 
       <section>
-        <h3>Color me foreground</h3>
+        <h3>Color in foreground</h3>
         <h4 className="bluer">Heading is blue on white</h4>
         <div className="justRed">Trying a red on white text here, why not</div>
         <div className="shrekGreen">Green text on white, for fun</div>
       </section>
 
       <section>
-        <h3>BG + Border stuff</h3>
+        <h3>Border stuff</h3>
         <h4 className="whitey">White on blue bg heading, border too</h4>
         <div className="blackOnRedBox">Chunky black on red paragraph</div>
         <span className="greenish">white on green background span</span>
@@ -51,7 +53,7 @@ export default function Lab2() {
 
       {/* spacing */}
       <section>
-        <h3>Padding & Margins (where’s my whitespace)</h3>
+        <h3>Padding & Margins</h3>
         <div className="bordered weirdPad yellowbg">Super fat red border, yellow, crazy top/left padding</div>
         <div className="bordered blueYellowBot">Blue border, yellow bg, thick bottom padding only</div>
         <div className="allSides">Yellow border, blue bg, big all around padding</div>
@@ -61,7 +63,7 @@ export default function Lab2() {
       </section>
 
       <section>
-        <h3>Rounded Corners, but not too round</h3>
+        <h3>Rounded Corners</h3>
         <div className="radiusDiv tltr">Just the top left/right corners</div>
         <div className="radiusDiv blbr">Bottom left/right, so round</div>
         <div className="radiusDiv superRound">Go wild, all corners</div>
@@ -69,7 +71,7 @@ export default function Lab2() {
       </section>
 
       <section>
-        <h3>How big can it get?</h3>
+        <h3>bigger</h3>
         <div className="sizeDemo longWide">Yellow, wider than tall</div>
         <div className="sizeDemo tallishBlue">Blue, much taller</div>
         <div className="sizeDemo perfectRed">Red, equal height/width</div>
@@ -77,7 +79,7 @@ export default function Lab2() {
 
 
       <section>
-        <h3>Positioning: relative chaos</h3>
+        <h3>random</h3>
         <div className="posFun relDownRight">Yellow box, shifted down+right</div>
         <div className="posFun relUpRight">Blue box, nudged up+right</div>
         <div className="posHolder">
@@ -112,7 +114,7 @@ export default function Lab2() {
             className="floatRightPic"
             alt="Floating kitten"
           />
-          This text wraps around the pic. That’s the float!
+          This text wraps around the pic
         </div>
       </section>
       <section>
@@ -135,7 +137,7 @@ export default function Lab2() {
 
       {/* Icons */}
       <section>
-        <h3>Just some icons (React Icons, see code)</h3>
+        <h3>Just some icons</h3>
         <div className="iconsFlex">
           <span role="img" aria-label="house">🏠</span>
           <span role="img" aria-label="star">⭐</span>

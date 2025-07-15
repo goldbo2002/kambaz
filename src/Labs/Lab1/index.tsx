@@ -1,8 +1,11 @@
 import TOC from "../TOC";
 
 export default function Lab1() {
+  
   return (
-    <div className="container">
+    
+    <div  
+    className="container">
       <h1>Labs Table of Contents</h1>
       <div>
         <strong>Name:</strong> Bo Gold
