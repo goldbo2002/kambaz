@@ -1,24 +1,20 @@
-import TOC from "./TOC";
-
 export default function Labs() {
   return (
-    <div className="container">
-      <h1>Labs Table of Contents</h1>
-      <div>
-        <strong>Name:</strong> Bo Gold
-        <br/>
-        <strong>Section:</strong> Section 3
+    <div style={{maxWidth: 600, margin: "2rem auto"}}>
+      <h2>Labs – Your Name, Section 01</h2>
+      <ul>
+        <li><a href="/labs/lab1">Lab 1: HTML/CSS</a></li>
+        <li><a href="/labs/lab2">Lab 2: CSS/Bootstrap</a></li>
+        {/* Add or remove labs as needed */}
+      </ul>
+      <a href="/" style={{marginRight: 16}}>← Back to Kambaz App</a>
+      <div style={{marginTop: 14}}>
+        <strong>Source Code Repos:</strong>
+        <ul>
+          <li><a href="https://github.com/yourusername/kanbaz-app" target="_blank">Kambaz Repo</a></li>
+          <li><a href="https://github.com/yourusername/labs" target="_blank">Labs Repo</a></li>
+        </ul>
       </div>
-      <TOC />
-      <a
-        href="https://github.com/goldbo2002/kambaz.git"
-        id="wd-github"
-        target="_blank"
-        rel="noopener noreferrer"
-        style={{ display: "block", marginTop: 20 }}
-      >
-        View Source Code on GitHub
-      </a>
     </div>
   );
 }

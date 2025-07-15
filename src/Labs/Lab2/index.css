@@ -1,0 +1,75 @@
+/* ids */
+#crazyWhiteOnRed { color: white; background: red; padding: 6px 14px; }
+#banana { color: black; background: #ffe135; padding: 6px 14px; }
+
+/* blue on yellow */
+.blue-on-yellow { color: blue; background: yellow; padding: 7px 12px; font-weight: 500; }
+
+/* structure */
+#structureDemoDiv { color: white; background: #d40d0d; padding: 10px 16px; }
+.tinyBlueYellow { color: blue; background: #ffef40; font-size: small; padding: 2px 7px; border-radius: 2.5px; }
+
+/*text color */
+.bluer { color: #2584e8; background: #fff; margin: 5px 0; }
+.justRed { color: #e02828; background: #fff; }
+.shrekGreen { color: #00c244; background: #fff; }
+
+/* borders */
+.whitey { color: #fff; background: #2333a0; padding: 5px 13px; border: 2.5px solid #2543da; }
+.blackOnRedBox { color: #222; background: #f32c2c; padding: 10px 15px; }
+.greenish { color: #fff; background: #0ea960; padding: 2.5px 12px; border-radius: 2.5px; }
+.fatRed { border: 7px solid #ea1111; padding: 12px 8px; margin: 10px 0 8px 0; }
+.blueDashed { border: 2px dashed #2288ff; padding: 7px 10px; margin: 8px 0 0 0; }
+
+/* area */
+.bordered { border: 7px solid red; }
+.yellowbg { background: #f7eb0a; }
+.weirdPad { padding-top: 28px; padding-left: 30px; margin: 7px 0; }
+.blueYellowBot { border: 7px solid #0e28d0; background: #ffe25c; padding-bottom: 32px; margin: 10px 0;}
+.allSides { border: 7px solid yellow; background: #1d5cc4; color: #fff; padding: 30px; margin: 15px 0;}
+.spacedout { border: 7px solid red; background: #fff79c; margin-bottom: 44px; padding: 8px;}
+.centeredBox { border: 7px solid #2341de; background: #ffe85c; margin: 0 auto 14px auto; width: 58%; padding: 15px; }
+.bigMarginBox { border: 7px solid yellow; background: #1d5cc4; color: #fff; margin: 32px; padding: 22px; }
+
+/* more borders */
+.radiusDiv { border: 2px solid #5a5a5a; margin: 7px 0; padding: 13px; width: 220px; }
+.tltr { border-radius: 17px 17px 0 0; }
+.blbr { border-radius: 0 0 17px 17px; }
+.superRound { border-radius: 30px; }
+.notTopRight { border-radius: 17px 0 17px 17px; }
+
+/* -sizing */
+.sizeDemo { display: inline-block; margin: 10px 15px 10px 0; vertical-align: middle; }
+.longWide { background: #f5e541; width: 180px; height: 60px; }
+.tallishBlue { background: #2584e8; color: white; width: 70px; height: 170px; }
+.perfectRed { background: #e02828; color: white; width: 90px; height: 90px; }
+
+/* added positions*/
+.posFun { position: relative; margin: 7px 0;}
+.relDownRight { background: #ffeb7c; left: 28px; top: 18px; width: 170px;}
+.relUpRight { background: #2584e8; color: #fff; left: 18px; top: -10px; width: 120px;}
+.posHolder { position: relative; min-height: 95px; }
+.absBox { position: absolute; border: 2px solid #444; opacity: 0.85; font-size: 0.98rem;}
+.porty { width: 50px; height: 90px; background: #f5e541; left: 0; top: 0; z-index: 1;}
+.lands { width: 100px; height: 40px; background: #82b6f5; left: 22px; top: 18px; z-index: 2;}
+.squarey { width: 60px; height: 60px; background: #e17474; left: 45px; top: 40px; z-index: 1;}
+.fixedBox { position: fixed; top: 17px; right: 24px; background: #1d5cc4; color: #fff; width: 100px; height: 37px; border-radius: 9px; text-align: center; line-height: 37px; z-index: 12; font-weight: 600; }
+
+/* z index */
+.zArea { position: relative; height: 90px; }
+.onTop { z-index: 5; }
+
+/* floating */
+.floatLine { overflow: auto; }
+.floaty { float: left; width: 49px; height: 49px; background: #b4e5f5; border: 2px solid #4d5a9d; margin: 0 9px 0 0; text-align: center; line-height: 49px; font-weight: 600; font-size: 1.1rem;}
+.floatWithImg { overflow: auto; margin-top: 15px;}
+.floatRightPic { float: right; margin-left: 13px; border-radius: 7px; }
+
+/* grid and flex */
+.gridFour { display: grid; grid-template-columns: repeat(4, 48px); gap: 7px; width: max-content; margin: 9px 0;}
+.gCell { background: #fae570; border: 1.5px solid #ad984f; text-align: center; padding: 13px; }
+.flexThree { display: flex; gap: 10px; }
+.fItem { background: #27b5f3; color: #fff; padding: 13px 17px; border-radius: 5px; font-size: 1.06rem; }
+
+/* icon */
+.iconsFlex { font-size: 2rem; display: flex; gap: 16px; align-items: center; margin-top: 8px;}

@@ -1,20 +1,18 @@
-import Labs from "./Labs";
-import Kambaz from "./Kambaz";
-import Lab1 from "./Labs/Lab1";
-import Lab2 from "./Labs/Lab2/index";
-import { HashRouter, Routes, Route, Navigate } from "react-router-dom";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import Kambaz from "./Kambaz"; // main app/dashboard page
+import Labs from "./Labs";     // labs landing page
+import Lab2 from "./Labs/Lab2"; // specific lab page
 
 function App() {
   return (
-    <HashRouter>
+    <BrowserRouter>
       <Routes>
-        <Route path="/" element={<Navigate to="/Kambaz" />} />
-        <Route path="/Labs" element={<Labs />} />
-        <Route path="/Labs/Lab1" element={<Lab1 />} />
-        <Route path="/Labs/Lab2" element={<Lab2 />} />
-        <Route path="/Kambaz/*" element={<Kambaz />} />
+        <Route path="/" element={<Kambaz />} />
+        <Route path="/labs" element={<Labs />} />
+        <Route path="/labs/lab2" element={<Lab2 />} />
+        {/* Add more labs if needed */}
       </Routes>
-    </HashRouter>
+    </BrowserRouter>
   );
 }
 export default App;
