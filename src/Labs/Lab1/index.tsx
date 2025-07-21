@@ -92,7 +92,8 @@ export default function Lab1() {
         <h4>Images</h4>
         <img width="400px" src="https://www.staradvertiser.com/wp-content/uploads/2021/08/web1_Starship-gap2.jpg" alt="Starship" />
         <br />
-        <img src="/images/teslabot.jpg" height="200px" alt="Teslabot" />
+       <img src="/images/teslabot.jpg" alt="Teslabot" height={150} />
+
       </div>
 
       <div>
