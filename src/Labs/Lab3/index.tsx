@@ -124,7 +124,6 @@ export default function Lab3() {
 
   // Boolean variables & if/else/ternary
   let isHungry = false;
-  let showWelcome = true;
 
   // Some conditionals
   let hungryMsg = "";

@@ -1,7 +1,7 @@
 // src/Labs/Lab1/index.tsx
 
-const NAME = "Bo"; // Change to your name
-const SECTION = "5160"; // Change to your section
+const NAME = "Bo"; 
+const SECTION = "5160"; 
 const GITHUB_URL = "https://github.com/goldbo2002";
 
 export default function Lab1() {
