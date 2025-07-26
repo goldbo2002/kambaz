@@ -17,8 +17,8 @@ export default function Labs() {
       <div style={{ marginTop: 14 }}>
         <strong>Source Code Repos:</strong>
         <ul>
-          <li><a href="https://github.com/goldbo2002/kambaz-app" target="_blank">Kambaz Repo</a></li>
-          <li><a href="https://github.com/goldbo2002/labs" target="_blank">Labs Repo</a></li>
+          <li><a href="https://github.com/goldbo2002/kambaz-app" target="_blank"  rel="noopener noreferrer">Kambaz Repo</a></li>
+          <li><a href="https://github.com/goldbo2002/labs" target="_blank"  rel="noopener noreferrer">Labs Repo</a></li>
         </ul>
       </div>
 
