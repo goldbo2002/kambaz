@@ -17,12 +17,11 @@ export default function Labs() {
       <div style={{ marginTop: 14 }}>
         <strong>Source Code Repos:</strong>
         <ul>
-          <li><a href="https://github.com/goldbo2002/kambaz-app" target="_blank"  rel="noopener noreferrer">Kambaz Repo</a></li>
-          <li><a href="https://github.com/goldbo2002/labs" target="_blank"  rel="noopener noreferrer">Labs Repo</a></li>
+          <li><a href="https://github.com/goldbo2002/kambaz" target="_blank"  rel="noopener noreferrer">Kambaz Repo</a></li>
         </ul>
       </div>
 
-      {/* Here's the missing part — it renders lab pages */}
+      {/* render cuz they werent working before */}
       <Routes>
         <Route path="lab1" element={<Lab1 />} />
         <Route path="lab2" element={<Lab2 />} />
