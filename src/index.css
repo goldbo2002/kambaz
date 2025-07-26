@@ -1,3 +1,4 @@
+/*set fonts, colors, background*/
 :root {
   font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
@@ -12,7 +13,7 @@
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
-
+/* make links blue or purple and animate*/
 a {
   font-weight: 500;
   color: #646cff;
@@ -21,7 +22,7 @@ a {
 a:hover {
   color: #535bf2;
 }
-
+/* kill defaults, center app, minimum sizes*/
 body {
   margin: 0;
   display: flex;
@@ -29,7 +30,7 @@ body {
   min-width: 320px;
   min-height: 100vh;
 }
-
+/*headings*/
 h1 {
   font-size: 3.2em;
   line-height: 1.1;

@@ -1,18 +1,20 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import Kambaz from "./Kambaz"; // main app/dashboard page
-import Labs from "./Labs";     // labs landing page
-import Lab2 from "./Labs/Lab2"; // specific lab page
-
-function App() {
+import { HashRouter, Routes, Route } from "react-router-dom";
+import Labs from "./Labs";
+import Kambaz from "./Kambaz"; // <-- This is your main dashboard/app
+import Lab3 from "./Labs/Lab3";
+//sets up react and defines what shows up for a url
+export default function App() {
   return (
-    <BrowserRouter>
+    <HashRouter>
       <Routes>
+        {/* Home/root route, goes to your Kambaz app/dashboard */}
         <Route path="/" element={<Kambaz />} />
-        <Route path="/labs" element={<Labs />} />
-        <Route path="/labs/lab2" element={<Lab2 />} />
-        {/* Add more labs if needed */}
-      </Routes>
-    </BrowserRouter>
+        {/* Labs parent route, shows Labs/index.tsx */}
+        <Route path="/Labs/*" element={<Labs />} />
+        <Route path="/labs/lab3" element={<Lab3 />} />
+      </Routes> 
+    </HashRouter>
   );
 }
-export default App;
+//if url matches route, show whatevers there
+//hashroute blocks 404 errors
