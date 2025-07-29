@@ -7,10 +7,6 @@
     "module": "ESNext",
     "skipLibCheck": true,
     "baseUrl": ".",
-    "paths": {
-      "@reduxjs/toolkit": ["./node_modules/@reduxjs/toolkit/src/index.ts"],
-      "react-redux": ["./node_modules/react-redux/src/index.ts"]
-    },
     "moduleResolution": "bundler",
     "allowImportingTsExtensions": true,
     "verbatimModuleSyntax": true,
@@ -20,9 +16,9 @@
     "strict": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
-    "erasableSyntaxOnly": true,
     "noFallthroughCasesInSwitch": true,
     "noUncheckedSideEffectImports": true
   },
   "include": ["src"]
+  
 }

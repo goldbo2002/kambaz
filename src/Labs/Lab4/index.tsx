@@ -6,7 +6,7 @@ import { increment, decrement, addAmount } from '../../redux/counterSlice'
 // Lab 4 - Redux Counter Example
 const Lab4 = () => {
   // get the counter value from redux
-  const count = useSelector((state: RootState) => state.counter.value)
+    const count = useSelector((state: RootState) => (state as any).counter.value)
   const dispatch = useDispatch<AppDispatch>()
   const [input, setInput] = useState('')
 
@@ -32,7 +32,6 @@ const Lab4 = () => {
           type="number"
           value={input}
           onChange={e => setInput(e.target.value)}
-          placeholder="Add Amount"
         />
         <button onClick={handleAdd}>Add Amount</button>
       </div>
