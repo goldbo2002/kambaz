@@ -1,4 +1,8 @@
-import { Link } from "react-router-dom";
+import { Routes, Route, Link } from "react-router-dom";
+import Lab1 from "./Lab1";
+import Lab2 from "./Lab2";
+import Lab4 from "./Lab4";
+
 
 export default function Labs() {
   return (
@@ -8,15 +12,26 @@ export default function Labs() {
         <li><Link to="/labs/lab1">Lab 1: HTML/CSS</Link></li>
         <li><Link to="/labs/lab2">Lab 2: CSS/Bootstrap</Link></li>
         <li><Link to="/labs/lab3">Lab 3: JavaScript, Arrays, React</Link></li>
+        <li><Link to="/labs/lab4">Lab 4: State + Redux</Link></li>
+
       </ul>
+
       <Link to="/" style={{ marginRight: 16 }}>← Back to Kambaz App</Link>
+
       <div style={{ marginTop: 14 }}>
         <strong>Source Code Repos:</strong>
         <ul>
-          <li><a href="https://github.com/goldbo2002/kambaz-app" target="_blank">Kambaz Repo</a></li>
-          <li><a href="https://github.com/goldbo2002/labs" target="_blank">Labs Repo</a></li>
+          <li><a href="https://github.com/goldbo2002/kambaz" target="_blank"  rel="noopener noreferrer">Kambaz Repo</a></li>
         </ul>
       </div>
+
+      {/* render cuz they werent working before */}
+      <Routes>
+        <Route path="lab1" element={<Lab1 />} />
+        <Route path="lab2" element={<Lab2 />} />
+        <Route path="lab4" element={<Lab4 />} />
+
+      </Routes>
     </div>
   );
 }
