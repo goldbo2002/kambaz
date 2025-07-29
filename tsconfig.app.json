@@ -6,16 +6,17 @@
     "lib": ["ES2022", "DOM", "DOM.Iterable"],
     "module": "ESNext",
     "skipLibCheck": true,
-
-    /* Bundler mode */
+    "baseUrl": ".",
+    "paths": {
+      "@reduxjs/toolkit": ["./node_modules/@reduxjs/toolkit/src/index.ts"],
+      "react-redux": ["./node_modules/react-redux/src/index.ts"]
+    },
     "moduleResolution": "bundler",
     "allowImportingTsExtensions": true,
     "verbatimModuleSyntax": true,
     "moduleDetection": "force",
     "noEmit": true,
     "jsx": "react-jsx",
-
-    /* Linting */
     "strict": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,

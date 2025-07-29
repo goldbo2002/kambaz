@@ -1,12 +1,14 @@
-import { configureStore } from '@reduxjs/toolkit';
-import counterReducer from './counterSlice';
+// src/redux/store.ts
+import { configureStore } from '@reduxjs/toolkit'
+import counterReducer from './counterSlice'
 
+// main redux store thing
 export const store = configureStore({
   reducer: {
-    counter: counterReducer
-  }
-});
+    counter: counterReducer,
+  },
+})
 
-// stuff for useSelector and useDispatch
-export type RootState = ReturnType<typeof store.getState>;
-export type AppDispatch = typeof store.dispatch;
+// types for use in components (makes TypeScript happy)
+export type RootState = ReturnType<typeof store.getState>
+export type AppDispatch = typeof store.dispatch
