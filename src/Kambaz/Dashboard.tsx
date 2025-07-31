@@ -1,3 +1,4 @@
+import "./Kambaz.css";
 
 
 const courses = [
@@ -8,16 +9,18 @@ const courses = [
 
 export default function Dashboard() {
   return (
-      <div className="container mt-4">
-        <h2>Dashboard</h2>
-        <h4>Published Courses</h4>
-        <ul>
-          {courses.map(course =>
-            <li key={course.id}>
-              <a href={`#${course.link}`}>{course.title}</a>
-            </li>
-          )}
-        </ul>
+    <div className="container mt-4">
+      <h2>Dashboard</h2>
+      <h4>Published Courses</h4>
+      <div className="kambaz-dashboard-courses">
+        {courses.map(course =>
+          <div className="kambaz-course-card" key={course.id}>
+            <h5>{course.title}</h5>
+            <p>{course.desc}</p>
+            <a href={`#${course.link}`}>Go to course</a>
+          </div>
+        )}
       </div>
+    </div>
   );
 }

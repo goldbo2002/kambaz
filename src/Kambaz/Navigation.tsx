@@ -1,13 +1,30 @@
-import { Link } from "react-router-dom";
+// src/Kambaz/Navigation.tsx
+import { Link, useLocation } from "react-router-dom";
+import "./Kambaz.css";
+
+const navItems = [
+  { path: "/Kambaz/account/signin", label: "Account" },
+  { path: "/Kambaz/dashboard", label: "Dashboard" },
+  { path: "/Kambaz/calendar", label: "Calendar" },
+  { path: "/Kambaz/inbox", label: "Inbox" },
+  { path: "/Kambaz/labs", label: "Labs" },
+];
 
 export default function Navigation() {
+  const location = useLocation();
+
   return (
-    <nav>
-      <ul>
-        <li><Link to="Signin">Signin</Link></li>
-        <li><Link to="Signup">Signup</Link></li>
-        <li><Link to="Profile">Profile</Link></li>
-      </ul>
+    <nav className="kambaz-sidebar">
+      <div style={{ textAlign: "center", marginBottom: 24, fontWeight: "bold", fontSize: 22 }}>Kambaz</div>
+      {navItems.map((item) => (
+        <Link
+          key={item.path}
+          to={item.path}
+          className={location.pathname.startsWith(item.path) ? "active" : ""}
+        >
+          {item.label}
+        </Link>
+      ))}
     </nav>
   );
 }

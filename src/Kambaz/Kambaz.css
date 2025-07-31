@@ -1,0 +1,41 @@
+/* src/Kambaz/Kambaz.css */
+
+.kambaz-sidebar {
+  min-width: 180px;
+  background: #222;
+  color: #fff;
+  padding-top: 16px;
+  min-height: 100vh;
+  font-family: Arial, sans-serif;
+}
+.kambaz-sidebar a {
+  color: #fff;
+  text-decoration: none;
+  display: block;
+  padding: 10px 24px;
+  margin-bottom: 6px;
+}
+.kambaz-sidebar a.active,
+.kambaz-sidebar a:hover {
+  background: #f44336;
+  color: #fff;
+  border-radius: 8px 0 0 8px;
+}
+.kambaz-dashboard-courses {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+.kambaz-course-card {
+  background: #f9f9f9;
+  border: 2px solid #e0e0e0;
+  border-radius: 16px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  padding: 24px;
+  min-width: 220px;
+  max-width: 260px;
+  transition: box-shadow .2s;
+}
+.kambaz-course-card:hover {
+  box-shadow: 0 8px 20px rgba(44,72,90,.18);
+}
