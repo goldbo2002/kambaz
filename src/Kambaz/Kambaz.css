@@ -1,5 +1,3 @@
-/* src/Kambaz/Kambaz.css */
-
 .kambaz-sidebar {
   min-width: 180px;
   background: #222;
@@ -35,6 +33,11 @@
   min-width: 220px;
   max-width: 260px;
   transition: box-shadow .2s;
+}
+.kambaz-course-card img {
+  height: 140px;
+  object-fit: cover;
+  border-radius: 10px;
 }
 .kambaz-course-card:hover {
   box-shadow: 0 8px 20px rgba(44,72,90,.18);

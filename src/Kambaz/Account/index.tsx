@@ -1,4 +1,3 @@
-// src/Kambaz/Account/index.tsx
 import { Routes, Route, Link } from "react-router-dom";
 import Signin from "./Signin";
 import Signup from "./Signup";
@@ -7,7 +6,6 @@ import Profile from "./Profile";
 export default function Account() {
   return (
     <div>
-      {/* Kambaz Account section links */}
       <nav style={{ marginBottom: 16 }}>
         <Link to="signin">Signin</Link>{" | "}
         <Link to="signup">Signup</Link>{" | "}

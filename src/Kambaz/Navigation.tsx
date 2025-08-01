@@ -1,4 +1,3 @@
-// src/Kambaz/Navigation.tsx
 import { Link, useLocation } from "react-router-dom";
 import "./Kambaz.css";
 
@@ -12,7 +11,6 @@ const navItems = [
 
 export default function Navigation() {
   const location = useLocation();
-
   return (
     <nav className="kambaz-sidebar">
       <div style={{ textAlign: "center", marginBottom: 24, fontWeight: "bold", fontSize: 22 }}>Kambaz</div>
