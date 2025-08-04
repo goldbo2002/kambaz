@@ -70,14 +70,14 @@ const Lab5: React.FC = () => {
       {/* Path/Query Parameters */}
       <h3>Path & Query Parameters</h3>
       <div>
-        <button onClick={() => doOperation("add", 5, 0)}>Add 34 + 23 (Path)</button>
+        <button onClick={() => doOperation("add", 34, 23)}>Add 34 + 23 (Path)</button>
         <button onClick={() => doOperation("subtract", 34, 23)}>Subtract 34 - 23 (Path)</button>
-        <button onClick={() => doOperation("multiply", 42, 25)}>Multiply 34 × 23 (Path)</button>
-        <button onClick={() => doOperation("divide", 47, 19)}>Divide 34 ÷ 23 (Path)</button>
-        <button onClick={() => doOperation("add", 25, 13)}>Add 34 + 23 (Query)</button>
-        <button onClick={() => doOperation("subtract", 4, 7)}>Subtract 34 - 23 (Query)</button>
-        <button onClick={() => doOperation("multiply", 1, 23)}>Multiply 34 × 23 (Query)</button>
-        <button onClick={() => doOperation("divide", 34, 5)}>Divide 34 ÷ 23 (Query)</button>
+        <button onClick={() => doOperation("multiply", 34, 23)}>Multiply 34 × 23 (Path)</button>
+        <button onClick={() => doOperation("divide", 34, 23)}>Divide 34 ÷ 23 (Path)</button>
+        <button onClick={() => doOperation("add", 34, 23)}>Add 34 + 23 (Query)</button>
+        <button onClick={() => doOperation("subtract", 34, 23)}>Subtract 34 - 23 (Query)</button>
+        <button onClick={() => doOperation("multiply", 34, 23)}>Multiply 34 × 23 (Query)</button>
+        <button onClick={() => doOperation("divide", 34, 23)}>Divide 34 ÷ 23 (Query)</button>
         <span style={{ marginLeft: 16 }}><b>Result:</b> {result}</span>
       </div>
 
