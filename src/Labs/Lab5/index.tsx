@@ -3,8 +3,8 @@ import React, { useState } from "react";
 const initialAssignment = { id: 1, title: "React Assignment", due: "2024-08-15" };
 const initialModule = { id: 101, name: "Module 1", description: "Basics" };
 const initialTodos = [
-  { id: 1, title: "Learn React", completed: false },
-  { id: 2, title: "Practice Lab", completed: true },
+  { id: 1, title: "React", completed: false },
+  { id: 2, title: "Lab", completed: true },
   { id: 3, title: "Submit Homework", completed: false },
 ];
 
@@ -14,7 +14,7 @@ const Lab5: React.FC = () => {
 
   // For objects
   const [assignment, setAssignment] = useState(initialAssignment);
-  const [module, setModule] = useState(initialModule);
+  const [module] = useState(initialModule);
   const [editTitle, setEditTitle] = useState(assignment.title);
 
   // For todos
@@ -26,7 +26,7 @@ const Lab5: React.FC = () => {
 
   // Simulate async fetch for welcome message
   const fetchWelcome = () => {
-    setTimeout(() => setAsyncWelcome("Welcome to Lab 5!"), 500);
+    setTimeout(() => setAsyncWelcome("Welcome to Lab 5"), 500);
   };
 
   // --- Path/Query Parameters ---
@@ -56,7 +56,7 @@ const Lab5: React.FC = () => {
 
   // Simulate error on delete
   const tryDelete1234 = () => {
-    if (!todos.find((t) => t.id === 1234)) setResult("Unable to Delete Todo with ID: 1234");
+    if (!todos.find((t) => t.id === 1234)) setResult("Unable to Delete Todo");
     else setTodos(todos.filter((t) => t.id !== 1234));
   };
 
@@ -70,14 +70,14 @@ const Lab5: React.FC = () => {
       {/* Path/Query Parameters */}
       <h3>Path & Query Parameters</h3>
       <div>
-        <button onClick={() => doOperation("add", 34, 23)}>Add 34 + 23 (Path)</button>
-        <button onClick={() => doOperation("sub", 34, 23)}>Subtract 34 - 23 (Path)</button>
-        <button onClick={() => doOperation("mul", 34, 23)}>Multiply 34 × 23 (Path)</button>
-        <button onClick={() => doOperation("div", 34, 23)}>Divide 34 ÷ 23 (Path)</button>
-        <button onClick={() => doOperation("add", 34, 23)}>Add 34 + 23 (Query)</button>
-        <button onClick={() => doOperation("sub", 34, 23)}>Subtract 34 - 23 (Query)</button>
-        <button onClick={() => doOperation("mul", 34, 23)}>Multiply 34 × 23 (Query)</button>
-        <button onClick={() => doOperation("div", 34, 23)}>Divide 34 ÷ 23 (Query)</button>
+        <button onClick={() => doOperation("add", 5, 0)}>Add 34 + 23 (Path)</button>
+        <button onClick={() => doOperation("subtract", 34, 23)}>Subtract 34 - 23 (Path)</button>
+        <button onClick={() => doOperation("multiply", 42, 25)}>Multiply 34 × 23 (Path)</button>
+        <button onClick={() => doOperation("divide", 47, 19)}>Divide 34 ÷ 23 (Path)</button>
+        <button onClick={() => doOperation("add", 25, 13)}>Add 34 + 23 (Query)</button>
+        <button onClick={() => doOperation("subtract", 4, 7)}>Subtract 34 - 23 (Query)</button>
+        <button onClick={() => doOperation("multiply", 1, 23)}>Multiply 34 × 23 (Query)</button>
+        <button onClick={() => doOperation("divide", 34, 5)}>Divide 34 ÷ 23 (Query)</button>
         <span style={{ marginLeft: 16 }}><b>Result:</b> {result}</span>
       </div>
 

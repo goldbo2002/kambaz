@@ -1,17 +1,25 @@
 import { HashRouter, Routes, Route, Navigate } from "react-router-dom";
 import Labs from "./Labs";
 import Kambaz from "./Kambaz";
+import Lab1 from "./Labs/Lab1";
+import Lab2 from "./Labs/Lab2";
+import Lab3 from "./Labs/Lab3";
+import Lab4 from "./Labs/Lab4";
+import Lab5 from "./Labs/Lab5";
 
 export default function App() {
   return (
     <HashRouter>
       <Routes>
-        {/* Default to Kambaz dashboard */}
         <Route path="/" element={<Navigate to="/Kambaz" />} />
-        {/* Main Kambaz app/dashboard route */}
         <Route path="/Kambaz/*" element={<Kambaz />} />
-        {/* All Labs under the Labs route (with nested labs routing) */}
-        <Route path="/Labs/*" element={<Labs />} />
+        <Route path="/Labs/*" element={<Labs />}>
+          <Route path="lab1" element={<Lab1 />} />
+          <Route path="lab2" element={<Lab2 />} />
+          <Route path="lab3" element={<Lab3 />} />
+          <Route path="lab4" element={<Lab4 />} />
+          <Route path="lab5" element={<Lab5 />} />
+        </Route>
       </Routes>
     </HashRouter>
   );
