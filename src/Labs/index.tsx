@@ -16,7 +16,7 @@ export default function Labs() {
 
       </ul>
 
-      <Link to="/" style={{ marginRight: 16 }}>← Back to Kambaz App</Link>
+      <Link to="/Kambaz" style={{ marginRight: 16 }}>← Back to Kambaz App</Link>
 
       <div style={{ marginTop: 14 }}>
         <strong>Source Code Repos:</strong>

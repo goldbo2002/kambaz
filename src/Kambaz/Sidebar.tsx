@@ -11,7 +11,7 @@ export default function Sidebar() {
         <li><Link to="/Kambaz/Calendar">Calendar</Link></li>
         <li><Link to="/Kambaz/Inbox">Inbox</Link></li>
         <li>
-          <Link to="/labs">🧪 Labs</Link>
+          <Link to="/Labs">🧪 Labs</Link>
         </li>
       </ul>
     </nav>

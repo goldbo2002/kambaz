@@ -6,7 +6,7 @@ const navItems = [
   { path: "/Kambaz/dashboard", label: "Dashboard" },
   { path: "/Kambaz/calendar", label: "Calendar" },
   { path: "/Kambaz/inbox", label: "Inbox" },
-  { path: "/Kambaz/labs", label: "Labs" },
+  { path: "/Labs", label: "Labs" }, // <-- Make sure this is /Labs with capital L
 ];
 
 export default function Navigation() {
