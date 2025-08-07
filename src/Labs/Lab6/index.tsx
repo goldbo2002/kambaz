@@ -100,3 +100,59 @@ export default function Lab6() {
       </div>
     );
   }
+
+  // UI for signup form
+  function SignupForm() {
+    return (
+      <div style={{ marginTop: 16 }}>
+        <h2>Sign up</h2>
+        <input
+          name="username"
+          placeholder="username"
+          value={form.username}
+          onChange={handleChange}
+          style={{ marginBottom: 8 }}
+        /><br />
+        <input
+          name="password"
+          type="password"
+          placeholder="password"
+          value={form.password}
+          onChange={handleChange}
+          style={{ marginBottom: 8 }}
+        /><br />
+        <button onClick={handleSignup}>Sign up</button>
+        <button onClick={() => setView("signin")} style={{ marginLeft: 8 }}>
+          Back to sign in
+        </button>
+      </div>
+    );
+  }
+
+  // UI for profile update
+  function ProfileForm() {
+    return (
+      <div style={{ marginTop: 16 }}>
+        <h2>Profile</h2>
+        <input
+          name="username"
+          placeholder="username"
+          value={form.username}
+          onChange={handleChange}
+          style={{ marginBottom: 8 }}
+        /><br />
+        <input
+          name="password"
+          type="password"
+          placeholder="password"
+          value={form.password}
+          onChange={handleChange}
+          style={{ marginBottom: 8 }}
+        /><br />
+        <button onClick={handleUpdate}>Update</button>
+        <button onClick={handleLogout} style={{ marginLeft: 8 }}>
+          Logout
+        </button>
+      </div>
+    );
+  }
