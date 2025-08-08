@@ -156,3 +156,22 @@ export default function Lab6() {
       </div>
     );
   }
+
+  // Set form to current user when switching to profile view
+  React.useEffect(() => {
+    if (view === "profile" && loggedIn) {
+      setForm(loggedIn);
+    } else if (view === "signin" || view === "signup") {
+      setForm({ username: "", password: "" });
+    }
+  }, [view, loggedIn]);
+
+  return (
+    <div id="wd-lab6" style={{ padding: 24 }}>
+      <h1>Lab 6: Users Auth (local state version)</h1>
+      {view === "signin" && <SigninForm />}
+      {view === "signup" && <SignupForm />}
+      {view === "profile" && loggedIn && <ProfileForm />}
+    </div>
+  );
+}

@@ -14,97 +14,96 @@ type Module = {
   name: string;
 };
 
-// Utility: random id for new modules
+// util
 const rid = () => Math.random().toString(36).slice(2, 10);
 
-// Load all courses from storage (used to show course title)
+// courses
 function loadCourses(): Course[] {
   const s = localStorage.getItem("kambaz-courses");
   return s ? JSON.parse(s) : [];
 }
 
-// Storage key per course for modules
+// per-course modules storage
 const modulesKey = (courseId: string) => `kambaz-modules-${courseId}`;
-
-// Load modules for a specific course
 function loadModules(courseId: string): Module[] {
   const s = localStorage.getItem(modulesKey(courseId));
   return s ? JSON.parse(s) : [];
 }
-
-// Save modules for a specific course
 function saveModules(courseId: string, modules: Module[]) {
   localStorage.setItem(modulesKey(courseId), JSON.stringify(modules));
 }
 
 export default function CourseDetail() {
-  // read :courseId from the URL
   const { courseId = "" } = useParams();
 
-  // derive the current course from stored courses
+  // find course
   const course = useMemo(() => {
     const all = loadCourses();
     return all.find((c) => c.id === courseId) || { id: courseId, title: "Course" };
   }, [courseId]);
 
-  // modules state for this course
+  // modules state
   const [modules, setModules] = useState<Module[]>(() => loadModules(courseId));
   const [name, setName] = useState<string>("");
   const [editingId, setEditingId] = useState<string | null>(null);
 
-  // keep modules persisted per course
+  // persist
   useEffect(() => {
     saveModules(courseId, modules);
   }, [courseId, modules]);
 
-  // Add a new module for this course
+  // add module
   const addModule = () => {
     const trimmed = name.trim();
     if (!trimmed) return alert("Module name is required.");
-    const next = [...modules, { id: rid(), name: trimmed }];
-    setModules(next); // UI updates immediately
-    setName("");      // reset form
+    setModules((mods) => [...mods, { id: rid(), name: trimmed }]);
+    setName("");
   };
 
-  // Start editing a module
+  // start edit
   const startEdit = (m: Module) => {
     setEditingId(m.id);
     setName(m.name);
   };
 
-  // Save edit
+  // save edit
   const saveEdit = () => {
     if (!editingId) return;
     const trimmed = name.trim();
     if (!trimmed) return alert("Module name is required.");
-    setModules(mods => mods.map(m => (m.id === editingId ? { ...m, name: trimmed } : m)));
+    setModules((mods) => mods.map((m) => (m.id === editingId ? { ...m, name: trimmed } : m)));
     setEditingId(null);
     setName("");
   };
 
-  // Cancel edit
+  // cancel
   const cancelEdit = () => {
     setEditingId(null);
     setName("");
   };
 
-  // Delete a module (UI updates immediately; refresh confirms persistence)
+  // delete
   const deleteModule = (id: string) => {
-    setModules(mods => mods.filter(m => m.id !== id));
-    if (editingId === id) {
-      setEditingId(null);
-      setName("");
-    }
+    setModules((mods) => mods.filter((m) => m.id !== id));
+    if (editingId === id) cancelEdit();
   };
 
   return (
     <div style={{ padding: 24 }}>
       <h2>{course.title}</h2>
-      <div style={{ marginBottom: 16 }}>
+
+      {/* quick nav for this course */}
+      <div style={{ marginBottom: 12 }}>
         <Link to="/Kambaz/Dashboard">← Back to Dashboard</Link>
+        <span style={{ margin: "0 12px" }}>|</span>
+        <Link to={`/Kambaz/Courses/${courseId}`}>Modules</Link>
+        <span style={{ margin: "0 8px" }}>·</span>
+        <Link to={`/Kambaz/Courses/${courseId}/Assignments`}>Assignments</Link>
+        <span style={{ margin: "0 8px" }}>·</span>
+        <Link to={`/Kambaz/Courses/${courseId}/People`}>People</Link>
       </div>
 
-      {/* Create / Update Module */}
+      {/* Create Update Module */}
       <div style={{ marginBottom: 16 }}>
         <input
           placeholder="New module name"
@@ -124,7 +123,7 @@ export default function CourseDetail() {
         )}
       </div>
 
-      {/* Modules list for this course */}
+      {/* Modules list */}
       <table border={1} cellPadding={8} width="100%">
         <thead>
           <tr>
@@ -157,11 +156,6 @@ export default function CourseDetail() {
           )}
         </tbody>
       </table>
-
-      {/* 
-UI updates immediately on add/edit/delete
-Different courses use different storage keys
-      */}
     </div>
   );
 }

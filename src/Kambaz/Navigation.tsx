@@ -1,28 +1,31 @@
-import { Link, useLocation } from "react-router-dom";
-import "./Kambaz.css";
+import { Link } from "react-router-dom";
 
-const navItems = [
-  { path: "/Kambaz/account/signin", label: "Account" },
-  { path: "/Kambaz/dashboard", label: "Dashboard" },
-  { path: "/Kambaz/calendar", label: "Calendar" },
-  { path: "/Kambaz/inbox", label: "Inbox" },
-  { path: "/Labs", label: "Labs" }, // <-- Make sure this is /Labs with capital L
-];
-
-export default function Navigation() {
-  const location = useLocation();
+export default function KambazNavigation() {
   return (
-    <nav className="kambaz-sidebar">
-      <div style={{ textAlign: "center", marginBottom: 24, fontWeight: "bold", fontSize: 22 }}>Kambaz</div>
-      {navItems.map((item) => (
-        <Link
-          key={item.path}
-          to={item.path}
-          className={location.pathname.startsWith(item.path) ? "active" : ""}
-        >
-          {item.label}
-        </Link>
-      ))}
-    </nav>
+    <div id="wd-kambaz-navigation" style={{ padding: 16, minWidth: 220 }}>
+      {/* External */}
+      <a
+        href="https://www.northeastern.edu/"
+        id="wd-neu-link"
+        target="_blank"
+        rel="noreferrer"
+      >
+        Northeastern
+      </a>
+      <br /><br />
+
+      {/* App sections */}
+      <div style={{ display: "grid", gap: 8 }}>
+        <Link id="wd-account-link" to="/Kambaz/Account">Account</Link>
+        <Link id="wd-dashboard-link" to="/Kambaz/Dashboard">Dashboard</Link>
+        <Link id="wd-people-link" to="/Kambaz/People">People</Link>
+        <Link id="wd-labs-link" to="/Labs">Labs</Link>
+      </div>
+
+      {/* Notes:
+         - Course-specific nav (Modules/Assignments/People) is inside each course page header.
+         - Global People lists/filters all users and supports +People/edit/delete.
+      */}
+    </div>
   );
 }

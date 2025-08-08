@@ -1,30 +1,41 @@
-import { Link, Routes, Route } from "react-router-dom";
-import Navigation from "./Navigation";
+import { Routes, Route, Navigate } from "react-router";
 import Dashboard from "./Dashboard";
-import CourseDetail from "./CourseDetail";
 import Account from "./Account";
+import CourseDetail from "./CourseDetail";
+import Assignments from "./Assignments";
+import CoursePeople from "./CoursePeople";
+import People from "./People";
+import KambazNavigation from "./Navigation";
 
 export default function Kambaz() {
   return (
-    <div style={{ display: "flex", minHeight: "100vh" }}>
-      <Navigation />
-      <div style={{ flex: 1, padding: 32 }}>
-        {/* Add a visible Back to Labs button */}
-        <nav style={{ marginBottom: 24 }}>
-          <Link to="/Labs">Back to Labs</Link>{" | "}
-          <Link to="/Kambaz/account/signin">Signin</Link>{" | "}
-          <Link to="/Kambaz/account/signup">Signup</Link>{" | "}
-          <Link to="/Kambaz/account/profile">Profile</Link>{" | "}
-          <Link to="/Kambaz/dashboard">Dashboard</Link>
-        </nav>
-        <Routes>
-          <Route path="/" element={<Dashboard />} />
-          <Route path="dashboard" element={<Dashboard />} />
-          <Route path="Course/:id" element={<CourseDetail />} />
-          <Route path="account/*" element={<Account />} />
-          <Route path="*" element={<h2>Not found</h2>} />
-        </Routes>
-      </div>
+    <div id="wd-kambaz">
+      {/* Layout: nav left, content right */}
+      <table>
+        <tbody>
+          <tr>
+            <td valign="top">
+              <KambazNavigation />
+            </td>
+            <td valign="top" style={{ width: "100%" }}>
+              <Routes>
+                {/* Default screen */}
+                <Route path="/" element={<Navigate to="/Kambaz/Dashboard" />} />
+
+                {/* Main sections */}
+                <Route path="/Dashboard" element={<Dashboard />} />
+                <Route path="/Account/*" element={<Account />} />
+                <Route path="/People" element={<People />} /> {/* Global People */}
+
+                {/* Per-course sections */}
+                <Route path="/Courses/:courseId" element={<CourseDetail />} />
+                <Route path="/Courses/:courseId/Assignments" element={<Assignments />} />
+                <Route path="/Courses/:courseId/People" element={<CoursePeople />} />
+              </Routes>
+            </td>
+          </tr>
+        </tbody>
+      </table>
     </div>
   );
 }
