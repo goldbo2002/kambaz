@@ -1,27 +1,40 @@
-// server/routes/users.js
 import express from "express";
 import mongoose from "mongoose";
 
-const schema = new mongoose.Schema({
-  username: String,
-  password: String,
-  firstName: String,
-  lastName: String,
-  email: String,
-  role: { type: String, enum: ["STUDENT", "FACULTY", "ADMIN"], default: "STUDENT" }
-}, { collection: "users" });
+const schema = new mongoose.Schema(
+  {
+    username: { type: String, unique: true },
+    password: String,
+    firstName: String,
+    lastName: String,
+    email: String,
+    role: { type: String, enum: ["STUDENT", "FACULTY", "ADMIN"], default: "STUDENT" }
+  },
+  { collection: "users" }
+);
 
 const Users = mongoose.model("users", schema);
 const router = express.Router();
 
+const isProd = process.env.NODE_ENV === "production";
+const COOKIE_NAME = "connect.sid";
+const CLEAR_COOKIE_OPTS = {
+  httpOnly: true,
+  sameSite: isProd ? "none" : "lax",
+  secure: isProd,
+  path: "/",
+};
+
 // ---------- Auth ----------
 router.post("/signup", async (req, res) => {
   try {
-    const exists = await Users.findOne({ username: req.body.username });
+    const { username } = req.body || {};
+    if (!username) return res.status(400).json({ message: "username required" });
+    const exists = await Users.findOne({ username });
     if (exists) return res.status(409).json({ message: "Username already taken" });
     const user = await Users.create(req.body);
-    req.session.currentUser = user;       // ✅ keep logged in
-    res.json(user);
+    req.session.currentUser = user;      // keep logged in
+    res.status(201).json(user);
   } catch (e) {
     res.status(500).json({ message: "Signup failed" });
   }
@@ -29,19 +42,24 @@ router.post("/signup", async (req, res) => {
 
 router.post("/signin", async (req, res) => {
   const { username, password } = req.body || {};
+  if (!username || !password) return res.status(400).json({ message: "Missing credentials" });
   const user = await Users.findOne({ username, password });
   if (!user) return res.status(401).json({ message: "Invalid credentials" });
-  req.session.currentUser = user;         // ✅ keep logged in
+  req.session.currentUser = user;        // keep logged in
   res.json(user);
 });
 
 router.post("/signout", (req, res) => {
-  req.session.destroy(() => res.sendStatus(200));
+  // destroy session then clear cookie on client
+  req.session.destroy(() => {
+    res.clearCookie(COOKIE_NAME, CLEAR_COOKIE_OPTS);
+    res.sendStatus(200);
+  });
 });
 
 router.get("/current", (req, res) => {
-  const user = req.session.currentUser;
-  if (!user) return res.sendStatus(401);
+  const user = req.session?.currentUser;
+  if (!user) return res.sendStatus(401); // <-- IMPORTANT
   res.json(user);
 });
 
