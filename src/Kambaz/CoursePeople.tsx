@@ -12,29 +12,29 @@ type User = {
 };
 
 // keys
-const USERS_KEY = "kambaz-users"; // global users (you already use this in People)
-const ENROLL_MAP_KEY = "kambaz-enrollments-map"; // courseId -> userId[]
+const USERS_KEY = "kambaz-users";
+const ENROLL_MAP_KEY = "kambaz-enrollments-map";
+const CURRENT_KEY = "kambaz-current-user-id";
 
 // helpers
 function loadCourses(): Course[] {
   const s = localStorage.getItem("kambaz-courses");
   return s ? JSON.parse(s) : [];
 }
-
 function loadUsers(): User[] {
   const s = localStorage.getItem(USERS_KEY);
   return s ? JSON.parse(s) : [];
 }
-
 type EnrollMap = Record<string, string[]>;
-
 function loadEnrollMap(): EnrollMap {
   const s = localStorage.getItem(ENROLL_MAP_KEY);
   return s ? JSON.parse(s) : {};
 }
-
 function saveEnrollMap(map: EnrollMap) {
   localStorage.setItem(ENROLL_MAP_KEY, JSON.stringify(map));
+}
+function loadCurrentUserId(): string | null {
+  return localStorage.getItem(CURRENT_KEY);
 }
 
 export default function CoursePeople() {
@@ -49,9 +49,26 @@ export default function CoursePeople() {
   const [map, setMap] = useState<EnrollMap>(() => loadEnrollMap());
   const [selectedUserId, setSelectedUserId] = useState<string>("");
 
+  const [currentUserId, setCurrentUserId] = useState<string | null>(loadCurrentUserId());
+  const currentUser = useMemo(
+    () => users.find(u => u.id === currentUserId) || null,
+    [users, currentUserId]
+  );
+
+  // keep enrollment persisted
   useEffect(() => {
     saveEnrollMap(map);
   }, [map]);
+
+  // keep session/users fresh if changed in another tab
+  useEffect(() => {
+    const onStorage = (e: StorageEvent) => {
+      if (e.key === USERS_KEY) setUsers(loadUsers());
+      if (e.key === CURRENT_KEY) setCurrentUserId(loadCurrentUserId());
+    };
+    window.addEventListener("storage", onStorage);
+    return () => window.removeEventListener("storage", onStorage);
+  }, []);
 
   const enrolledIds = map[courseId] || [];
   const enrolledUsers = users.filter((u) => enrolledIds.includes(u.id));
@@ -77,6 +94,15 @@ export default function CoursePeople() {
   return (
     <div style={{ padding: 24 }}>
       <h2>{course.title} · People</h2>
+
+      {/* session banner */}
+      <div style={{ marginBottom: 8, fontSize: 14, opacity: 0.85 }}>
+        {currentUser ? (
+          <>Signed in as <b>{currentUser.username}</b>{currentUser.role ? ` (${currentUser.role})` : ""}</>
+        ) : (
+          <>Not signed in.</>
+        )}
+      </div>
 
       {/* intra-course nav */}
       <div style={{ marginBottom: 12 }}>
@@ -137,12 +163,6 @@ export default function CoursePeople() {
           )}
         </tbody>
       </table>
-
-      {/*\
-      Add/remove updates UI immediately.
-different users into different courses
-        Data persists in localStorage; refresh confirms.
-      */}
     </div>
   );
 }

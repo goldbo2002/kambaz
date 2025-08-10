@@ -9,15 +9,12 @@ const initialTodos = [
 ];
 
 const Lab5: React.FC = () => {
-  // For path/query parameter sections (mocked as local state)
   const [result, setResult] = useState<number | string>("");
 
-  // For objects
   const [assignment, setAssignment] = useState(initialAssignment);
   const [module] = useState(initialModule);
   const [editTitle, setEditTitle] = useState(assignment.title);
 
-  // For todos
   const [todos, setTodos] = useState(initialTodos);
   const [newTodoTitle, setNewTodoTitle] = useState("");
   const [asyncWelcome, setAsyncWelcome] = useState("");
@@ -32,41 +29,60 @@ const Lab5: React.FC = () => {
   // --- Path/Query Parameters ---
   const doOperation = (op: string, a: number, b: number) => {
     switch (op) {
-      case "add": return setResult(a + b);
-      case "sub": return setResult(a - b);
-      case "mul": return setResult(a * b);
-      case "div": return setResult(b === 0 ? "Div by 0" : (a / b));
-      default: return setResult("");
+      case "add":
+        return setResult(a + b);
+      case "subtract":
+        return setResult(a - b);
+      case "multiply":
+        return setResult(a * b);
+      case "divide":
+        return setResult(b === 0 ? "Div by 0" : a / b);
+      default:
+        return setResult("");
     }
   };
 
   // --- Object Actions ---
-  const updateAssignmentTitle = () => setAssignment({ ...assignment, title: editTitle });
+  const updateAssignmentTitle = () =>
+    setAssignment({ ...assignment, title: editTitle });
 
   // --- Todos Actions ---
   const createTodo = () => {
     if (!newTodoTitle.trim()) return;
-    setTodos([...todos, { id: Date.now(), title: newTodoTitle, completed: false }]);
+    setTodos([
+      ...todos,
+      { id: Date.now(), title: newTodoTitle, completed: false },
+    ]);
     setNewTodoTitle("");
   };
 
-  const deleteTodo = (id: number) => setTodos(todos.filter((t) => t.id !== id));
-  const updateTodoToNodeJS = () =>
-    setTodos(todos.map((t) => t.id === 1 ? { ...t, title: "NodeJS Assignment" } : t));
+  const deleteTodo = (id: number) =>
+    setTodos(todos.filter((t) => t.id !== id));
 
-  // Simulate error on delete
+  const updateTodoToNodeJS = () =>
+    setTodos(
+      todos.map((t) =>
+        t.id === 1 ? { ...t, title: "NodeJS Assignment" } : t
+      )
+    );
+
   const tryDelete1234 = () => {
-    if (!todos.find((t) => t.id === 1234)) setResult("Unable to Delete Todo");
+    if (!todos.find((t) => t.id === 1234))
+      setResult("Unable to Delete Todo with ID: 1234");
     else setTodos(todos.filter((t) => t.id !== 1234));
   };
 
-  // Edit any todo
   const editTodo = () =>
-    setTodos(todos.map((t) => t.id === editTodoId ? { ...t, title: editTodoTitle } : t));
+    setTodos(
+      todos.map((t) =>
+        t.id === editTodoId ? { ...t, title: editTodoTitle } : t
+      )
+    );
 
   return (
     <div>
       <h2>Lab 5: Express and REST Practice</h2>
+
       {/* Path/Query Parameters */}
       <h3>Path & Query Parameters</h3>
       <div>
@@ -78,7 +94,9 @@ const Lab5: React.FC = () => {
         <button onClick={() => doOperation("subtract", 34, 23)}>Subtract 34 - 23 (Query)</button>
         <button onClick={() => doOperation("multiply", 34, 23)}>Multiply 34 × 23 (Query)</button>
         <button onClick={() => doOperation("divide", 34, 23)}>Divide 34 ÷ 23 (Query)</button>
-        <span style={{ marginLeft: 16 }}><b>Result:</b> {result}</span>
+        <span style={{ marginLeft: 16 }}>
+          <b>Result:</b> {result}
+        </span>
       </div>
 
       {/* Objects */}
@@ -93,7 +111,7 @@ const Lab5: React.FC = () => {
         <div>
           <input
             value={editTitle}
-            onChange={e => setEditTitle(e.target.value)}
+            onChange={(e) => setEditTitle(e.target.value)}
           />
           <button onClick={updateAssignmentTitle}>Update Title</button>
         </div>
@@ -111,10 +129,13 @@ const Lab5: React.FC = () => {
         <div>
           <b>All Todos:</b>
           <ul>
-            {todos.map(t => (
+            {todos.map((t) => (
               <li key={t.id}>
                 {t.title} {t.completed && "(completed)"}
-                <button onClick={() => deleteTodo(t.id)} style={{ marginLeft: 8 }}>
+                <button
+                  onClick={() => deleteTodo(t.id)}
+                  style={{ marginLeft: 8 }}
+                >
                   Delete
                 </button>
               </li>
@@ -126,17 +147,17 @@ const Lab5: React.FC = () => {
           <input
             type="number"
             value={editTodoId}
-            onChange={e => setEditTodoId(Number(e.target.value))}
+            onChange={(e) => setEditTodoId(Number(e.target.value))}
             style={{ width: 50, marginLeft: 8 }}
           />
           <span style={{ marginLeft: 8 }}>
-            {todos.find(t => t.id === editTodoId)?.title || "Not found"}
+            {todos.find((t) => t.id === editTodoId)?.title || "Not found"}
           </span>
         </div>
         <div>
           <b>Completed Todos:</b>
           <ul>
-            {todos.filter(t => t.completed).map(t => (
+            {todos.filter((t) => t.completed).map((t) => (
               <li key={t.id}>{t.title}</li>
             ))}
           </ul>
@@ -144,7 +165,7 @@ const Lab5: React.FC = () => {
         <div>
           <input
             value={newTodoTitle}
-            onChange={e => setNewTodoTitle(e.target.value)}
+            onChange={(e) => setNewTodoTitle(e.target.value)}
             placeholder="New todo"
           />
           <button onClick={createTodo}>Create Todo</button>
@@ -167,10 +188,10 @@ const Lab5: React.FC = () => {
             type="text"
             placeholder="Edit Todo Title"
             value={editTodoTitle}
-            onChange={e => setEditTodoTitle(e.target.value)}
+            onChange={(e) => setEditTodoTitle(e.target.value)}
             style={{ marginRight: 8 }}
           />
-          <button onClick={editTodo}>Edit Assignment Title</button>
+          <button onClick={editTodo}>Edit Todo Title</button>
         </div>
       </div>
 
@@ -178,8 +199,12 @@ const Lab5: React.FC = () => {
       <h3>REST Actions</h3>
       <div>
         <button onClick={createTodo}>POST Todo</button>
-        <button onClick={() => deleteTodo(editTodoId)} style={{ marginLeft: 8 }}>DELETE Todo</button>
-        <button onClick={editTodo} style={{ marginLeft: 8 }}>PUT Update Todo</button>
+        <button onClick={() => deleteTodo(editTodoId)} style={{ marginLeft: 8 }}>
+          DELETE Todo
+        </button>
+        <button onClick={editTodo} style={{ marginLeft: 8 }}>
+          PUT Update Todo
+        </button>
       </div>
 
       {/* Error Handling */}

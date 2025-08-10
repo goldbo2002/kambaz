@@ -10,8 +10,11 @@ export default function Labs() {
         <li><Link to="/Labs/lab3">Lab 3: JavaScript, Arrays, React</Link></li>
         <li><Link to="/Labs/lab4">Lab 4: State + Redux</Link></li>
         <li><Link to="/Labs/lab5">Lab 5: Express/REST</Link></li>
+        <li><Link to="/Labs/lab6">Lab 6: Mongo + Sessions</Link></li>
       </ul>
+
       <Link to="/Kambaz" style={{ marginRight: 16 }}>← Back to Kambaz App</Link>
+
       <div style={{ marginTop: 14 }}>
         <strong>Source Code Repos:</strong>
         <ul>
@@ -22,6 +25,7 @@ export default function Labs() {
           </li>
         </ul>
       </div>
+
       <Outlet />
     </div>
   );
