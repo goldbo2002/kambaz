@@ -18,27 +18,28 @@ const PORT = process.env.PORT || 4000;
 const isProd = process.env.NODE_ENV === "production";
 const CLIENT_URL = process.env.CLIENT_URL || "http://localhost:5173";
 
-// ✅ Required on Render so secure cookies work behind the proxy
+// ✅ Render runs behind a proxy — required for secure cookies to work
 app.set("trust proxy", 1);
 
-// ✅ CORS: allow your Netlify origin & credentials
+// ✅ Allow Netlify frontend to send/receive cookies
 app.use(cors({
-  origin: CLIENT_URL,       // e.g. https://silly-melba-c04293.netlify.app
+  origin: CLIENT_URL,       // exact URL of your Netlify site
   credentials: true
 }));
 
 app.use(express.json());
 
-// ✅ Session: secure cookie in prod so it persists across refreshes
+// ✅ Session configuration — secure in prod for HTTPS
 app.use(session({
   secret: process.env.SESSION_SECRET || "dev_secret",
   resave: false,
   saveUninitialized: false,
+  proxy: true, // trust the proxy for secure cookies
   cookie: {
     httpOnly: true,
-    sameSite: isProd ? "none" : "lax",
-    secure: isProd,                          // true on Render (HTTPS)
-    maxAge: 1000 * 60 * 60 * 24 * 7          // 7 days
+    sameSite: isProd ? "none" : "lax", // 'none' so cookies work cross-site
+    secure: isProd,                    // secure only on HTTPS
+    maxAge: 1000 * 60 * 60 * 24 * 7    // 7 days
   }
 }));
 
