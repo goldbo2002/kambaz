@@ -1,213 +1,115 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
+import type { ChangeEvent, FormEvent } from "react";
 import { Link, useParams } from "react-router-dom";
+import {
+  listAssignments, createAssignment, updateAssignment, deleteAssignment
+} from "./Assignments/client";
 
-type Course = { id: string; title: string };
 type Assignment = {
-  id: string;
+  _id?: string;
+  course?: string;
   title: string;
-  dueDate?: string; // yyyy-mm-dd
   points?: number;
-  description?: string;
+  dueDate?: string; // ISO string
 };
-
-const rid = () => Math.random().toString(36).slice(2, 10);
-
-function loadCourses(): Course[] {
-  const s = localStorage.getItem("kambaz-courses");
-  return s ? JSON.parse(s) : [];
-}
-
-// per-course assignments storage
-const key = (courseId: string) => `kambaz-assignments-${courseId}`;
-function loadAssignments(courseId: string): Assignment[] {
-  const s = localStorage.getItem(key(courseId));
-  return s ? JSON.parse(s) : [];
-}
-function saveAssignments(courseId: string, data: Assignment[]) {
-  localStorage.setItem(key(courseId), JSON.stringify(data));
-}
 
 export default function Assignments() {
   const { courseId = "" } = useParams();
-
-  const course = useMemo(() => {
-    const all = loadCourses();
-    return all.find((c) => c.id === courseId) || { id: courseId, title: "Course" };
-  }, [courseId]);
-
-  const [items, setItems] = useState<Assignment[]>(() => loadAssignments(courseId));
-  const [editingId, setEditingId] = useState<string | null>(null);
-
-  const [form, setForm] = useState<Partial<Assignment>>({
-    title: "",
-    dueDate: "",
-    points: undefined,
-    description: ""
-  });
+  const [items, setItems] = useState<Assignment[]>([]);
+  const [draft, setDraft] = useState<Assignment>({ title: "", points: 100 });
 
   useEffect(() => {
-    saveAssignments(courseId, items);
-  }, [courseId, items]);
+    if (!courseId) return;
+    listAssignments(courseId).then(setItems);
+  }, [courseId]);
 
-  const onChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    const { name, value } = e.target;
-    setForm((f) => ({
-      ...f,
-      [name]: name === "points" ? (value === "" ? undefined : Number(value)) : value
-    }));
+  const onCreate = async (e: FormEvent) => {
+    e.preventDefault();
+    if (!draft.title.trim()) return;
+    const created = await createAssignment({ ...draft, course: courseId });
+    setItems(prev => [created, ...prev]);
+    setDraft({ title: "", points: 100, dueDate: "" });
   };
 
-  const addItem = () => {
-    if (!form.title?.trim()) return alert("Title is required.");
-    const a: Assignment = {
-      id: rid(),
-      title: form.title.trim(),
-      dueDate: form.dueDate || undefined,
-      points: form.points,
-      description: form.description?.trim() || undefined
-    };
-    setItems((list) => [...list, a]);
-    setForm({ title: "", dueDate: "", points: undefined, description: "" });
+  const onUpdate = async (a: Assignment, patch: Partial<Assignment>) => {
+    if (!a._id) return;
+    const saved = await updateAssignment(a._id, patch);
+    setItems(prev => prev.map(x => (x._id === saved._id ? saved : x)));
   };
 
-  const startEdit = (a: Assignment) => {
-    setEditingId(a.id);
-    setForm({
-      title: a.title,
-      dueDate: a.dueDate || "",
-      points: a.points,
-      description: a.description || ""
-    });
+  const onDelete = async (a: Assignment) => {
+    if (!a._id) return;
+    setItems(prev => prev.filter(x => x._id !== a._id)); // optimistic
+    await deleteAssignment(a._id);
   };
 
-  const saveEdit = () => {
-    if (!editingId) return;
-    if (!form.title?.trim()) return alert("Title is required.");
-    setItems((list) =>
-      list.map((a) =>
-        a.id === editingId
-          ? {
-              ...a,
-              title: form.title!.trim(),
-              dueDate: form.dueDate || undefined,
-              points: form.points,
-              description: form.description?.trim() || undefined
-            }
-          : a
-      )
-    );
-    setEditingId(null);
-    setForm({ title: "", dueDate: "", points: undefined, description: "" });
-  };
-
-  const cancelEdit = () => {
-    setEditingId(null);
-    setForm({ title: "", dueDate: "", points: undefined, description: "" });
-  };
-
-  const removeItem = (id: string) => {
-    setItems((list) => list.filter((a) => a.id !== id));
-    if (editingId === id) cancelEdit();
-  };
+  const setDraftField = (k: keyof Assignment) =>
+    (e: ChangeEvent<HTMLInputElement>) => setDraft(d => ({ ...d, [k]: e.target.value }));
 
   return (
-    <div style={{ padding: 24 }}>
-      <h2>{course.title} · Assignments</h2>
-
-      {/* intra-course nav */}
-      <div style={{ marginBottom: 12 }}>
-        <Link to={`/Kambaz/Courses/${courseId}`}>← Modules</Link>
-        <span style={{ margin: "0 8px" }}>·</span>
-        <Link to={`/Kambaz/Courses/${courseId}/People`}>People</Link>
+    <div>
+      <div className="d-flex align-items-center justify-content-between mb-2">
+        <h3 className="m-0">Assignments</h3>
+        <div className="d-flex gap-3">
+          <Link to={`/Kambaz/Courses/${courseId}`}>Modules</Link>
+          <Link to={`/Kambaz/Courses/${courseId}/People`}>People</Link>
+          <Link to="/Kambaz/Dashboard">← Back to Dashboard</Link>
+        </div>
       </div>
 
-      {/* form */}
-      <div style={{ marginBottom: 16 }}>
-        <input
-          name="title"
-          placeholder="Title"
-          value={form.title || ""}
-          onChange={onChange}
-          style={{ marginRight: 8 }}
-        />
-        <input
-          type="date"
-          name="dueDate"
-          value={form.dueDate || ""}
-          onChange={onChange}
-          style={{ marginRight: 8 }}
-        />
-        <input
-          type="number"
-          name="points"
-          placeholder="Points"
-          value={form.points ?? ""}
-          onChange={onChange}
-          style={{ marginRight: 8, width: 100 }}
-        />
-        <textarea
-          name="description"
-          placeholder="Description"
-          value={form.description || ""}
-          onChange={onChange}
-          style={{ verticalAlign: "top", marginRight: 8 }}
-        />
-        {editingId ? (
-          <>
-            <button onClick={saveEdit}>Save</button>
-            <button onClick={cancelEdit} style={{ marginLeft: 8 }}>
-              Cancel
-            </button>
-          </>
-        ) : (
-          <button onClick={addItem}>+ Assignment</button>
-        )}
+      <form className="card p-3 mb-3" onSubmit={onCreate}>
+        <div className="row g-2">
+          <div className="col-md-5">
+            <input className="form-control" placeholder="Title"
+                   value={draft.title} onChange={setDraftField("title")} />
+          </div>
+          <div className="col-md-2">
+            <input className="form-control" placeholder="Points"
+                   value={draft.points ?? 0}
+                   onChange={(e) => setDraft(d => ({ ...d, points: Number(e.target.value || 0) }))} />
+          </div>
+          <div className="col-md-3">
+            <input className="form-control" type="date"
+                   value={draft.dueDate || ""}
+                   onChange={setDraftField("dueDate")} />
+          </div>
+          <div className="col-md-2">
+            <button className="btn btn-success w-100" type="submit">+ Add</button>
+          </div>
+        </div>
+      </form>
+
+      {!items.length && <div className="text-secondary">No assignments yet.</div>}
+
+      <div className="list-group">
+        {items.map(a => (
+          <div key={a._id} className="list-group-item">
+            <div className="d-flex justify-content-between align-items-center">
+              <div className="w-50">
+                <input className="form-control" value={a.title}
+                       onChange={(e) => onUpdate(a, { title: e.target.value })} />
+              </div>
+              <div className="d-flex align-items-center gap-3">
+                <div className="d-flex align-items-center gap-1">
+                  <span className="text-secondary">Points</span>
+                  <input className="form-control" style={{ width: 90 }}
+                         value={a.points ?? 0}
+                         onChange={(e) => onUpdate(a, { points: Number(e.target.value || 0) })} />
+                </div>
+                <div className="d-flex align-items-center gap-1">
+                  <span className="text-secondary">Due</span>
+                  <input className="form-control" style={{ width: 170 }} type="date"
+                         value={a.dueDate ? a.dueDate.slice(0, 10) : ""}
+                         onChange={(e) => onUpdate(a, { dueDate: e.target.value })} />
+                </div>
+                <button className="btn btn-outline-danger btn-sm" onClick={() => onDelete(a)}>
+                  Delete
+                </button>
+              </div>
+            </div>
+          </div>
+        ))}
       </div>
-
-      {/* list */}
-      <table border={1} cellPadding={8} width="100%">
-        <thead>
-          <tr>
-            <th style={{ width: "25%" }}>Title</th>
-            <th style={{ width: "15%" }}>Due</th>
-            <th style={{ width: "10%" }}>Points</th>
-            <th>Description</th>
-            <th style={{ width: "18%" }}>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {items.length === 0 ? (
-            <tr>
-              <td colSpan={5} style={{ textAlign: "center" }}>
-                No assignments yet. Add your first one above.
-              </td>
-            </tr>
-          ) : (
-            items.map((a) => (
-              <tr key={a.id}>
-                <td>{a.title}</td>
-                <td>{a.dueDate || "-"}</td>
-                <td>{a.points ?? "-"}</td>
-                <td>{a.description || "-"}</td>
-                <td>
-                  <button onClick={() => startEdit(a)}>Edit</button>
-                  <button
-                    onClick={() => removeItem(a.id)}
-                    style={{ marginLeft: 8, color: "red" }}
-                  >
-                    Delete
-                  </button>
-                </td>
-              </tr>
-            ))
-          )}
-        </tbody>
-      </table>
-
-      {/* 
- Add/Edit/Delete update UI immediately.
- Data persists in localStorage; refresh confirms.
-      */}
     </div>
   );
 }

@@ -1,161 +1,85 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
+import type { ChangeEvent, FormEvent } from "react";
 import { Link, useParams } from "react-router-dom";
-
-// Course and Module types
-type Course = {
-  id: string;
-  title: string;
-  description?: string;
-  instructor?: string;
-};
+import { listModules, createModule, updateModule, deleteModule } from "./Modules/client";
 
 type Module = {
-  id: string;
-  name: string;
+  _id?: string;
+  course?: string;
+  title: string;
+  description?: string;
 };
-
-// util
-const rid = () => Math.random().toString(36).slice(2, 10);
-
-// courses
-function loadCourses(): Course[] {
-  const s = localStorage.getItem("kambaz-courses");
-  return s ? JSON.parse(s) : [];
-}
-
-// per-course modules storage
-const modulesKey = (courseId: string) => `kambaz-modules-${courseId}`;
-function loadModules(courseId: string): Module[] {
-  const s = localStorage.getItem(modulesKey(courseId));
-  return s ? JSON.parse(s) : [];
-}
-function saveModules(courseId: string, modules: Module[]) {
-  localStorage.setItem(modulesKey(courseId), JSON.stringify(modules));
-}
 
 export default function CourseDetail() {
   const { courseId = "" } = useParams();
+  const [mods, setMods] = useState<Module[]>([]);
+  const [draft, setDraft] = useState<Module>({ title: "" });
 
-  // find course
-  const course = useMemo(() => {
-    const all = loadCourses();
-    return all.find((c) => c.id === courseId) || { id: courseId, title: "Course" };
+  useEffect(() => {
+    if (!courseId) return;
+    listModules(courseId).then(setMods);
   }, [courseId]);
 
-  // modules state
-  const [modules, setModules] = useState<Module[]>(() => loadModules(courseId));
-  const [name, setName] = useState<string>("");
-  const [editingId, setEditingId] = useState<string | null>(null);
-
-  // persist
-  useEffect(() => {
-    saveModules(courseId, modules);
-  }, [courseId, modules]);
-
-  // add module
-  const addModule = () => {
-    const trimmed = name.trim();
-    if (!trimmed) return alert("Module name is required.");
-    setModules((mods) => [...mods, { id: rid(), name: trimmed }]);
-    setName("");
+  const onCreate = async (e: FormEvent) => {
+    e.preventDefault();
+    if (!draft.title.trim()) return;
+    const created = await createModule({ ...draft, course: courseId });
+    setMods(prev => [created, ...prev]);
+    setDraft({ title: "" });
   };
 
-  // start edit
-  const startEdit = (m: Module) => {
-    setEditingId(m.id);
-    setName(m.name);
+  const onRename = async (m: Module) => {
+    const title = prompt("New module title", m.title);
+    if (!title || title === m.title || !m._id) return;
+    const saved = await updateModule(m._id, { title });
+    setMods(prev => prev.map(x => (x._id === saved._id ? saved : x)));
   };
 
-  // save edit
-  const saveEdit = () => {
-    if (!editingId) return;
-    const trimmed = name.trim();
-    if (!trimmed) return alert("Module name is required.");
-    setModules((mods) => mods.map((m) => (m.id === editingId ? { ...m, name: trimmed } : m)));
-    setEditingId(null);
-    setName("");
+  const onDelete = async (m: Module) => {
+    if (!m._id) return;
+    setMods(prev => prev.filter(x => x._id !== m._id)); // optimistic
+    await deleteModule(m._id);
   };
 
-  // cancel
-  const cancelEdit = () => {
-    setEditingId(null);
-    setName("");
-  };
-
-  // delete
-  const deleteModule = (id: string) => {
-    setModules((mods) => mods.filter((m) => m.id !== id));
-    if (editingId === id) cancelEdit();
-  };
+  const onDraft = (k: keyof Module) => (e: ChangeEvent<HTMLInputElement>) =>
+    setDraft(d => ({ ...d, [k]: e.target.value }));
 
   return (
-    <div style={{ padding: 24 }}>
-      <h2>{course.title}</h2>
-
-      {/* quick nav for this course */}
-      <div style={{ marginBottom: 12 }}>
-        <Link to="/Kambaz/Dashboard">← Back to Dashboard</Link>
-        <span style={{ margin: "0 12px" }}>|</span>
-        <Link to={`/Kambaz/Courses/${courseId}`}>Modules</Link>
-        <span style={{ margin: "0 8px" }}>·</span>
-        <Link to={`/Kambaz/Courses/${courseId}/Assignments`}>Assignments</Link>
-        <span style={{ margin: "0 8px" }}>·</span>
-        <Link to={`/Kambaz/Courses/${courseId}/People`}>People</Link>
+    <div>
+      <div className="d-flex align-items-center justify-content-between mb-2">
+        <h3 className="m-0">Modules</h3>
+        <div className="d-flex gap-3">
+          <Link to={`/Kambaz/Courses/${courseId}/People`}>People</Link>
+          <Link to={`/Kambaz/Courses/${courseId}/Assignments`}>Assignments</Link>
+          <Link to="/Kambaz/Dashboard">← Back to Dashboard</Link>
+        </div>
       </div>
 
-      {/* Create Update Module */}
-      <div style={{ marginBottom: 16 }}>
-        <input
-          placeholder="New module name"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          style={{ marginRight: 8 }}
-        />
-        {editingId ? (
-          <>
-            <button onClick={saveEdit}>Save</button>
-            <button onClick={cancelEdit} style={{ marginLeft: 8 }}>
-              Cancel
-            </button>
-          </>
-        ) : (
-          <button onClick={addModule}>+ Module</button>
-        )}
-      </div>
+      <form className="card p-3 mb-3" onSubmit={onCreate}>
+        <div className="row g-2">
+          <div className="col-md-8">
+            <input className="form-control" placeholder="New module title"
+                   value={draft.title} onChange={onDraft("title")} />
+          </div>
+          <div className="col-md-4">
+            <button className="btn btn-success w-100" type="submit">+ Add Module</button>
+          </div>
+        </div>
+      </form>
 
-      {/* Modules list */}
-      <table border={1} cellPadding={8} width="100%">
-        <thead>
-          <tr>
-            <th style={{ width: "60%" }}>Module</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {modules.length === 0 ? (
-            <tr>
-              <td colSpan={2} style={{ textAlign: "center" }}>
-                No modules yet. Add your first module above.
-              </td>
-            </tr>
-          ) : (
-            modules.map((m) => (
-              <tr key={m.id}>
-                <td>{m.name}</td>
-                <td>
-                  <button onClick={() => startEdit(m)}>Edit</button>
-                  <button
-                    onClick={() => deleteModule(m.id)}
-                    style={{ marginLeft: 8, color: "red" }}
-                  >
-                    Delete
-                  </button>
-                </td>
-              </tr>
-            ))
-          )}
-        </tbody>
-      </table>
+      {!mods.length && <div className="text-secondary">No modules for this course.</div>}
+
+      <div className="list-group">
+        {mods.map(m => (
+          <div key={m._id} className="list-group-item d-flex justify-content-between align-items-center">
+            <div className="fw-semibold">{m.title}</div>
+            <div className="d-flex gap-2">
+              <button className="btn btn-sm btn-outline-secondary" onClick={() => onRename(m)}>Rename</button>
+              <button className="btn btn-sm btn-outline-danger" onClick={() => onDelete(m)}>Delete</button>
+            </div>
+          </div>
+        ))}
+      </div>
     </div>
   );
 }

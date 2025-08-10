@@ -1,221 +1,123 @@
 import { useEffect, useState } from "react";
+import type { ChangeEvent } from "react";
+import {
+  findAllUsers, createUser, updateUser, deleteUser
+} from "./Account/client";
 
-// User data type
+type Role = "STUDENT" | "FACULTY" | "ADMIN";
 type User = {
-  id: string;
+  _id?: string;
   username: string;
+  password?: string;
   email?: string;
   firstName?: string;
   lastName?: string;
-  role?: string;
+  role?: Role;
 };
 
-// Generate random ID for new users
-function randomId() {
-  return Math.random().toString(36).substr(2, 9);
-}
-
-// Get users from localStorage or use demo
-function getStoredUsers(): User[] {
-  const stored = localStorage.getItem("kambaz-users");
-  if (stored) return JSON.parse(stored);
-  // Demo users
-  return [
-    { id: randomId(), username: "alice", firstName: "Alice", lastName: "Liddell", email: "alice@example.com", role: "admin" },
-    { id: randomId(), username: "bob", firstName: "Bob", lastName: "Builder", email: "bob@example.com", role: "student" }
-  ];
-}
-
 export default function People() {
-  // Users state (persisted)
-  const [users, setUsers] = useState<User[]>(getStoredUsers());
-  const [form, setForm] = useState<Partial<User>>({ username: "", firstName: "", lastName: "", email: "", role: "" });
-  const [editing, setEditing] = useState<string | null>(null);
-  const [filterName, setFilterName] = useState("");
-  const [filterRole, setFilterRole] = useState("");
-  const [selected, setSelected] = useState<User | null>(null);
+  const [users, setUsers] = useState<User[]>([]);
+  const [role, setRole] = useState<string>("");
+  const [name, setName] = useState<string>("");
 
-  // Save users to localStorage
-  useEffect(() => {
-    localStorage.setItem("kambaz-users", JSON.stringify(users));
-  }, [users]);
+  useEffect(() => { load(); }, []);
 
-  // Handle form changes
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
+  const load = async () => setUsers(await findAllUsers());
+
+  const filterByRole = async (r: string) => {
+    setRole(r);
+    if (!r) return load();
+    setUsers(await findAllUsers({ role: r }));
   };
 
-  // Add user
-  const handleAdd = () => {
-    if (!form.username || !form.firstName || !form.lastName) {
-      alert("Username, first and last name required.");
-      return;
-    }
-    setUsers([
-      ...users,
-      {
-        id: randomId(),
-        username: form.username,
-        firstName: form.firstName,
-        lastName: form.lastName,
-        email: form.email,
-        role: form.role || "student"
-      } as User
-    ]);
-    setForm({ username: "", firstName: "", lastName: "", email: "", role: "" });
+  const filterByName = async (n: string) => {
+    setName(n);
+    if (!n) return load();
+    setUsers(await findAllUsers({ name: n }));
   };
 
-  // Edit user (start editing)
-  const handleEdit = (id: string) => {
-    const user = users.find(u => u.id === id);
-    if (user) {
-      setForm(user);
-      setEditing(id);
-    }
+  const onCreate = async () => {
+    const username = prompt("New username?");
+    if (!username) return;
+    const created = await createUser({
+      username, password: "test1234", role: "STUDENT"
+    });
+    setUsers(prev => [created, ...prev]);
   };
 
-  // Save edited user
-  const handleSave = () => {
-    setUsers(users.map(u =>
-      u.id === editing
-        ? { ...u, ...form }
-        : u
-    ));
-    setForm({ username: "", firstName: "", lastName: "", email: "", role: "" });
-    setEditing(null);
+  const onUpdate = async (u: User, field: keyof User, value: string) => {
+    if (!u._id) return;
+    const saved = await updateUser(u._id, { [field]: value });
+    setUsers(prev => prev.map(x => x._id === saved._id ? saved : x));
   };
 
-  // Delete user
-  const handleDelete = (id: string) => {
-    setUsers(users.filter(u => u.id !== id));
-    if (editing === id) {
-      setForm({ username: "", firstName: "", lastName: "", email: "", role: "" });
-      setEditing(null);
-    }
-    if (selected?.id === id) setSelected(null);
+  const onDelete = async (u: User) => {
+    if (!u._id) return;
+    setUsers(prev => prev.filter(x => x._id !== u._id)); // optimistic
+    await deleteUser(u._id);
   };
 
-  // Filtered user list
-  const filteredUsers = users.filter(u =>
-    (!filterName || `${u.firstName} ${u.lastName}`.toLowerCase().includes(filterName.toLowerCase()) || u.username.toLowerCase().includes(filterName.toLowerCase())) &&
-    (!filterRole || (u.role || "").toLowerCase().includes(filterRole.toLowerCase()))
-  );
+  const onTxt = (u: User, field: keyof User) =>
+    (e: ChangeEvent<HTMLInputElement>) => onUpdate(u, field, e.target.value);
+
+  const onRole = (u: User) =>
+    (e: ChangeEvent<HTMLSelectElement>) => onUpdate(u, "role", e.target.value);
 
   return (
-    <div style={{ padding: 24 }}>
-      <h2>People</h2>
-      <div style={{ marginBottom: 12 }}>
-        <input
-          placeholder="Filter by name"
-          value={filterName}
-          onChange={e => setFilterName(e.target.value)}
-          style={{ marginRight: 8 }}
-        />
-        <select value={filterRole} onChange={e => setFilterRole(e.target.value)} style={{ marginRight: 8 }}>
-          <option value="">All Roles</option>
-          <option value="admin">Admin</option>
-          <option value="student">Student</option>
-          <option value="faculty">Faculty</option>
+    <div>
+      <h3>Users</h3>
+
+      <div className="d-flex gap-2 mb-3">
+        <select className="form-select" style={{ maxWidth: 200 }}
+                value={role} onChange={e => filterByRole(e.target.value)}>
+          <option value="">All roles</option>
+          <option value="STUDENT">Student</option>
+          <option value="FACULTY">Faculty</option>
+          <option value="ADMIN">Admin</option>
         </select>
-        <button onClick={() => {
-          setFilterName(""); setFilterRole("");
-        }}>Clear Filters</button>
+
+        <input className="form-control" style={{ maxWidth: 260 }}
+               placeholder="Filter by name"
+               value={name} onChange={e => filterByName(e.target.value)} />
+
+        <button className="btn btn-success" onClick={onCreate}>+ People</button>
       </div>
-      <div style={{ marginBottom: 24 }}>
-        <input
-          name="username"
-          placeholder="Username"
-          value={form.username || ""}
-          onChange={handleChange}
-          style={{ marginRight: 8 }}
-        />
-        <input
-          name="firstName"
-          placeholder="First name"
-          value={form.firstName || ""}
-          onChange={handleChange}
-          style={{ marginRight: 8 }}
-        />
-        <input
-          name="lastName"
-          placeholder="Last name"
-          value={form.lastName || ""}
-          onChange={handleChange}
-          style={{ marginRight: 8 }}
-        />
-        <input
-          name="email"
-          placeholder="Email"
-          value={form.email || ""}
-          onChange={handleChange}
-          style={{ marginRight: 8 }}
-        />
-        <select
-          name="role"
-          value={form.role || ""}
-          onChange={handleChange}
-          style={{ marginRight: 8 }}
-        >
-          <option value="">Role</option>
-          <option value="admin">Admin</option>
-          <option value="student">Student</option>
-          <option value="faculty">Faculty</option>
-        </select>
-        {editing ? (
-          <button onClick={handleSave}>Save</button>
-        ) : (
-          <button onClick={handleAdd}>+ People</button>
-        )}
-        {editing && (
-          <button onClick={() => {
-            setEditing(null);
-            setForm({ username: "", firstName: "", lastName: "", email: "", role: "" });
-          }} style={{ marginLeft: 8 }}>Cancel</button>
-        )}
-      </div>
-      <table border={1} cellPadding={8}>
+
+      <table className="table align-middle">
         <thead>
           <tr>
-            <th>Name</th>
-            <th>Username</th>
-            <th>Email</th>
-            <th>Role</th>
-            <th>Actions</th>
+            <th style={{ width: 180 }}>Username</th>
+            <th style={{ width: 140 }}>First</th>
+            <th style={{ width: 140 }}>Last</th>
+            <th style={{ width: 220 }}>Email</th>
+            <th style={{ width: 140 }}>Role</th>
+            <th style={{ width: 100 }} />
           </tr>
         </thead>
         <tbody>
-          {filteredUsers.map(u =>
-            <tr key={u.id}>
-              <td>
-                <a href="#" onClick={() => setSelected(u)}>
-                  {u.firstName} {u.lastName}
-                </a>
-              </td>
+          {users.map(u => (
+            <tr key={u._id}>
               <td>{u.username}</td>
-              <td>{u.email}</td>
-              <td>{u.role}</td>
+              <td><input className="form-control" value={u.firstName || ""} onChange={onTxt(u,"firstName")} /></td>
+              <td><input className="form-control" value={u.lastName || ""}  onChange={onTxt(u,"lastName")} /></td>
+              <td><input className="form-control" value={u.email || ""}     onChange={onTxt(u,"email")} /></td>
               <td>
-                <button onClick={() => handleEdit(u.id)}>Edit</button>
-                <button onClick={() => handleDelete(u.id)} style={{ marginLeft: 8, color: "red" }}>
-                  Delete
-                </button>
+                <select className="form-select" value={u.role || "STUDENT"} onChange={onRole(u)}>
+                  <option>STUDENT</option><option>FACULTY</option><option>ADMIN</option>
+                </select>
               </td>
+              <td>
+                <button className="btn btn-outline-danger btn-sm" onClick={() => onDelete(u)}>Delete</button>
+              </td>
+            </tr>
+          ))}
+          {!users.length && (
+            <tr>
+              <td colSpan={6} className="text-secondary">No users found.</td>
             </tr>
           )}
         </tbody>
       </table>
-      {selected && (
-        <div style={{ marginTop: 24, border: "1px solid #ccc", padding: 16 }}>
-          <h3>People Details</h3>
-          <p><b>Name:</b> {selected.firstName} {selected.lastName}</p>
-          <p><b>Username:</b> {selected.username}</p>
-          <p><b>Email:</b> {selected.email}</p>
-          <p><b>Role:</b> {selected.role}</p>
-          <button onClick={() => setSelected(null)} style={{ marginTop: 8 }}>
-            Close
-          </button>
-        </div>
-      )}
     </div>
   );
 }
