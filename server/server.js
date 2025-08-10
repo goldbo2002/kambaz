@@ -23,13 +23,13 @@ app.set("trust proxy", 1);
 
 // ✅ Allow Netlify frontend to send/receive cookies
 app.use(cors({
-  origin: CLIENT_URL,       // exact URL of your Netlify site
+  origin: CLIENT_URL,        // e.g. https://silly-melba-c04293.netlify.app
   credentials: true
 }));
 
 app.use(express.json());
 
-// ✅ Session configuration — secure in prod for HTTPS
+// ✅ Session: secure cookie in prod so it persists across refreshes
 app.use(session({
   secret: process.env.SESSION_SECRET || "dev_secret",
   resave: false,
@@ -37,8 +37,8 @@ app.use(session({
   proxy: true, // trust the proxy for secure cookies
   cookie: {
     httpOnly: true,
-    sameSite: isProd ? "none" : "lax", // 'none' so cookies work cross-site
-    secure: isProd,                    // secure only on HTTPS
+    sameSite: isProd ? "none" : "lax", // cross-site cookies need "none"
+    secure: isProd,                    // HTTPS only in prod (Render)
     maxAge: 1000 * 60 * 60 * 24 * 7    // 7 days
   }
 }));

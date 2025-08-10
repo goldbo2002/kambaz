@@ -1,71 +1,78 @@
-import { Router } from "express";
-import * as dao from "../dao/users.js";
+// server/routes/users.js
+import express from "express";
+import mongoose from "mongoose";
 
-const router = Router();
+const schema = new mongoose.Schema({
+  username: String,
+  password: String,
+  firstName: String,
+  lastName: String,
+  email: String,
+  role: { type: String, enum: ["STUDENT", "FACULTY", "ADMIN"], default: "STUDENT" }
+}, { collection: "users" });
 
-// auth helpers
-const setSession = (req, user) => { req.session.currentUser = { 
-  _id: user._id.toString(),
-  username: user.username,
-  role: user.role,
-  firstName: user.firstName,
-  lastName: user.lastName,
-  email: user.email
-}; };
+const Users = mongoose.model("users", schema);
+const router = express.Router();
 
-router.post("/signin", async (req, res) => {
-  const { username, password } = req.body;
-  const user = await dao.findByUsername(username);
-  if (!user || user.password !== password) return res.status(401).json({ message: "Invalid credentials" });
-  setSession(req, user);
-  res.json(req.session.currentUser);
+// ---------- Auth ----------
+router.post("/signup", async (req, res) => {
+  try {
+    const exists = await Users.findOne({ username: req.body.username });
+    if (exists) return res.status(409).json({ message: "Username already taken" });
+    const user = await Users.create(req.body);
+    req.session.currentUser = user;       // ✅ keep logged in
+    res.json(user);
+  } catch (e) {
+    res.status(500).json({ message: "Signup failed" });
+  }
 });
 
-router.post("/signup", async (req, res) => {
-  const exists = await dao.findByUsername(req.body.username);
-  if (exists) return res.status(409).json({ message: "Username already exists" });
-  const user = await dao.createOne(req.body);
-  setSession(req, user);
-  res.status(201).json(req.session.currentUser);
+router.post("/signin", async (req, res) => {
+  const { username, password } = req.body || {};
+  const user = await Users.findOne({ username, password });
+  if (!user) return res.status(401).json({ message: "Invalid credentials" });
+  req.session.currentUser = user;         // ✅ keep logged in
+  res.json(user);
 });
 
 router.post("/signout", (req, res) => {
-  req.session.destroy(() => res.json({ ok: true }));
+  req.session.destroy(() => res.sendStatus(200));
 });
 
 router.get("/current", (req, res) => {
-  res.json(req.session.currentUser || null);
+  const user = req.session.currentUser;
+  if (!user) return res.sendStatus(401);
+  res.json(user);
 });
 
-// query users
+// ---------- Users CRUD ----------
 router.get("/", async (req, res) => {
-  const { role, name } = req.query;
-  if (role) return res.json(await dao.findByRole(role));
-  if (name) return res.json(await dao.searchByName(name));
-  res.json(await dao.findAll());
-});
-
-router.get("/:id", async (req, res) => {
-  const u = await dao.findById(req.params.id);
-  if (!u) return res.sendStatus(404);
-  res.json(u);
+  const q = {};
+  if (req.query.role) q.role = req.query.role;
+  if (req.query.name) {
+    const re = new RegExp(req.query.name, "i");
+    q.$or = [{ firstName: re }, { lastName: re }, { username: re }, { email: re }];
+  }
+  const users = await Users.find(q);
+  res.json(users);
 });
 
 router.post("/", async (req, res) => {
-  const created = await dao.createOne(req.body);
-  res.status(201).json(created);
+  const user = await Users.create(req.body);
+  res.json(user);
 });
 
 router.put("/:id", async (req, res) => {
-  const updated = await dao.updateOne(req.params.id, req.body);
-  if (!updated) return res.sendStatus(404);
+  const { id } = req.params;
+  await Users.updateOne({ _id: id }, { $set: req.body });
+  const updated = await Users.findById(id);
   res.json(updated);
 });
 
 router.delete("/:id", async (req, res) => {
-  const removed = await dao.removeOne(req.params.id);
-  if (!removed) return res.sendStatus(404);
-  res.json({ ok: true });
+  const { id } = req.params;
+  await Users.deleteOne({ _id: id });
+  res.sendStatus(200);
 });
 
 export default router;
