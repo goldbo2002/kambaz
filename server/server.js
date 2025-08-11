@@ -42,7 +42,9 @@ app.use(session({
     maxAge: 1000 * 60 * 60 * 24 * 7    // 7 days
   }
 }));
-
+process.on("unhandledRejection", (reason, promise) => {
+  console.error("UNHANDLED REJECTION:", reason);
+});
 // --- MongoDB connection ---
 const uri = process.env.DATABASE_CONNECTION_STRING;
 if (!uri) {
@@ -65,8 +67,20 @@ app.use("/api/courses", coursesRouter);
 app.use("/api/enrollments", enrollmentsRouter);
 app.use("/api/assignments", assignmentsRouter);
 app.use("/api/modules", modulesRouter);
+app.use((err, req, res, next) => {
+  console.error("Error handler:", err);
+  const status = err.status || 500;
+  res
+    .status(status)
+    .json({
+      message:
+        err?.message || "Internal Server Error",
+      code: err?.code,
+    });
+});
 
 // --- Start server ---
 app.listen(PORT, () => {
   console.log(`🚀 Server listening on port ${PORT}`);
 });
+
