@@ -1,7 +1,7 @@
 import { useState } from "react";
-import type { FormEvent } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import { signup } from "./client";
+import { useNavigate } from "react-router-dom";
+import { signup } from "./client"; // named export from your client
+// NOTE: keep your UI/layout as-is; this is the minimal behavior fix
 
 export default function Signup() {
   const [form, setForm] = useState({
@@ -15,63 +15,38 @@ export default function Signup() {
   const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
 
-  const update = (k: string, v: string) => setForm((f) => ({ ...f, [k]: v }));
+  const onChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  ) => setForm((f) => ({ ...f, [e.target.name]: e.target.value }));
 
-  const onSubmit = async (e: FormEvent) => {
+  const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
     try {
-      await signup(form);
-      navigate("/Kambaz/Dashboard");
+      await signup(form);                // 201, sets cookie on backend
+      navigate("/Kambaz/Dashboard");     // go to your home/dashboard
+      // Minimal doc-scope way to pick up the new session in UI:
+      setTimeout(() => window.location.reload(), 0);
     } catch (err: any) {
-      setError(err?.response?.data?.message || "Signup failed");
+      if (err?.response?.status === 409) setError("Username already exists.");
+      else setError("Sign up failed. Please try again.");
     }
   };
 
   return (
-    <div style={{ maxWidth: 520 }}>
-      <h3>Sign up</h3>
-      {error && <div style={{ color: "red", marginBottom: 8 }}>{error}</div>}
-      <form onSubmit={onSubmit}>
-        <div className="row">
-          <div className="col-md-6 mb-2">
-            <label className="form-label">Username</label>
-            <input className="form-control" value={form.username}
-                   onChange={(e) => update("username", e.target.value)} />
-          </div>
-          <div className="col-md-6 mb-2">
-            <label className="form-label">Password</label>
-            <input className="form-control" type="password" value={form.password}
-                   onChange={(e) => update("password", e.target.value)} />
-          </div>
-          <div className="col-md-6 mb-2">
-            <label className="form-label">First name</label>
-            <input className="form-control" value={form.firstName}
-                   onChange={(e) => update("firstName", e.target.value)} />
-          </div>
-          <div className="col-md-6 mb-2">
-            <label className="form-label">Last name</label>
-            <input className="form-control" value={form.lastName}
-                   onChange={(e) => update("lastName", e.target.value)} />
-          </div>
-          <div className="col-md-6 mb-2">
-            <label className="form-label">Email</label>
-            <input className="form-control" value={form.email}
-                   onChange={(e) => update("email", e.target.value)} />
-          </div>
-          <div className="col-md-6 mb-3">
-            <label className="form-label">Role</label>
-            <select className="form-select" value={form.role}
-                    onChange={(e) => update("role", e.target.value)}>
-              <option>STUDENT</option>
-              <option>FACULTY</option>
-              <option>ADMIN</option>
-            </select>
-          </div>
-        </div>
-        <button className="btn btn-primary" type="submit">Create account</button>
-        <Link to="/Kambaz/Account/Signin" style={{ marginLeft: 8 }}>Sign in</Link>
-      </form>
-    </div>
+    <form onSubmit={onSubmit} className="p-3 grid gap-2">
+      <h2>Sign Up</h2>
+      {error && <div style={{ color: "crimson" }}>{error}</div>}
+      <input name="username" placeholder="username" value={form.username} onChange={onChange} />
+      <input name="password" type="password" placeholder="password" value={form.password} onChange={onChange} />
+      <select name="role" value={form.role} onChange={onChange}>
+        <option value="STUDENT">STUDENT</option>
+        <option value="INSTRUCTOR">INSTRUCTOR</option>
+      </select>
+      <input name="firstName" placeholder="first name" value={form.firstName} onChange={onChange} />
+      <input name="lastName" placeholder="last name" value={form.lastName} onChange={onChange} />
+      <input name="email" placeholder="email" value={form.email} onChange={onChange} />
+      <button type="submit">Create Account</button>
+    </form>
   );
 }

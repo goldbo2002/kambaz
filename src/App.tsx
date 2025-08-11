@@ -1,31 +1,82 @@
+// src/App.tsx
+import { createContext, useContext, useEffect, useMemo, useState } from "react";
 import { HashRouter, Routes, Route, Navigate } from "react-router-dom";
-import Labs from "./Labs";
-import Kambaz from "./Kambaz";
+import { currentUser as fetchCurrentUser } from "./Kambaz/Account/client";
 
-import Lab1 from "./Labs/Lab1";
-import Lab2 from "./Labs/Lab2";
-import Lab3 from "./Labs/Lab3";
-import Lab4 from "./Labs/Lab4";
-import Lab5 from "./Labs/Lab5";
-import Lab6 from "./Labs/Lab6";  
+// TODO: update these imports to your real pages/routes
+import Dashboard from "./Kambaz/Dashboard";
+import Signup from "./Kambaz/Account/Signup";
+import Signin from "./Kambaz/Account/Signin";
+// import Profile from "./Kambaz/Account/Profile"; // if you have one
 
+// ---------- Auth Context ----------
+export type AuthUser = {
+  _id: string;
+  username: string;
+  firstName?: string;
+  lastName?: string;
+  email?: string;
+  role?: string;
+} | null;
+
+type AuthContextType = {
+  user: AuthUser;
+  setUser: (u: AuthUser) => void;
+  loading: boolean;
+};
+
+const AuthContext = createContext<AuthContextType>({
+  user: null,
+  setUser: () => {},
+  loading: true,
+});
+
+export const useAuth = () => useContext(AuthContext);
+
+function AuthProvider({ children }: { children: React.ReactNode }) {
+  const [user, setUser] = useState<AuthUser>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    let cancelled = false;
+    fetchCurrentUser()
+      .then((u) => {
+        if (!cancelled) {
+          setUser(u);
+          setLoading(false);
+        }
+      })
+      .catch(() => {
+        if (!cancelled) {
+          setUser(null);
+          setLoading(false);
+        }
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  const value = useMemo(() => ({ user, setUser, loading }), [user, loading]);
+
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
+}
+
+// ---------- App ----------
 export default function App() {
   return (
     <HashRouter>
-      <Routes>
-        <Route path="/" element={<Navigate to="/Kambaz" />} />
-
-        <Route path="/Kambaz/*" element={<Kambaz />} />
-
-        <Route path="/Labs/*" element={<Labs />}>
-          <Route path="lab1" element={<Lab1 />} />
-          <Route path="lab2" element={<Lab2 />} />
-          <Route path="lab3" element={<Lab3 />} />
-          <Route path="lab4" element={<Lab4 />} />
-          <Route path="lab5" element={<Lab5 />} />
-          <Route path="lab6" element={<Lab6 />} />  {/* <-- ADD THIS */}
-        </Route>
-      </Routes>
+      <AuthProvider>
+        {/* If you have a header that shows auth state, render it here */}
+        <Routes>
+          <Route path="/" element={<Navigate to="/Kambaz/Dashboard" replace />} />
+          <Route path="/Kambaz/Dashboard" element={<Dashboard />} />
+          <Route path="/Kambaz/Account/Signup" element={<Signup />} />
+          <Route path="/Kambaz/Account/Signin" element={<Signin />} />
+          {/* <Route path="/Kambaz/Account/Profile" element={<Profile />} /> */}
+          {/* add the rest of your routes here */}
+        </Routes>
+      </AuthProvider>
     </HashRouter>
   );
 }

@@ -1,19 +1,41 @@
 import { Router } from "express";
-import * as dao from "../dao/modules.js";
-
+import Module from "../models/module.js";
 const router = Router();
 
-router.get("/course/:cid", async (req, res) => res.json(await dao.findByCourse(req.params.cid)));
-router.post("/", async (req, res) => res.status(201).json(await dao.createOne(req.body)));
-router.put("/:mid", async (req, res) => {
-  const updated = await dao.updateOne(req.params.mid, req.body);
-  if (!updated) return res.sendStatus(404);
-  res.json(updated);
+router.use((req, res, next) => {
+  if (!req.session?.currentUser) return res.status(401).json({ message: "Not signed in" });
+  next();
 });
-router.delete("/:mid", async (req, res) => {
-  const removed = await dao.removeOne(req.params.mid);
-  if (!removed) return res.sendStatus(404);
-  res.json({ ok: true });
+
+// Create
+router.post("/", async (req, res, next) => {
+  try {
+    const courseId = req.body.courseId || req.body.course;
+    const doc = await Module.create({ title: req.body.title, course: courseId });
+    res.status(201).json(doc);
+  } catch (e) { next(e); }
+});
+
+// List by course
+router.get("/course/:cid", async (req, res, next) => {
+  try { res.json(await Module.find({ course: req.params.cid })); }
+  catch (e) { next(e); }
+});
+
+// Update title
+router.put("/:mid", async (req, res, next) => {
+  try {
+    await Module.updateOne({ _id: req.params.mid }, { $set: { title: req.body.title } });
+    res.json({ ok: true });
+  } catch (e) { next(e); }
+});
+
+// Delete
+router.delete("/:mid", async (req, res, next) => {
+  try {
+    await Module.deleteOne({ _id: req.params.mid });
+    res.json({ ok: true });
+  } catch (e) { next(e); }
 });
 
 export default router;
