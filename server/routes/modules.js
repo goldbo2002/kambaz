@@ -1,5 +1,5 @@
 import { Router } from "express";
-import Module from "../models/module.js";
+import Module from "../models/Module.js";
 const router = Router();
 
 router.use((req, res, next) => {
