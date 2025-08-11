@@ -1,5 +1,5 @@
 import { Router } from "express";
-import Assignment from "../models/assignment.js";
+import Assignment from "../models/Assignment.js";
 const router = Router();
 
 router.use((req, res, next) => {
