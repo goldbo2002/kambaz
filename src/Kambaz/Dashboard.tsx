@@ -64,25 +64,27 @@ export default function Dashboard() {
     setMine(await myCourses());
   };
 
-  // NEW: sign out button handler
+  // --- Sign out + show current user up top ---
   const handleSignout = async () => {
     try { await signout(); } catch {}
-    setUser(null);      // clear context (your App.tsx provides this)
-    setMe(null);        // clear local view state
+    setUser(null);  // clear context
+    setMe(null);    // clear local
     navigate("/Kambaz/Account/Signin");
   };
 
   const list = view === "ALL" ? all : mine;
 
   return (
-    <div>
-      <div className="d-flex justify-content-between align-items-center">
-        <h3>Dashboard</h3>
+    <div className="p-3">
+      {/* Current user strip + Sign Out */}
+      <div className="d-flex justify-content-between align-items-center mb-2">
+        <h3 className="m-0">Dashboard</h3>
         {me ? (
-          <div className="d-flex align-items-center gap-2">
-            <span className="text-secondary small">
-              Signed in as <strong>{me.username}</strong>
-            </span>
+          <div className="d-flex align-items-center gap-3">
+            <div className="small text-secondary">
+              <div><strong>{me.username}</strong>{me.role ? ` • ${me.role}` : ""}</div>
+              {me.email ? <div>{me.email}</div> : null}
+            </div>
             <button className="btn btn-sm btn-outline-danger" onClick={handleSignout}>
               Sign Out
             </button>
@@ -95,10 +97,16 @@ export default function Dashboard() {
       </div>
 
       <div className="d-flex gap-2 my-3">
-        <button className={`btn ${view==="ALL"?"btn-primary":"btn-outline-primary"}`} onClick={() => setView("ALL")}>
+        <button
+          className={`btn ${view === "ALL" ? "btn-primary" : "btn-outline-primary"}`}
+          onClick={() => setView("ALL")}
+        >
           All Courses
         </button>
-        <button className={`btn ${view==="MY"?"btn-primary":"btn-outline-primary"}`} onClick={() => setView("MY")}>
+        <button
+          className={`btn ${view === "MY" ? "btn-primary" : "btn-outline-primary"}`}
+          onClick={() => setView("MY")}
+        >
           My Courses
         </button>
       </div>
@@ -106,24 +114,42 @@ export default function Dashboard() {
       <div className="card p-3 mb-3">
         <div className="row g-2">
           <div className="col-md-4">
-            <input className="form-control" placeholder="Course name"
-                   value={draft.name} onChange={e => setDraft({ ...draft, name: e.target.value })}/>
+            <input
+              className="form-control"
+              placeholder="Course name"
+              value={draft.name}
+              onChange={e => setDraft({ ...draft, name: e.target.value })}
+            />
           </div>
-          <div className="col-md-2">
-            <input className="form-control" placeholder="Number"
-                   value={draft.number || ""} onChange={e => setDraft({ ...draft, number: e.target.value })}/>
-          </div>
-          <div className="col-md-2">
-            <input className="form-control" placeholder="Section"
-                   value={draft.section || ""} onChange={e => setDraft({ ...draft, section: e.target.value })}/>
-          </div>
-          <div className="col-md-2">
-            <input className="form-control" placeholder="Term"
-                   value={draft.term || ""} onChange={e => setDraft({ ...draft, term: e.target.value })}/>
-          </div>
-          <div className="col-md-2">
-            <button className="btn btn-success w-100" onClick={onCreate}>+ Create</button>
-          </div>
+            <div className="col-md-2">
+              <input
+                className="form-control"
+                placeholder="Number"
+                value={draft.number || ""}
+                onChange={e => setDraft({ ...draft, number: e.target.value })}
+              />
+            </div>
+            <div className="col-md-2">
+              <input
+                className="form-control"
+                placeholder="Section"
+                value={draft.section || ""}
+                onChange={e => setDraft({ ...draft, section: e.target.value })}
+              />
+            </div>
+            <div className="col-md-2">
+              <input
+                className="form-control"
+                placeholder="Term"
+                value={draft.term || ""}
+                onChange={e => setDraft({ ...draft, term: e.target.value })}
+              />
+            </div>
+            <div className="col-md-2">
+              <button className="btn btn-success w-100" onClick={onCreate}>
+                + Create
+              </button>
+            </div>
         </div>
       </div>
 
@@ -140,15 +166,19 @@ export default function Dashboard() {
                 </div>
               </div>
               <div className="d-flex gap-2">
-                <button className={`btn btn-sm ${isEnrolled(c._id!) ? "btn-outline-warning" : "btn-outline-success"}`}
-                        onClick={() => toggleEnroll(c._id)}>
+                <button
+                  className={`btn btn-sm ${isEnrolled(c._id!) ? "btn-outline-warning" : "btn-outline-success"}`}
+                  onClick={() => toggleEnroll(c._id)}
+                >
                   {isEnrolled(c._id!) ? "Unenroll" : "Enroll"}
                 </button>
-                <button className="btn btn-sm btn-outline-secondary"
-                        onClick={() => {
-                          const newName = prompt("New name?", c.name);
-                          if (newName && newName !== c.name) onUpdate(c, { name: newName });
-                        }}>
+                <button
+                  className="btn btn-sm btn-outline-secondary"
+                  onClick={() => {
+                    const newName = prompt("New name?", c.name);
+                    if (newName && newName !== c.name) onUpdate(c, { name: newName });
+                  }}
+                >
                   Rename
                 </button>
                 <button className="btn btn-sm btn-outline-danger" onClick={() => onDelete(c)}>
