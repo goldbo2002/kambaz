@@ -2,11 +2,11 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import {
-  findAllCourses, myCourses, enroll, unenroll,
+  findAllCourses, listMyCourses, enroll, unenroll,
   createCourse, updateCourse, deleteCourse
 } from "./Courses/client";
 import { currentUser, signout } from "./Account/client";
-import { useAuth } from "../App"; // you have this context in App.tsx
+import { useAuth } from "../App";
 
 type Course = {
   _id?: string;
@@ -24,13 +24,13 @@ export default function Dashboard() {
   const [draft, setDraft] = useState<Course>({ name: "" });
 
   const navigate = useNavigate();
-  const { setUser } = useAuth(); // so the header/UI can reflect logged-out state too
+  const { setUser } = useAuth();
 
   useEffect(() => {
     (async () => {
       try { setMe(await currentUser()); } catch { setMe(null); }
       setAll(await findAllCourses());
-      setMine(await myCourses());
+      setMine(await listMyCourses());
     })();
   }, []);
 
@@ -40,7 +40,7 @@ export default function Dashboard() {
     if (!cid || !me?._id) return alert("Sign in first");
     if (isEnrolled(cid)) await unenroll(me._id, cid);
     else await enroll(me._id, cid);
-    setMine(await myCourses()); // refresh my list
+    setMine(await listMyCourses());
   };
 
   const onCreate = async () => {
@@ -48,7 +48,7 @@ export default function Dashboard() {
     const created = await createCourse(draft);
     setAll(prev => [created, ...prev]);
     setDraft({ name: "" });
-    setMine(await myCourses()); // author is auto-enrolled
+    setMine(await listMyCourses());
   };
 
   const onUpdate = async (c: Course, patch: Partial<Course>) => {
@@ -59,16 +59,15 @@ export default function Dashboard() {
 
   const onDelete = async (c: Course) => {
     if (!c._id) return;
-    setAll(prev => prev.filter(x => x._id !== c._id)); // optimistic
+    setAll(prev => prev.filter(x => x._id !== c._id));
     await deleteCourse(c._id);
-    setMine(await myCourses());
+    setMine(await listMyCourses());
   };
 
-  // --- Sign out + show current user up top ---
   const handleSignout = async () => {
     try { await signout(); } catch {}
-    setUser(null);  // clear context
-    setMe(null);    // clear local
+    setUser(null);
+    setMe(null);
     navigate("/Kambaz/Account/Signin");
   };
 
@@ -76,7 +75,6 @@ export default function Dashboard() {
 
   return (
     <div className="p-3">
-      {/* Current user strip + Sign Out */}
       <div className="d-flex justify-content-between align-items-center mb-2">
         <h3 className="m-0">Dashboard</h3>
         {me ? (
@@ -121,35 +119,35 @@ export default function Dashboard() {
               onChange={e => setDraft({ ...draft, name: e.target.value })}
             />
           </div>
-            <div className="col-md-2">
-              <input
-                className="form-control"
-                placeholder="Number"
-                value={draft.number || ""}
-                onChange={e => setDraft({ ...draft, number: e.target.value })}
-              />
-            </div>
-            <div className="col-md-2">
-              <input
-                className="form-control"
-                placeholder="Section"
-                value={draft.section || ""}
-                onChange={e => setDraft({ ...draft, section: e.target.value })}
-              />
-            </div>
-            <div className="col-md-2">
-              <input
-                className="form-control"
-                placeholder="Term"
-                value={draft.term || ""}
-                onChange={e => setDraft({ ...draft, term: e.target.value })}
-              />
-            </div>
-            <div className="col-md-2">
-              <button className="btn btn-success w-100" onClick={onCreate}>
-                + Create
-              </button>
-            </div>
+          <div className="col-md-2">
+            <input
+              className="form-control"
+              placeholder="Number"
+              value={draft.number || ""}
+              onChange={e => setDraft({ ...draft, number: e.target.value })}
+            />
+          </div>
+          <div className="col-md-2">
+            <input
+              className="form-control"
+              placeholder="Section"
+              value={draft.section || ""}
+              onChange={e => setDraft({ ...draft, section: e.target.value })}
+            />
+          </div>
+          <div className="col-md-2">
+            <input
+              className="form-control"
+              placeholder="Term"
+              value={draft.term || ""}
+              onChange={e => setDraft({ ...draft, term: e.target.value })}
+            />
+          </div>
+          <div className="col-md-2">
+            <button className="btn btn-success w-100" onClick={onCreate}>
+              + Create
+            </button>
+          </div>
         </div>
       </div>
 
