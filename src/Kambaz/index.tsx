@@ -16,7 +16,7 @@ import Assignments from "./Assignments";
 import { currentUser } from "./Account/client";
 
 export default function Kambaz() {
-  const [me, setMe] = useState<any | null>(null);
+  const [setMe] = useState<any | null>(null);
 
   // ✅ Lab 6 requirement: reloading the browser maintains login
   useEffect(() => {

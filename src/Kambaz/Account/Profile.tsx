@@ -81,6 +81,7 @@ export default function Profile() {
       <input name="lastName" placeholder="Last Name" value={form.lastName || ""} onChange={onChange} /><br/>
       <input name="email" type="email" placeholder="email" value={form.email || ""} onChange={onChange} /><br/>
       <select name="role" value={form.role || ""} onChange={onChange}>
+        <option value="user">User</option>
         <option value="student">Student</option>
         <option value="faculty">Faculty</option>
         <option value="admin">Admin</option>

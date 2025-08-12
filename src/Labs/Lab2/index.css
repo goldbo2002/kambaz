@@ -1,121 +1,274 @@
-.lab2-container {
-  max-width: 400px;
-  margin: 40px auto;
-  padding: 24px;
-  background: #f7f7f7;
-  border-radius: 8px;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.08);
-}
-.input-row, .edit-row {
-  display: flex;
-  gap: 8px;
-  margin-bottom: 18px;
-}
-input[type="text"] {
-  flex: 1;
-  padding: 8px;
-  font-size: 16px;
+/* src/Labs/Lab2/index.css */
+/* Keep it literal and easy to grade. */
+
+/* fixed breakpoint badge (top-left) */
+.breakpoint-badge {
+  position: fixed;
+  top: 10px;
+  left: 10px;
+  background: #000;
+  color: #fff;
+  font-size: 12px;
+  padding: 4px 6px;
   border-radius: 4px;
-  border: 1px solid #aaa;
+  z-index: 2000;
 }
-button {
-  padding: 8px 14px;
-  border: none;
-  border-radius: 4px;
-  background: #0055bb;
+
+/* ---------- Selectors & Colors ---------- */
+/* IDs */
+#whiteOnRed {
   color: white;
-  cursor: pointer;
-  font-size: 15px;
-}
-button.remove-btn {
-  background: #e14141;
-  margin-left: 8px;
-}
-button.select-btn {
-  background: #aabbee;
-  color: #222;
-  margin-left: 8px;
-}
-.todo-completed {
-  color: #777;
-  font-style: italic;
-}
-#white-on-red {
   background: red;
-  color: white;
-  padding: 6px;
+  padding: 6px 8px;
 }
-#black-on-yellow {
-  background: yellow;
+#blackOnYellow {
   color: black;
-  padding: 6px;
-}
-.blue-on-yellow {
   background: yellow;
-  color: blue;
-  padding: 6px;
+  padding: 6px 8px;
 }
-.blue-on-yellow-span {
+
+/* Classes */
+.blueOnYellow {
   color: blue;
   background: yellow;
-  font-size: 0.9em;
-  padding: 2px 6px;
-  margin-left: 6px;
+  padding: 6px 8px;
 }
-#white-on-red-div {
-  background: red;
+.blueOnYellowHeading {
+  color: blue;
+  background: yellow;
+  padding: 4px 6px;
+}
+
+.whiteOnRedDiv {
   color: white;
-  padding: 6px;
-  margin-top: 12px;
-  border-radius: 6px;
+  background: red;
 }
-.blue-on-white {
+.smallSpan {
   color: blue;
-  background: white;
-  padding: 6px;
+  background: yellow;
+  padding: 2px 4px;
 }
-.red-on-white {
-  color: red;
-  background: white;
-  padding: 6px;
-}
-.green-on-white {
-  color: green;
-  background: white;
-  padding: 6px;
-}
-.white-on-blue {
+
+/* Foreground helpers */
+.blueHeading { color: blue; }
+.redText { color: red; }
+.greenText { color: green; }
+
+/* Background helpers */
+.whiteOnBlueHeading {
   color: white;
   background: blue;
-  padding: 6px;
+  padding: 4px 6px;
 }
-.black-on-red {
+.blackOnRed {
   color: black;
   background: red;
-  padding: 6px;
+  padding: 6px 8px;
 }
-.white-on-green-span {
+.whiteOnGreen {
   color: white;
   background: green;
-  padding: 4px 8px;
-  margin-left: 8px;
-  border-radius: 5px;
 }
-.fat-red-border {
-  border: 4px solid red;
-  margin: 12px 0;
-  padding: 10px 16px;
+
+/* ---------- Borders, Margins, Padding ---------- */
+.fatRedBorder { border: 5px solid red; }
+.thinBlueDashed { border: 1px dashed blue; }
+
+.padTopLeft {
+  border: 5px solid red;
+  background: yellow;
+  padding-top: 20px;
+  padding-left: 20px;
 }
-.thin-blue-dashed {
-  border: 1px dashed blue;
-  margin: 12px 0;
-  padding: 10px 16px;
+.padBottom {
+  border: 5px solid blue;
+  background: yellow;
+  padding-bottom: 20px;
 }
-.fat-yellow-border {
-  border: 4px solid yellow;
+.padAll {
+  border: 5px solid yellow;
   background: blue;
   color: white;
-  padding: 18px 22px;
-  margin: 20px;
-  border-radius: 10px;
+  padding: 20px;
+}
+.marginBottom {
+  border: 5px solid red;
+  background: yellow;
+  margin-bottom: 16px;
+  padding: 8px;
+}
+.centered {
+  border: 5px solid blue;
+  background: yellow;
+  width: 260px;
+  margin-left: auto;
+  margin-right: auto;
+  padding: 12px;
+  text-align: center;
+}
+.bigMargins {
+  border: 5px solid yellow;
+  background: blue;
+  color: white;
+  margin: 24px;
+  padding: 8px;
+}
+
+/* for rounded demo boxes + baseline size */
+.demoBox {
+  width: 260px;
+  padding: 8px;
+  border: 3px solid #444;
+  background: #fafafa;
+}
+.topRounded { border-top-left-radius: 16px; border-top-right-radius: 16px; }
+.bottomRounded { border-bottom-left-radius: 16px; border-bottom-right-radius: 16px; }
+.allRounded { border-radius: 16px; }
+.exceptTopRight {
+  border-radius: 16px;
+  border-top-right-radius: 0;
+}
+
+/* ---------- Dimensions ---------- */
+.wideYellow {
+  background: yellow;
+  height: 100px;
+  width: 200px; /* wider than tall */
+  border: 2px solid #333;
+}
+.tallBlue {
+  background: blue;
+  color: white;
+  width: 100px;
+  height: 200px; /* taller than wide */
+  border: 2px solid #333;
+}
+.redSquare {
+  background: red;
+  width: 150px;
+  height: 150px;
+  border: 2px solid #333;
+  color: white;
+}
+
+/* ---------- Positioning ---------- */
+.relYellow {
+  background: yellow;
+  border: 2px solid #333;
+  position: relative;
+  top: 10px;
+  left: 10px;
+}
+.relBlue {
+  background: blue;
+  color: white;
+  border: 2px solid #333;
+  position: relative;
+  top: -10px; /* up */
+  left: 10px;
+}
+
+/* absolute rectangles with stage */
+.positionStage {
+  position: relative;
+  height: 200px;
+  border: 1px dashed #999;
+  background: #f8f9fa;
+  margin-bottom: 8px;
+}
+.positionStage .portrait,
+.positionStage .landscape,
+.positionStage .square {
+  position: absolute;
+  border: 2px solid #333;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.positionStage .portrait {
+  width: 90px; height: 150px;
+  background: #6c757d; /* gray */
+  top: 20px; left: 20px;
+  z-index: 1;
+}
+.positionStage .landscape {
+  width: 150px; height: 90px;
+  background: #0d6efd; /* blue */
+  top: 50px; left: 60px;
+  z-index: 3; /* on top */
+}
+.positionStage .square {
+  width: 110px; height: 110px;
+  background: #dc3545; /* red */
+  top: 40px; left: 120px;
+  z-index: 2;
+}
+
+/* Fixed element that doesn't scroll */
+.fixedBlue {
+  position: fixed;
+  right: 12px;
+  bottom: 12px;
+  background: #0d6efd;
+  color: #fff;
+  padding: 8px 12px;
+  border-radius: 6px;
+  z-index: 1500;
+}
+
+/* ---------- Floats, Grid, Flex ---------- */
+.floatRow .floatA,
+.floatRow .floatB,
+.floatRow .floatC {
+  float: left;
+  width: 120px;
+  height: 80px;
+  margin-right: 8px;
+  border: 2px solid #333;
+  background: #e9ecef;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.clearfix::after { content: ""; display: block; clear: both; }
+
+.imgRight {
+  float: right;
+  margin: 0 0 8px 8px;
+  border: 1px solid #ccc;
+}
+
+/* Grid demo */
+.gridDemo {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 6px;
+}
+.gridDemo .gridCell {
+  background: #f1f3f5;
+  border: 1px solid #ced4da;
+  padding: 8px;
+  text-align: center;
+}
+
+/* Flex demo */
+.flexCols {
+  display: flex;
+  gap: 8px;
+}
+.flexCols .flexCell {
+  flex: 1 1 0;
+  background: #f8f9fa;
+  border: 1px solid #ddd;
+  padding: 8px;
+  text-align: center;
+}
+
+/* ---------- Icons row ---------- */
+.iconsRow {
+  font-size: 26px;
+  display: flex;
+  gap: 12px;
+  align-items: center;
 }

@@ -1,37 +1,42 @@
 // src/Labs/Lab1/index.tsx
 
-const NAME = "Bo"; 
-const SECTION = "5160"; 
+const NAME = "Bo";
+const SECTION = "5160";
 const GITHUB_URL = "https://github.com/goldbo2002";
 
 export default function Lab1() {
   return (
-    //hardcoded links, show name section and navigation links
+    // hardcoded links, show name section and navigation links
     <div id="wd-lab1" style={{ maxWidth: 800, margin: "2rem auto" }}>
       <h2>Lab 1</h2>
-      <h3>{NAME} – {SECTION}</h3>
+      <h3>
+        {NAME} – {SECTION}
+      </h3>
       <div style={{ marginBottom: 24 }}>
         <a href="#/Labs/Lab1">Lab 1</a>{" | "}
         <a href="#/Labs/Lab2">Lab 2</a>{" | "}
         <a href="#/Kambaz">Kambaz App</a>{" | "}
-        <a href={GITHUB_URL} target="_blank" rel="noopener noreferrer">GitHub</a>
+        <a id="wd-github" href={GITHUB_URL} target="_blank" rel="noopener noreferrer">
+          GitHub repo
+        </a>
       </div>
-    {/*headings for page structures */}
-      <h3>HTML Examples</h3>
+
       <div>
-        <h1>h1 Heading</h1>
-        <h2>h2 Heading</h2>
-        <h3>h3 Heading</h3>
-        <h4>h4 Heading</h4>
+        <h4>Headings</h4>
+        <h1>Heading 1</h1>
+        <h2>Heading 2</h2>
+        <h3>Heading 3</h3>
+        <h4>Heading 4</h4>
       </div>
-    {/*paragraphs */}
+
       <div>
         <h4>Paragraphs</h4>
         <p>This is the first paragraph. Paragraph tags put space between blocks of text.</p>
         <p>This is the second paragraph. Another paragraph below.</p>
         <p>This is the third paragraph.</p>
       </div>
-{/*ordered lists vs unordered */}
+
+      {/* ordered lists vs unordered */}
       <div>
         <h4>Ordered List</h4>
         <ol>
@@ -41,24 +46,22 @@ export default function Lab1() {
         </ol>
         <ol>
           <li>Toast bread.</li>
-          <li>put on peanut butter.</li>
-          <li>Top with jam.</li>
+          <li>Put on jam.</li>
+          <li>Eat sandwich.</li>
         </ol>
+
         <h4>Unordered List</h4>
         <ul>
-          <li>Dune</li>
-          <li>Star Wars</li>
-          <li>Moneyball</li>
-        </ul>
-        <ul>
-          <li>The game</li>
-          <li>COD</li>
-          <li>Ready Player One</li>
+          <li>Clean Code</li>
+          <li>Deep Work</li>
+          <li>The Pragmatic Programmer</li>
+          <li>Thinking in Systems</li>
         </ul>
       </div>
-{/*table with headings, rows, and a footer */}
-      <div>
-        <h4>Table</h4>
+
+      {/* table Q3–Q10 */}
+      <div style={{ marginTop: 16 }}>
+        <h4>Table – Quiz Scores (Q3–Q10)</h4>
         <table border={1} width="100%">
           <thead>
             <tr>
@@ -69,7 +72,7 @@ export default function Lab1() {
             </tr>
           </thead>
           <tbody>
-            {/*table rows */}
+            {/* table rows */}
             <tr><td>Q1</td><td>HTML</td><td>6/01/25</td><td>90</td></tr>
             <tr><td>Q2</td><td>CSS</td><td>6/02/25</td><td>92</td></tr>
             <tr><td>Q3</td><td>React</td><td>6/03/25</td><td>95</td></tr>
@@ -90,34 +93,45 @@ export default function Lab1() {
         </table>
       </div>
 
-      <div>
+      {/* images */}
+      <div style={{ marginTop: 16 }}>
         <h4>Images</h4>
-        <img width="400px" src="https://www.staradvertiser.com/wp-content/uploads/2021/08/web1_Starship-gap2.jpg" alt="Starship" />
+        <img
+          id="wd-starship"
+          width="400px"
+          src="https://www.staradvertiser.com/wp-content/uploads/2021/08/web1_Starship-gap2.jpg"
+          alt="Starship"
+        />
         <br />
-       <img src="/images/teslabot.jpg" alt="Teslabot" height={150} />
-
+        <img id="wd-teslabot" src="/images/teslabot.jpg" alt="Teslabot" height={150} />
       </div>
 
-      <div>
+      {/* forms */}
+      <div style={{ marginTop: 16 }}>
         <h4>Forms</h4>
         <form>
           <label>Username: <input placeholder="bo" /></label> <br />
           <label>Password: <input type="password" value="123" /></label> <br />
           <label>First name: <input type="text" /></label> <br />
           <label>Last name: <input type="text" /></label> <br />
-          <label>Biography:</label><br/>
-          <textarea cols={30} rows={5}>Lorem ipsum dolor sit amet.</textarea><br/>
-          <button type="button" onClick={() => alert('Life')}>Hello World!</button><br/>
+
+          <label>Biography:</label><br />
+          <textarea cols={30} rows={5}>Lorem ipsum dolor sit amet.</textarea><br />
+
+          <button type="button" onClick={() => alert("Life")}>Hello World!</button><br />
+
           <h5>Radio buttons</h5>
           <input type="radio" name="genre" />Comedy
           <input type="radio" name="genre" />Drama
           <input type="radio" name="genre" />Science Fiction
           <input type="radio" name="genre" />Fantasy
+
           <h5>Checkboxes</h5>
-          <input type="checkbox" name="genre" />Comedy
-          <input type="checkbox" name="genre" />Drama
-          <input type="checkbox" name="genre" />Science Fiction
-          <input type="checkbox" name="genre" />Fantasy
+          <input type="checkbox" name="c-comedy" />Comedy
+          <input type="checkbox" name="c-drama" />Drama
+          <input type="checkbox" name="c-scifi" />Science Fiction
+          <input type="checkbox" name="c-fantasy" />Fantasy
+
           <h5>Dropdowns</h5>
           <select>
             <option>Comedy</option>
@@ -133,8 +147,10 @@ export default function Lab1() {
             <option>Fantasy</option>
           </select>
           <br />
-          <label>Email: <input type="email" /></label><br />
-          <label>Starting salary: <input type="number" /></label><br />
+
+          {/* other HTML types the rubric/doc calls out */}
+          <label>Email: <input type="email" placeholder="jdoe@somewhere.com" /></label><br />
+          <label>Starting salary: <input type="number" defaultValue={100000} placeholder="1000" /></label><br />
           <label>Rating: <input type="range" max="5" /></label><br />
           <label>Date of birth: <input type="date" /></label><br />
           <label>Upload file: <input type="file" /></label><br />
@@ -143,8 +159,11 @@ export default function Lab1() {
 
       <div>
         <h4>Anchor tag</h4>
-        <a href="https://www.lipsum.com" target="_blank" rel="noopener noreferrer">click here</a> for dummy text.<br />
-        <a href={GITHUB_URL} target="_blank" rel="noopener noreferrer">GitHub repo</a>
+        <a href="https://www.lipsum.com" target="_blank" rel="noopener noreferrer">
+          click here
+        </a>{" "}
+        for dummy text.<br />
+        <a id="wd-github" href={GITHUB_URL} target="_blank" rel="noopener noreferrer">GitHub repo</a>
       </div>
     </div>
   );
