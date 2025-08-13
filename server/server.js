@@ -1,59 +1,72 @@
 import express from "express";
 import mongoose from "mongoose";
 import cors from "cors";
-import session from "express-session";
 import dotenv from "dotenv";
-import users from "./users.js";
-import courses from "./courses.js";
-import modules from "./modules.js";
-import assignments from "./assignments.js";
+import session from "express-session";
+import MongoStore from "connect-mongo";
+
+import userRoutes from "./routes/users.js";
+import courseRoutes from "./routes/courses.js";
+import moduleRoutes from "./routes/modules.js";
+import assignmentRoutes from "./routes/assignments.js";
 
 dotenv.config();
 
 const app = express();
-const FRONTEND_URL = "https://silly-melba-c04293.netlify.app"; 
-
-app.use(cors({
-  origin: FRONTEND_URL,
-  credentials: true
-}));
-
-app.use(express.json());
-
-app.use(session({
-  secret: "your-secret-key",
-  resave: false,
-  saveUninitialized: false,
-  cookie: {
-    secure: true,          // required for cross-site cookies
-    sameSite: "none"       
-  }
-}));
-
-app.use("/api/users", users);
-app.use("/api/courses", courses);
-app.use("/api/modules", modules);
-app.use("/api/assignments", assignments);
-
-// Ping endpoint for debugging
-app.post("/api/ping", (req, res) => {
-  res.send({
-    ok: true,
-    body: req.body,
-    ts: Date.now()
-  });
-});
-
-app.get("/api/health", (req, res) => {
-  res.send({ ok: true });
-});
-
-const CONNECTION_STRING = process.env.DB || "mongodb://127.0.0.1:27017/kambaz";
-mongoose.connect(CONNECTION_STRING).then(() => {
-  console.log("✅ Mongo connected");
-});
-
 const PORT = process.env.PORT || 4000;
+
+// === Middleware ===
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+// === CORS ===
+app.use(
+  cors({
+    origin: ["https://silly-melba-c04293.netlify.app"],
+    credentials: true,
+  })
+);
+
+// === Session ===
+app.use(
+  session({
+    secret: process.env.SESSION_SECRET || "keyboardcat",
+    resave: false,
+    saveUninitialized: false,
+    store: MongoStore.create({ mongoUrl: process.env.MONGO_URI }),
+    cookie: {
+      sameSite: "none",
+      secure: true,
+      httpOnly: true,
+    },
+  })
+);
+
+// === DB ===
+mongoose
+  .connect(process.env.MONGO_URI, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  })
+  .then(() => console.log("✅ Mongo connected"))
+  .catch((err) => console.error("Mongo error →", err));
+
+// === Routes ===
+app.get("/api/health", (req, res) => {
+  res.json({ ok: true });
+});
+
+app.post("/api/ping", (req, res) => {
+  res.json({ ok: true, body: req.body, ts: Date.now() });
+});
+
+app.use("/api/users", userRoutes);
+app.use("/api/courses", courseRoutes);
+app.use("/api/modules", moduleRoutes);
+app.use("/api/assignments", assignmentRoutes);
+
+// === Start Server ===
 app.listen(PORT, () => {
   console.log(`🚀 Kambaz server listening on :${PORT}`);
+  console.log("CORS origin:", "https://silly-melba-c04293.netlify.app");
 });
