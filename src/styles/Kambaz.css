@@ -1,0 +1,25 @@
+/* nav colors */
+.kb-nav a { display:block; padding:10px 12px; text-decoration:none }
+.kb-nav .neu a { color:#fff; }
+.kb-nav .account a { background:#000; color:#fff; }
+.kb-nav .dashboard a { background:#fff; color:#c00; }
+.kb-nav .others a { background:#000; color:#fff; }
+.kb-nav .others a .icon { color:#c00; margin-right:6px; }
+
+/* Course nav */
+.course-nav a { display:block; padding:8px 12px; color:#c00; text-decoration:none; }
+.course-nav a.active { color:#000; border-left:4px solid #000; }
+
+/* Modules list styling */
+.module-item { background:#eee; padding:10px; margin-bottom:8px; display:flex; justify-content:space-between; align-items:center; }
+.lesson-item { background:#fff; border-left:4px solid #28a745; padding:8px 10px; margin:4px 0; display:flex; justify-content:space-between; }
+
+/* Assignments list  */
+.assignment-item { border-left:4px solid #28a745; padding:10px 12px; margin:8px 0; }
+
+/* Dashboard*/
+.course-card { width:260px; }
+@media (max-width: 768px) {
+  .kb-left { display:none; }
+}
+

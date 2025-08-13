@@ -1,41 +1,60 @@
-import { Router } from "express";
-import * as dao from "../dao/courses.js";
-import * as enrollments from "../dao/enrollments.js";
+// server/routes/courses.js
+const Course = require('../models/Course');
 
-const router = Router();
+// Auth middleware
+function requireAuth(req, res, next) {
+  if (!req.session?.user) return res.status(401).json({ message: 'Unauthorized' });
+  next();
+}
 
-router.get("/", async (req, res) => res.json(await dao.findAll()));
-router.get("/:cid", async (req, res) => {
-  const c = await dao.findById(req.params.cid);
-  if (!c) return res.sendStatus(404);
-  res.json(c);
-});
+module.exports = function CoursesRoutes(app) {
+  // List (open)
+  app.get('/api/courses', async (_req, res, next) => {
+    try {
+      const docs = await Course.find().lean();
+      res.json(docs);
+    } catch (e) { next(e); }
+  });
 
-router.post("/", async (req, res) => {
-  // auto-enroll creator if logged in
-  const created = await dao.createOne(req.body);
-  if (req.session.currentUser) {
-    try { await enrollments.enroll(req.session.currentUser._id, created._id); } catch {}
-  }
-  res.status(201).json(created);
-});
+  // Create (auth required)
+  app.post('/api/courses', requireAuth, async (req, res, next) => {
+    try {
+      const { title, description = '', number = '', image = '' } = req.body || {};
+      if (!title) return res.status(400).json({ message: 'title required' });
 
-router.put("/:cid", async (req, res) => {
-  const updated = await dao.updateOne(req.params.cid, req.body);
-  if (!updated) return res.sendStatus(404);
-  res.json(updated);
-});
+      const created = await Course.create({ title, description, number, image });
+      res.status(201).json(created);
+    } catch (e) { next(e); }
+  });
 
-router.delete("/:cid", async (req, res) => {
-  const removed = await dao.removeOne(req.params.cid);
-  if (!removed) return res.sendStatus(404);
-  res.json({ ok: true });
-});
+  // Read one (open)
+  app.get('/api/courses/:cid', async (req, res, next) => {
+    try {
+      const doc = await Course.findById(req.params.cid).lean();
+      if (!doc) return res.status(404).json({ message: 'not found' });
+      res.json(doc);
+    } catch (e) { next(e); }
+  });
 
-// people in a course
-router.get("/:cid/users", async (req, res) => {
-  const list = await enrollments.findCourseUsers(req.params.cid);
-  res.json(list.map(e => e.user));
-});
+  // Update (auth required)
+  app.put('/api/courses/:cid', requireAuth, async (req, res, next) => {
+    try {
+      const updated = await Course.findByIdAndUpdate(
+        req.params.cid,
+        req.body,
+        { new: true, runValidators: true }
+      ).lean();
+      if (!updated) return res.status(404).json({ message: 'not found' });
+      res.json(updated);
+    } catch (e) { next(e); }
+  });
 
-export default router;
+  // Delete (auth required)
+  app.delete('/api/courses/:cid', requireAuth, async (req, res, next) => {
+    try {
+      const deleted = await Course.findByIdAndDelete(req.params.cid).lean();
+      if (!deleted) return res.status(404).json({ message: 'not found' });
+      res.json({ ok: true, id: deleted._id });
+    } catch (e) { next(e); }
+  });
+};

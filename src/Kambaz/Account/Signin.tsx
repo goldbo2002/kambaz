@@ -1,35 +1,38 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { signin } from "./client"; // named export from your client
+import { useNavigate, Link } from "react-router-dom";
+import { api } from "../../lib/api";
 
 export default function Signin() {
-  const [form, setForm] = useState({ username: "", password: "" });
-  const [error, setError] = useState<string | null>(null);
-  const navigate = useNavigate();
+  const nav = useNavigate();
+  const [form, setForm] = useState({ username: "iron_man", password: "stark123" });
+  const [err, setErr] = useState("");
 
-  const onChange = (e: React.ChangeEvent<HTMLInputElement>) =>
-    setForm((f) => ({ ...f, [e.target.name]: e.target.value }));
+  const set = (k: string) => (e: any) => setForm(f => ({ ...f, [k]: e.target.value }));
 
-  const onSubmit = async (e: React.FormEvent) => {
+  const submit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError(null);
     try {
-      await signin(form);                // 200, sets cookie
-      navigate("/Kambaz/Dashboard");
-      // Minimal doc-scope way to pick up the session in UI:
-      setTimeout(() => window.location.reload(), 0);
-    } catch {
-      setError("Invalid username or password.");
+      await api.post("/users/signin", form);
+      nav("/Kambaz/Account/Profile");
+    } catch (e: any) {
+      setErr(e?.response?.data?.message || "Signin failed");
     }
   };
 
   return (
-    <form onSubmit={onSubmit} className="p-3 grid gap-2">
-      <h2>Sign In</h2>
-      {error && <div style={{ color: "crimson" }}>{error}</div>}
-      <input name="username" placeholder="username" value={form.username} onChange={onChange} />
-      <input name="password" type="password" placeholder="password" value={form.password} onChange={onChange} />
-      <button type="submit">Sign In</button>
+    <form onSubmit={submit} style={{ maxWidth: 420 }}>
+      <h3>Signin</h3>
+      {err && <div className="alert alert-danger">{err}</div>}
+      <div className="mb-2">
+        <label className="form-label">Username (text)</label>
+        <input className="form-control" value={form.username} onChange={set("username")} />
+      </div>
+      <div className="mb-3">
+        <label className="form-label">Password (password)</label>
+        <input className="form-control" type="password" value={form.password} onChange={set("password")} />
+      </div>
+      <button className="btn btn-primary" type="submit">Signin</button>
+      <Link className="btn btn-link" to="/Kambaz/Account/Signup">Signup</Link>
     </form>
   );
 }

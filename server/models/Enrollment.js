@@ -1,14 +1,15 @@
-import mongoose from "mongoose";
+// server/models/Enrollment.js
+const { Schema, model, Types } = require("mongoose");
 
-const EnrollmentSchema = new mongoose.Schema(
+const EnrollmentSchema = new Schema(
   {
-    user: { type: mongoose.Schema.Types.ObjectId, ref: "users", required: true },
-    course: { type: mongoose.Schema.Types.ObjectId, ref: "courses", required: true },
+    user: { type: Types.ObjectId, ref: "User", required: true, index: true },
+    course: { type: Types.ObjectId, ref: "Course", required: true, index: true }
   },
-  { timestamps: true, collection: "enrollments" }
+  { timestamps: true }
 );
 
-// Prevent duplicate enrollments per (user, course)
+// optional: prevent duplicate enrollment
 EnrollmentSchema.index({ user: 1, course: 1 }, { unique: true });
 
-export default mongoose.model("enrollments", EnrollmentSchema);
+module.exports = model("Enrollment", EnrollmentSchema);

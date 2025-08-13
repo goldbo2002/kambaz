@@ -1,46 +1,30 @@
-import { Router } from 'express';
-import * as dao from '../dao/enrollments.js';
+import Enrollment from "../models/Enrollment.js";
 
-const router = Router();
+export default function EnrollmentsRoutes(app) {
+  app.post("/api/enrollments/enroll", async (req, res, next) => {
+    try { res.status(201).json(await Enrollment.create(req.body)); }
+    catch (e) { next(e); }
+  });
 
-// current user's courses (returns an array of Course objects)
-router.get('/me', async (req, res) => {
-  if (!req.session.currentUser) {
-    return res.status(401).json({ message: 'Not signed in' });
-  }
-  const list = await dao.findUserCourses(req.session.currentUser._id);
-  // Return just the course objects
-  res.json(list.map((e) => e.course));
-});
+  app.post("/api/enrollments/unenroll", async (req, res, next) => {
+    try { await Enrollment.deleteOne(req.body); res.json({ ok: true }); }
+    catch (e) { next(e); }
+  });
 
-// enroll
-router.post('/:uid/courses/:cid', async (req, res, next) => {
-  try {
-    // Optional: enforce self-only enroll
-    if (!req.session.currentUser || req.session.currentUser._id !== req.params.uid) {
-      // If your grading expects no auth enforcement here, comment this out.
-      return res.status(401).json({ message: 'Not signed in' });
-    }
-    const result = await dao.enroll(req.params.uid, req.params.cid);
-    // If your dao returns something indicating duplicates, reflect that
-    res.status(201).json({ ok: true, alreadyEnrolled: !!result?.alreadyEnrolled });
-  } catch (e) {
-    next(e);
-  }
-});
+  // My courses by session user
+  app.get("/api/enrollments/my", async (req, res, next) => {
+    try {
+      if (!req.session?.currentUser) return res.sendStatus(401);
+      const list = await Enrollment.find({ user: req.session.currentUser._id }).populate("course").lean();
+      res.json(list);
+    } catch (e) { next(e); }
+  });
 
-// unenroll
-router.delete('/:uid/courses/:cid', async (req, res, next) => {
-  try {
-    if (!req.session.currentUser || req.session.currentUser._id !== req.params.uid) {
-      // If your grading expects no auth enforcement here, comment this out.
-      return res.status(401).json({ message: 'Not signed in' });
-    }
-    const deleted = await dao.unenroll(req.params.uid, req.params.cid);
-    res.json({ ok: true, deleted: Number(deleted) || 0 });
-  } catch (e) {
-    next(e);
-  }
-});
-
-export default router;
+  // People in a course
+  app.get("/api/courses/:cid/people", async (req, res, next) => {
+    try {
+      const list = await Enrollment.find({ course: req.params.cid }).populate("user", "-password").lean();
+      res.json(list.map(e => e.user));
+    } catch (e) { next(e); }
+  });
+}

@@ -1,54 +1,54 @@
-// src/Kambaz/index.tsx
-import { Routes, Route, Navigate } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { Routes, Route, Navigate, NavLink } from "react-router-dom";
+import "./Kambaz.css";
 
-import Header from "./Header";
-import Sidebar from "./Sidebar";
-import Navigation from "./Navigation";
+import Signin from "./Account/Signin";
+import Signup from "./Account/Signup";
+import Profile from "./Account/Profile";
 
-import Dashboard from "./Dashboard";
-import People from "./People";
-import Account from "./Account";            // this should be your /Kambaz/Account router
-import CourseDetail from "./CourseDetail";  // default view for a course
-import CoursePeople from "./CoursePeople";
-import Assignments from "./Assignments";
-
-import { currentUser } from "./Account/client";
+import Dashboard from "./Screens/Dashboard";
+import CourseLayout from "./Screens/CourseLayout";
+import CourseHome from "./Screens/CourseHome";
+import CourseModules from "./Screens/CourseModules";
+import Assignments from "./Screens/Assignments";
+import AssignmentEditor from "./Screens/AssignmentEditor";
+import People from "./People/People";
 
 export default function Kambaz() {
-  const [setMe] = useState<any | null>(null);
-
-  // ✅ Lab 6 requirement: reloading the browser maintains login
-  useEffect(() => {
-    currentUser().then(setMe).catch(() => setMe(null));
-  }, []);
-
   return (
-    <div className="wd-kambaz">
-      <Header />
-      <div className="d-flex">
-        <Sidebar />
-        <div className="flex-fill p-3">
-          <Navigation />
-
-          <Routes>
-            {/* Default route for /Kambaz */}
-            <Route path="/" element={<Navigate to="/Kambaz/Dashboard" />} />
-
-            {/* Account (Signin/Signup/Profile handled inside) */}
-            <Route path="/Account/*" element={<Account />} />
-
-            {/* Main screens */}
-            <Route path="/Dashboard" element={<Dashboard />} />
-            <Route path="/Users" element={<People />} />
-
-            {/* Course shell + tabs */}
-            <Route path="/Courses/:courseId" element={<CourseDetail />} />
-            <Route path="/Courses/:courseId/People" element={<CoursePeople />} />
-            <Route path="/Courses/:courseId/Assignments" element={<Assignments />} />
-          </Routes>
-        </div>
-      </div>
+    <div className="wd-kb d-flex">
+      <aside className="wd-kb-left-nav">
+        <KBLink to="/Kambaz/Account/Signin" label="Account" />
+        <KBLink to="/Kambaz/Dashboard" label="Dashboard" />
+        {/* Courses points to Dashboard (DON'T hardcode /Courses/1234) */}
+        <KBLink to="/Kambaz/Dashboard" label="Courses" />
+        <KBLink to="/Labs" label="Labs" />
+      </aside>
+      <main className="flex-fill p-3">
+        <Routes>
+          <Route path="/" element={<Navigate to="Account/Signin" replace />} />
+          <Route path="Account">
+            <Route path="Signin" element={<Signin />} />
+            <Route path="Signup" element={<Signup />} />
+            <Route path="Profile" element={<Profile />} />
+          </Route>
+          <Route path="Dashboard" element={<Dashboard />} />
+          <Route path="Courses/:cid" element={<CourseLayout />}>
+            <Route index element={<Navigate to="Home" replace />} />
+            <Route path="Home" element={<CourseHome />} />
+            <Route path="Modules" element={<CourseModules />} />
+            <Route path="Assignments" element={<Assignments />} />
+            <Route path="Assignments/:aid" element={<AssignmentEditor />} />
+            <Route path="People" element={<People />} />
+          </Route>
+        </Routes>
+      </main>
     </div>
+  );
+}
+function KBLink({ to, label }: { to: string; label: string }) {
+  return (
+    <NavLink to={to} className={({ isActive }) => "wd-kb-left-link " + (isActive ? "active" : "")}>
+      {label}
+    </NavLink>
   );
 }

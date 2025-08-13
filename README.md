@@ -1,69 +1,38 @@
-# React + TypeScript + Vite
+# Kambaz – React + TypeScript + Vite + Bun
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Kambaz is a full-stack learning management web app. It supports user authentication, course management, and a role-based dashboard.
 
-Currently, two official plugins are available:
+## 🚀 Live Demo
+- **Frontend**: https://silly-melba-c04293.netlify.app/#/Kambaz/Dashboard
+- **Backend API**: https://kambaz.onrender.com
+- **Demo Login** (if enabled):
+  - Email: `demo@blank.com`
+  - Password: `Passcode`
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
 
-## Expanding the ESLint configuration
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+## 🧰 Tech Stack
+**Frontend**
+- React 18 + TypeScript
+- Vite
+- Redux Toolkit & React-Redux
+- React Router
+- Bootstrap
+- **Bun** for package management
 
-```js
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+**Backend**
+- Node.js + Express
+- MongoDB Atlas (Mongoose)
+- Cookie-based auth (session)
+- CORS configured for the frontend origin(s)
 
-      // Remove tseslint.configs.recommended and replace with this
-      ...tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      ...tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      ...tseslint.configs.stylisticTypeChecked,
+---
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+## ⚙️ Quickstart (local)
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+```bash
+# Clone
+git clone https://github.com/goldbo2002/kambaz.git
+cd kambaz-react-web-app
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+# Install deps with Bu

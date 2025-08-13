@@ -1,52 +1,60 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { signup } from "./client"; // named export from your client
-// NOTE: keep your UI/layout as-is; this is the minimal behavior fix
+import { useNavigate, Link } from "react-router-dom";
+import { api } from "../../lib/api";
 
 export default function Signup() {
+  const nav = useNavigate();
   const [form, setForm] = useState({
-    username: "",
-    password: "",
+    username: "iron_man",
+    password: "stark123",
+    firstName: "Tony",
+    lastName: "Stark",
+    email: "tony@avengers.org",
     role: "STUDENT",
-    firstName: "",
-    lastName: "",
-    email: "",
+    dob: "1970-05-29"
   });
-  const [error, setError] = useState<string | null>(null);
-  const navigate = useNavigate();
+  const [err, setErr] = useState("");
 
-  const onChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
-  ) => setForm((f) => ({ ...f, [e.target.name]: e.target.value }));
+  const set = (k: string) => (e: any) => setForm(f => ({ ...f, [k]: e.target.value }));
 
-  const onSubmit = async (e: React.FormEvent) => {
+  const submit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError(null);
     try {
-      await signup(form);                // 201, sets cookie on backend
-      navigate("/Kambaz/Dashboard");     // go to your home/dashboard
-      // Minimal doc-scope way to pick up the new session in UI:
-      setTimeout(() => window.location.reload(), 0);
-    } catch (err: any) {
-      if (err?.response?.status === 409) setError("Username already exists.");
-      else setError("Sign up failed. Please try again.");
+      await api.post("/users/signup", form);
+      nav("/Kambaz/Account/Profile");
+    } catch (e: any) {
+      setErr(e?.response?.data?.message || "Signup failed");
     }
   };
 
   return (
-    <form onSubmit={onSubmit} className="p-3 grid gap-2">
-      <h2>Sign Up</h2>
-      {error && <div style={{ color: "crimson" }}>{error}</div>}
-      <input name="username" placeholder="username" value={form.username} onChange={onChange} />
-      <input name="password" type="password" placeholder="password" value={form.password} onChange={onChange} />
-      <select name="role" value={form.role} onChange={onChange}>
-        <option value="STUDENT">STUDENT</option>
-        <option value="INSTRUCTOR">INSTRUCTOR</option>
-      </select>
-      <input name="firstName" placeholder="first name" value={form.firstName} onChange={onChange} />
-      <input name="lastName" placeholder="last name" value={form.lastName} onChange={onChange} />
-      <input name="email" placeholder="email" value={form.email} onChange={onChange} />
-      <button type="submit">Create Account</button>
+    <form onSubmit={submit} style={{ maxWidth: 520 }}>
+      <h3>Signup</h3>
+      {err && <div className="alert alert-danger">{err}</div>}
+      <div className="mb-2"><label className="form-label">Username</label>
+        <input className="form-control" value={form.username} onChange={set("username")} /></div>
+      <div className="mb-2"><label className="form-label">Password</label>
+        <input className="form-control" type="password" value={form.password} onChange={set("password")} /></div>
+      <div className="mb-2"><label className="form-label">Verify Password</label>
+        <input className="form-control" type="password" defaultValue={form.password} /></div>
+      <div className="mb-2"><label className="form-label">First Name</label>
+        <input className="form-control" value={form.firstName} onChange={set("firstName")} /></div>
+      <div className="mb-2"><label className="form-label">Last Name</label>
+        <input className="form-control" value={form.lastName} onChange={set("lastName")} /></div>
+      <div className="mb-2"><label className="form-label">Email</label>
+        <input className="form-control" type="email" value={form.email} onChange={set("email")} /></div>
+      <div className="mb-2"><label className="form-label">Role (4 options)</label>
+        <select className="form-select" value={form.role} onChange={set("role")}>
+          <option value="STUDENT">STUDENT</option>
+          <option value="FACULTY">FACULTY</option>
+          <option value="ADMIN">ADMIN</option>
+          <option value="TA">TA</option>
+        </select>
+      </div>
+      <div className="mb-3"><label className="form-label">DOB (date)</label>
+        <input className="form-control" type="date" value={form.dob} onChange={set("dob")} /></div>
+      <button className="btn btn-success" type="submit">Signup</button>
+      <Link className="btn btn-link" to="/Kambaz/Account/Signin">Signin</Link>
     </form>
   );
 }
