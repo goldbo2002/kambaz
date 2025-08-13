@@ -1,4 +1,4 @@
-// server/routes/courses.js
+
 const Course = require('../models/Course');
 
 // Auth middleware
