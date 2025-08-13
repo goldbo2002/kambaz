@@ -4,7 +4,7 @@ import { api } from "../../lib/api";
 
 export default function Signin() {
   const nav = useNavigate();
-  const [form, setForm] = useState({ username: "iron_man", password: "stark123" });
+  const [form, setForm] = useState({ username: "", password: "" });
   const [err, setErr] = useState("");
 
   const set = (k: string) => (e: any) => setForm(f => ({ ...f, [k]: e.target.value }));
@@ -24,11 +24,11 @@ export default function Signin() {
       <h3>Signin</h3>
       {err && <div className="alert alert-danger">{err}</div>}
       <div className="mb-2">
-        <label className="form-label">Username (text)</label>
+        <label className="form-label">Username</label>
         <input className="form-control" value={form.username} onChange={set("username")} />
       </div>
       <div className="mb-3">
-        <label className="form-label">Password (password)</label>
+        <label className="form-label">Password</label>
         <input className="form-control" type="password" value={form.password} onChange={set("password")} />
       </div>
       <button className="btn btn-primary" type="submit">Signin</button>

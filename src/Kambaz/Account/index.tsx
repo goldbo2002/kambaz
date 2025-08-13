@@ -8,7 +8,6 @@ export default function Account() {
     <div id="wd-account-screen" style={{ padding: 24 }}>
       <h2>Account</h2>
       <Routes>
-        {/* Default goes to Signin */}
         <Route path="/" element={<Navigate to="/Kambaz/Account/Signin" />} />
         <Route path="/Signin" element={<Signin />} />
         <Route path="/Signup" element={<Signup />} />
