@@ -10,26 +10,27 @@ import coursesRoutes from "./routes/courses.js";
 import modulesRoutes from "./routes/modules.js";
 import assignmentsRoutes from "./routes/assignments.js";
 
-// Allowed frontend origins
+
+// Initialize app
+const app = express();
+
+
 const allowedOrigins = [
   "http://localhost:5173",
   "https://silly-melba-c04293.netlify.app"
 ];
 
-// Initialize app
-const app = express();
-
-// Middleware
 app.use(cors({
-  origin: (origin, callback) => {
+  origin: function (origin, callback) {
     if (!origin || allowedOrigins.includes(origin)) {
-      callback(null, true);
+      callback(null, origin);
     } else {
       callback(new Error("Not allowed by CORS"));
     }
   },
   credentials: true
 }));
+
 app.use(express.json());
 
 app.use(session({
