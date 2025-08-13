@@ -1,51 +1,33 @@
-const express = require("express");
-const User = require("../models/User");
-
-const router = express.Router();
-
+// SIGNUP
 router.post("/signup", async (req, res, next) => {
   try {
-    const { username, password } = req.body || {};
-    if (!username || !password) {
-      return res.status(400).json({ message: "username and password required" });
+    console.log("[SIGNUP] headers:", req.headers);
+console.log("[SIGNUP] body:", req.body);
+
+    const { username, email, password, role, firstName, lastName } = req.body || {};
+
+    if (!username || !email || !password) {
+      return res.status(400).json({ message: "username, email, and password are required" });
     }
-    const user = await User.create({ username, password });
-    req.session.user = { _id: user._id, username: user.username };
-    res.status(201).json({ message: "signup successful", user: req.session.user });
+
+    const user = await User.create({
+      username,
+      email,
+      password,
+      role: role || "USER",
+      firstName,
+      lastName,
+    });
+
+    req.session.user = {
+      _id: user._id,
+      username: user.username,
+      email: user.email,
+      role: user.role,
+    };
+
+    return res.status(201).json(req.session.user);
   } catch (err) {
-    if (err.code === 11000) {
-      return res.status(400).json({ message: "Username already taken" });
-    }
-    next(err);
+    return next(err);
   }
 });
-
-router.post("/signin", async (req, res, next) => {
-  try {
-    const { username, password } = req.body || {};
-    if (!username || !password) {
-      return res.status(400).json({ message: "username and password required" });
-    }
-    const user = await User.findOne({ username, password }).lean();
-    if (!user) return res.status(401).json({ message: "invalid credentials" });
-    req.session.user = { _id: user._id, username: user.username };
-    res.json({ message: "signin successful", user: req.session.user });
-  } catch (err) {
-    next(err);
-  }
-});
-
-router.post("/signout", (req, res) => {
-  req.session.destroy(() => {
-    res.json({ message: "signed out" });
-  });
-});
-
-router.get("/me", (req, res) => {
-  if (!req.session?.user) {
-    return res.status(401).json({ message: "not signed in" });
-  }
-  res.json({ user: req.session.user });
-});
-
-module.exports = router;

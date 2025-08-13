@@ -10,5 +10,8 @@ const UserSchema = new mongoose.Schema(
   },
   { timestamps: true }
 );
+router.get("/_version", (req, res) => {
+  res.json({ signupReadsEmail: true });
+});
 
 module.exports = mongoose.model('User', UserSchema);

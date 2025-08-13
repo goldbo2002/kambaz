@@ -1,60 +1,132 @@
 import { useState } from "react";
-import { useNavigate, Link } from "react-router-dom";
-import { api } from "../../lib/api";
+import { useNavigate } from "react-router-dom";
+import type { ChangeEvent, FormEvent } from "react";
+import { AxiosError } from "axios";
+import { api } from "../../lib/api"; // adjust path if your api client lives elsewhere
+
+type SignupForm = {
+  username: string;
+  email: string;
+  password: string;
+  firstName?: string;
+  lastName?: string;
+};
 
 export default function Signup() {
-  const nav = useNavigate();
-  const [form, setForm] = useState({
+  const navigate = useNavigate();
+
+  const [form, setForm] = useState<SignupForm>({
     username: "",
+    email: "",
     password: "",
     firstName: "",
     lastName: "",
-    email: "",
-    role: "STUDENT",
-    dob: ""
   });
-  const [err, setErr] = useState("");
 
-  const set = (k: string) => (e: any) => setForm(f => ({ ...f, [k]: e.target.value }));
+  const [error, setError] = useState<string>("");
 
-  const submit = async (e: React.FormEvent) => {
+  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setForm((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setError("");
+
     try {
-      await api.post("/users/signup", form);
-      nav("/Kambaz/Account/Profile");
-    } catch (e: any) {
-      setErr(e?.response?.data?.message || "Signup failed");
+      const res = await api.post("/users/signup", {
+        username: form.username,
+        email: form.email,
+        password: form.password,
+        firstName: form.firstName,
+        lastName: form.lastName,
+      });
+      // success → go to dashboard (or profile)
+      console.log("Signup success:", res.data);
+      navigate("/Kambaz/Dashboard");
+    } catch (err: unknown) {
+      const axErr = err as AxiosError<{ message?: string }>;
+      const msg =
+        axErr.response?.data?.message ||
+        axErr.message ||
+        "Signup failed. Please try again.";
+      console.error("Signup failed:", msg, axErr);
+      setError(msg);
     }
   };
 
   return (
-    <form onSubmit={submit} style={{ maxWidth: 520 }}>
-      <h3>Signup</h3>
-      {err && <div className="alert alert-danger">{err}</div>}
-      <div className="mb-2"><label className="form-label">Username</label>
-        <input className="form-control" value={form.username} onChange={set("username")} /></div>
-      <div className="mb-2"><label className="form-label">Password</label>
-        <input className="form-control" type="password" value={form.password} onChange={set("password")} /></div>
-      <div className="mb-2"><label className="form-label">Verify Password</label>
-        <input className="form-control" type="password" defaultValue={form.password} /></div>
-      <div className="mb-2"><label className="form-label">First Name</label>
-        <input className="form-control" value={form.firstName} onChange={set("firstName")} /></div>
-      <div className="mb-2"><label className="form-label">Last Name</label>
-        <input className="form-control" value={form.lastName} onChange={set("lastName")} /></div>
-      <div className="mb-2"><label className="form-label">Email</label>
-        <input className="form-control" type="email" value={form.email} onChange={set("email")} /></div>
-      <div className="mb-2"><label className="form-label">Role</label>
-        <select className="form-select" value={form.role} onChange={set("role")}>
-          <option value="STUDENT">STUDENT</option>
-          <option value="FACULTY">FACULTY</option>
-          <option value="ADMIN">ADMIN</option>
-          <option value="TA">TA</option>
-        </select>
-      </div>
-      <div className="mb-3"><label className="form-label">DOB</label>
-        <input className="form-control" type="date" value={form.dob} onChange={set("dob")} /></div>
-      <button className="btn btn-success" type="submit">Signup</button>
-      <Link className="btn btn-link" to="/Kambaz/Account/Signin">Signin</Link>
-    </form>
+    <div className="container my-4">
+      <h2>Sign Up</h2>
+      {error && <div className="alert alert-danger">{error}</div>}
+
+      <form onSubmit={handleSubmit} style={{ maxWidth: 480 }}>
+        <div className="mb-3">
+          <label className="form-label" htmlFor="username">Username</label>
+          <input
+            id="username"
+            name="username"
+            className="form-control"
+            value={form.username}
+            onChange={handleChange}
+            required
+            type="text"
+          />
+        </div>
+
+        <div className="mb-3">
+          <label className="form-label" htmlFor="email">Email</label>
+          <input
+            id="email"
+            name="email"
+            className="form-control"
+            value={form.email}
+            onChange={handleChange}
+            required
+            type="email"
+          />
+        </div>
+
+        <div className="mb-3">
+          <label className="form-label" htmlFor="password">Password</label>
+          <input
+            id="password"
+            name="password"
+            className="form-control"
+            value={form.password}
+            onChange={handleChange}
+            required
+            type="password"
+          />
+        </div>
+
+        <div className="mb-3">
+          <label className="form-label" htmlFor="firstName">First Name</label>
+          <input
+            id="firstName"
+            name="firstName"
+            className="form-control"
+            value={form.firstName}
+            onChange={handleChange}
+            type="text"
+          />
+        </div>
+
+        <div className="mb-3">
+          <label className="form-label" htmlFor="lastName">Last Name</label>
+          <input
+            id="lastName"
+            name="lastName"
+            className="form-control"
+            value={form.lastName}
+            onChange={handleChange}
+            type="text"
+          />
+        </div>
+
+        <button type="submit" className="btn btn-primary">Sign Up</button>
+      </form>
+    </div>
   );
 }
