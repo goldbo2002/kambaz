@@ -33,7 +33,8 @@ app.use(
     secret: process.env.SESSION_SECRET || "keyboardcat",
     resave: false,
     saveUninitialized: false,
-    store: MongoStore.create({ mongoUrl: process.env.MONGO_URI }),
+    store: MongoStore.create({ mongoUrl: process.env.DATABASE }),
+
     cookie: {
       sameSite: "none",
       secure: true,
