@@ -1,8 +1,8 @@
 
 import axios from "axios";
 
-export const SERVER = 
-  import.meta.env.VITE_HTTP_SERVER || "https://kambaz.onrender.com";
+export const SERVER = import.meta.env.VITE_HTTP_SERVER;
+
 
 export const api = axios.create({
   baseURL: SERVER + "/api",
