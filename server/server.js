@@ -1,31 +1,20 @@
 const express = require("express");
-const cors = require("cors");
 const session = require("express-session");
 const mongoose = require("mongoose");
-
-const usersRoutes = require("./routes/users");
-const coursesRoutes = require("./routes/courses");
-const modulesRoutes = require("./routes/modules");
-const assignmentsRoutes = require("./routes/assignments");
-const Course = require("./models/Course");
+const cors = require("cors");
+require("dotenv").config();
 
 const app = express();
+const PORT = process.env.PORT || 4000;
 
-app.use("/api/users", usersRoutes);
-
-//  DEBUG
-app.use((req, res, next) => {
-  console.log("🔥 Request Origin:", req.headers.origin);
-  next();
-});
-
-// CORS 
 const allowedOrigins = [
   "http://localhost:5173",
   "https://silly-melba-c04293.netlify.app"
 ];
-app.use(cors({
-  origin: function (origin, callback) {
+
+// Handle CORS preflight requests
+app.options("*", cors({
+  origin: (origin, callback) => {
     if (!origin || allowedOrigins.includes(origin)) {
       callback(null, origin);
     } else {
@@ -35,9 +24,20 @@ app.use(cors({
   credentials: true
 }));
 
+// CORS config
+app.use(cors({
+  origin: (origin, callback) => {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, origin);
+    } else {
+      callback(new Error("Not allowed by CORS"));
+    }
+  },
+  credentials: true
+}));
 
+// Middleware
 app.use(express.json());
-
 app.use(session({
   secret: process.env.SESSION_SECRET || "keyboardcat",
   resave: false,
@@ -47,43 +47,26 @@ app.use(session({
     secure: true
   }
 }));
-app.options("*", cors({
-  origin: function (origin, callback) {
-    const allowed = [
-      "http://localhost:5173",
-      "https://silly-melba-c04293.netlify.app"
-    ];
-    if (!origin || allowed.includes(origin)) {
-      callback(null, origin);
-    } else {
-      callback(new Error("Not allowed by CORS"));
-    }
-  },
-  credentials: true,
-}));
 
-// routes
-app.get("/api/health", (req, res) => {
-  res.json({ ok: true });
-});
+// Routes
+require("./routes/users")(app);
+require("./routes/courses")(app);
+require("./routes/assignments")(app);
+require("./routes/modules")(app);
+require("./routes/enrollments")(app);
+require("./routes/labs")(app);
 
-app.post("/api/ping", (req, res) => {
-  res.json({ ok: true, body: req.body, ts: Date.now() });
-});
+// Connect to MongoDB and start server
+const MONGO_URL = process.env.MONGO_URL || "mongodb://localhost:27017/kambaz";
 
-
-app.use("/api/courses", coursesRoutes);
-app.use("/api/modules", modulesRoutes);
-app.use("/api/assignments", assignmentsRoutes);
-
-// connect and start
-const PORT = process.env.PORT || 4000;
-mongoose.connect(process.env.DATABASE_CONNECTION_STRING)
-  .then(() => {
-    app.listen(PORT, () => {
-      console.log(`🚀 Kambaz server listening on :${PORT}`);
-    });
-  })
-  .catch((err) => {
-    console.error("❌ MongoDB connection error:", err);
+mongoose.connect(MONGO_URL, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true
+}).then(() => {
+  console.log("✅ Connected to MongoDB");
+  app.listen(PORT, () => {
+    console.log(`🚀 Kambaz server listening on :${PORT}`);
   });
+}).catch(err => {
+  console.error("❌ MongoDB connection error:", err);
+});
