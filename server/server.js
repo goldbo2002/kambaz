@@ -10,7 +10,7 @@ const assignmentsRoutes = require("./routes/assignments");
 const Course = require("./models/Course");
 
 const app = express();
-const usersRoutes = require("./routes/users");
+
 app.use("/api/users", usersRoutes);
 
 //  DEBUG
@@ -57,7 +57,7 @@ app.post("/api/ping", (req, res) => {
   res.json({ ok: true, body: req.body, ts: Date.now() });
 });
 
-app.use("/api/users", usersRoutes);
+
 app.use("/api/courses", coursesRoutes);
 app.use("/api/modules", modulesRoutes);
 app.use("/api/assignments", assignmentsRoutes);
