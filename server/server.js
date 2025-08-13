@@ -47,6 +47,20 @@ app.use(session({
     secure: true
   }
 }));
+app.options("*", cors({
+  origin: function (origin, callback) {
+    const allowed = [
+      "http://localhost:5173",
+      "https://silly-melba-c04293.netlify.app"
+    ];
+    if (!origin || allowed.includes(origin)) {
+      callback(null, origin);
+    } else {
+      callback(new Error("Not allowed by CORS"));
+    }
+  },
+  credentials: true,
+}));
 
 // routes
 app.get("/api/health", (req, res) => {
