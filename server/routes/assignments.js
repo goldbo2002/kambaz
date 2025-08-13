@@ -1,23 +1,47 @@
-import Assignment from "../models/Assignment.js";
+const express = require("express");
+const Assignment = require("../models/Assignment");
 
-export default function AssignmentsRoutes(app) {
-  app.get("/api/courses/:cid/assignments", async (req, res, next) => {
-    try { res.json(await Assignment.find({ course: req.params.cid }).lean()); }
-    catch (e) { next(e); }
-  });
+const router = express.Router();
 
-  app.post("/api/courses/:cid/assignments", async (req, res, next) => {
-    try { res.status(201).json(await Assignment.create({ ...req.body, course: req.params.cid })); }
-    catch (e) { next(e); }
-  });
+router.get("/", async (_req, res, next) => {
+  try {
+    const docs = await Assignment.find().lean();
+    res.json(docs);
+  } catch (e) { next(e); }
+});
 
-  app.put("/api/assignments/:aid", async (req, res, next) => {
-    try { await Assignment.updateOne({ _id: req.params.aid }, { $set: req.body }); res.json({ ok: true }); }
-    catch (e) { next(e); }
-  });
+router.post("/", async (req, res, next) => {
+  try {
+    const created = await Assignment.create(req.body);
+    res.status(201).json(created);
+  } catch (e) { next(e); }
+});
 
-  app.delete("/api/assignments/:aid", async (req, res, next) => {
-    try { await Assignment.deleteOne({ _id: req.params.aid }); res.json({ ok: true }); }
-    catch (e) { next(e); }
-  });
-}
+router.get("/:id", async (req, res, next) => {
+  try {
+    const doc = await Assignment.findById(req.params.id).lean();
+    if (!doc) return res.status(404).json({ message: "not found" });
+    res.json(doc);
+  } catch (e) { next(e); }
+});
+
+router.put("/:id", async (req, res, next) => {
+  try {
+    const updated = await Assignment.findByIdAndUpdate(req.params.id, req.body, {
+      new: true,
+      runValidators: true
+    }).lean();
+    if (!updated) return res.status(404).json({ message: "not found" });
+    res.json(updated);
+  } catch (e) { next(e); }
+});
+
+router.delete("/:id", async (req, res, next) => {
+  try {
+    const deleted = await Assignment.findByIdAndDelete(req.params.id).lean();
+    if (!deleted) return res.status(404).json({ message: "not found" });
+    res.json({ ok: true, id: deleted._id });
+  } catch (e) { next(e); }
+});
+
+module.exports = router;

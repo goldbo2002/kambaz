@@ -1,23 +1,47 @@
-import Module from "../models/Module.js";
+const express = require("express");
+const Module = require("../models/Module");
 
-export default function ModulesRoutes(app) {
-  app.get("/api/courses/:cid/modules", async (req, res, next) => {
-    try { res.json(await Module.find({ course: req.params.cid }).lean()); }
-    catch (e) { next(e); }
-  });
+const router = express.Router();
 
-  app.post("/api/courses/:cid/modules", async (req, res, next) => {
-    try { res.status(201).json(await Module.create({ ...req.body, course: req.params.cid })); }
-    catch (e) { next(e); }
-  });
+router.get("/", async (_req, res, next) => {
+  try {
+    const docs = await Module.find().lean();
+    res.json(docs);
+  } catch (e) { next(e); }
+});
 
-  app.put("/api/modules/:mid", async (req, res, next) => {
-    try { await Module.updateOne({ _id: req.params.mid }, { $set: req.body }); res.json({ ok: true }); }
-    catch (e) { next(e); }
-  });
+router.post("/", async (req, res, next) => {
+  try {
+    const created = await Module.create(req.body);
+    res.status(201).json(created);
+  } catch (e) { next(e); }
+});
 
-  app.delete("/api/modules/:mid", async (req, res, next) => {
-    try { await Module.deleteOne({ _id: req.params.mid }); res.json({ ok: true }); }
-    catch (e) { next(e); }
-  });
-}
+router.get("/:id", async (req, res, next) => {
+  try {
+    const doc = await Module.findById(req.params.id).lean();
+    if (!doc) return res.status(404).json({ message: "not found" });
+    res.json(doc);
+  } catch (e) { next(e); }
+});
+
+router.put("/:id", async (req, res, next) => {
+  try {
+    const updated = await Module.findByIdAndUpdate(req.params.id, req.body, {
+      new: true,
+      runValidators: true
+    }).lean();
+    if (!updated) return res.status(404).json({ message: "not found" });
+    res.json(updated);
+  } catch (e) { next(e); }
+});
+
+router.delete("/:id", async (req, res, next) => {
+  try {
+    const deleted = await Module.findByIdAndDelete(req.params.id).lean();
+    if (!deleted) return res.status(404).json({ message: "not found" });
+    res.json({ ok: true, id: deleted._id });
+  } catch (e) { next(e); }
+});
+
+module.exports = router;

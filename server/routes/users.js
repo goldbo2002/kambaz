@@ -1,47 +1,30 @@
+const express = require("express");
+const User = require("../models/User");
 
-const User = require('../models/User');
+const router = express.Router();
 
-function sanitizeUser(doc) {
-  if (!doc) return null;
-  const obj = doc.toObject ? doc.toObject() : { ...doc };
-  delete obj.password;
-  return obj;
-}
+router.post("/signup", async (req, res, next) => {
+  try {
+    const created = await User.create(req.body);
+    req.session.user = created;
+    res.status(201).json(created);
+  } catch (e) { next(e); }
+});
 
-module.exports = function usersRoutes(app) {
-  
-  app.post('/api/users/signup', async (req, res, next) => {
-    try {
-      const { username, email, password, role } = req.body || {};
-      if (!username || !email || !password) {
-        return res.status(400).json({ message: 'username, email, password required' });
-      }
-      const user = await User.create({ username, email, password, role });
-      const safe = sanitizeUser(user);
-      // store safe user in session
-      req.session.user = safe;
-      res.status(201).json(safe);
-    } catch (e) {
-    
-      if (e?.code === 11000) {
-        const field = Object.keys(e.keyPattern || {})[0] || 'field';
-        return res.status(400).json({ message: `duplicate ${field}` });
-      }
-      next(e);
-    }
-  });
+router.post("/signin", async (req, res, next) => {
+  try {
+    const found = await User.findOne({
+      email: req.body.email,
+      password: req.body.password
+    }).lean();
+    if (!found) return res.status(404).json({ message: "invalid credentials" });
+    req.session.user = found;
+    res.json(found);
+  } catch (e) { next(e); }
+});
 
-  // GET /api/users/current  
-  app.get('/api/users/current', (req, res) => {
-    if (!req.session?.user) return res.status(401).json({ message: 'Unauthorized' });
-   
-    const safe = sanitizeUser(req.session.user);
-    res.json(safe);
-  });
+router.post("/signout", (req, res) => {
+  req.session.destroy(() => res.json({ ok: true }));
+});
 
-  // POST /api/users/signout
-  app.post('/api/users/signout', (req, res) => {
-    req.session?.destroy?.(() => {});
-    res.json({ ok: true });
-  });
-};
+module.exports = router;
