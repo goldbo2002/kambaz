@@ -1,0 +1,14 @@
+services:
+  - type: web
+    name: kambaz-api
+    rootDir: server
+    env: bun
+    buildCommand: "bun install"
+    startCommand: "bun index.js"
+    envVars:
+      - key: DATABASE_CONNECTION_STRING
+        value: "mongodb+srv://k_user:Poncho@cluster0.d8gziux.mongodb.net/kambaz?retryWrites=true&w=majority&appName=Cluster0"
+      - key: SESSION_SECRET
+        value: "nothing_important"
+      - key: FRONTEND_URL
+        value: "https://silly-melba-c04293.netlify.app"
