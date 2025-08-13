@@ -1,5 +1,6 @@
 
-const Course = require('../models/Course');
+const Course = require("../models/Course");
+
 
 // Auth middleware
 function requireAuth(req, res, next) {
