@@ -15,19 +15,21 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 4000;
 
-// === Middleware ===
+// Middleware 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// === CORS ===
-app.use(
-  cors({
-    origin: ["https://silly-melba-c04293.netlify.app"],
-    credentials: true,
-  })
-);
 
-// === Session ===
+app.use(cors({
+  origin: [
+    "http://localhost:5173",                     // local dev
+    "https://silly-melba-c04293.netlify.app"     // your real Netlify domain
+  ],
+  credentials: true
+}));
+
+
+// Session
 app.use(
   session({
     secret: process.env.SESSION_SECRET || "keyboardcat",
@@ -43,7 +45,7 @@ app.use(
   })
 );
 
-// === DB ===
+// DB
 mongoose
   .connect(process.env.MONGO_URI, {
     useNewUrlParser: true,
@@ -52,7 +54,7 @@ mongoose
   .then(() => console.log("✅ Mongo connected"))
   .catch((err) => console.error("Mongo error →", err));
 
-// === Routes ===
+// Routes
 app.get("/api/health", (req, res) => {
   res.json({ ok: true });
 });
@@ -66,7 +68,7 @@ app.use("/api/courses", courseRoutes);
 app.use("/api/modules", moduleRoutes);
 app.use("/api/assignments", assignmentRoutes);
 
-// === Start Server ===
+// start
 app.listen(PORT, () => {
   console.log(`🚀 Kambaz server listening on :${PORT}`);
   console.log("CORS origin:", "https://silly-melba-c04293.netlify.app");
