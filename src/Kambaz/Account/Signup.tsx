@@ -4,6 +4,7 @@ import type { ChangeEvent, FormEvent } from "react";
 import { AxiosError } from "axios";
 import { api } from "../../lib/api"; // adjust path if your api client lives elsewhere
 
+
 type SignupForm = {
   username: string;
   email: string;
