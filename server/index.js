@@ -99,6 +99,8 @@ try {
   app.use("/api/assignments", assignmentsRoutes);
 } catch (e) { console.error("assignments mount error:", e.message); }
 
+app.use('/api/users', require('./routes/users'));
+
 // --- 404 + error handler
 app.use((req, res) => res.status(404).json({ message: "Not found" }));
 app.use((err, _req, res, _next) => {
