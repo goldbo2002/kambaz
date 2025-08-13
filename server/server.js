@@ -10,6 +10,8 @@ const assignmentsRoutes = require("./routes/assignments");
 const Course = require("./models/Course");
 
 const app = express();
+const usersRoutes = require("./routes/users");
+app.use("/api/users", usersRoutes);
 
 //  DEBUG
 app.use((req, res, next) => {
@@ -40,6 +42,10 @@ app.use(session({
   secret: process.env.SESSION_SECRET || "keyboardcat",
   resave: false,
   saveUninitialized: false,
+  cookie: {
+    sameSite: "none",
+    secure: true
+  }
 }));
 
 // routes
