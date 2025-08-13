@@ -1,38 +1,59 @@
 import express from "express";
 import mongoose from "mongoose";
-import session from "express-session";
 import cors from "cors";
-import "dotenv/config";
+import session from "express-session";
+import dotenv from "dotenv";
+import users from "./users.js";
+import courses from "./courses.js";
+import modules from "./modules.js";
+import assignments from "./assignments.js";
 
-import UsersRoutes from "./routes/users.js";
-import CoursesRoutes from "./routes/courses.js";
-import ModulesRoutes from "./routes/modules.js";
-import AssignmentsRoutes from "./routes/assignments.js";
+dotenv.config();
 
 const app = express();
+const FRONTEND_URL = "https://silly-melba-c04293.netlify.app"; 
+
 app.use(cors({
-  origin: process.env.CORS_ORIGIN || "http://localhost:5173",
+  origin: FRONTEND_URL,
   credentials: true
 }));
+
 app.use(express.json());
-app.set("trust proxy", 1);
+
 app.use(session({
-  secret: "secret", resave: false, saveUninitialized: false,
-  cookie: { secure: false } // set to true in prod with HTTPS
+  secret: "your-secret-key",
+  resave: false,
+  saveUninitialized: false,
+  cookie: {
+    secure: true,          // required for cross-site cookies
+    sameSite: "none"       
+  }
 }));
 
-app.get("/api/health", (_, res) => res.json({ ok: true }));
-app.post("/api/ping", (req, res) => res.json({ ok: true, body: req.body, ts: Date.now() }));
+app.use("/api/users", users);
+app.use("/api/courses", courses);
+app.use("/api/modules", modules);
+app.use("/api/assignments", assignments);
 
-UsersRoutes(app);
-CoursesRoutes(app);
-ModulesRoutes(app);
-AssignmentsRoutes(app);
+// Ping endpoint for debugging
+app.post("/api/ping", (req, res) => {
+  res.send({
+    ok: true,
+    body: req.body,
+    ts: Date.now()
+  });
+});
+
+app.get("/api/health", (req, res) => {
+  res.send({ ok: true });
+});
+
+const CONNECTION_STRING = process.env.DB || "mongodb://127.0.0.1:27017/kambaz";
+mongoose.connect(CONNECTION_STRING).then(() => {
+  console.log("✅ Mongo connected");
+});
 
 const PORT = process.env.PORT || 4000;
-mongoose.connect(process.env.DATABASE_CONNECTION_STRING || "mongodb://127.0.0.1:27017/kambaz")
-  .then(() => {
-    app.listen(PORT, () => {
-      console.log(`🚀 Kambaz server listening on :${PORT}`);
-    });
-  });
+app.listen(PORT, () => {
+  console.log(`🚀 Kambaz server listening on :${PORT}`);
+});
