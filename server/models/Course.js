@@ -1,16 +1,9 @@
-// server/models/Course.js  (CommonJS)
-const mongoose = require('mongoose');
-const { Schema, model } = mongoose;
+const mongoose = require("mongoose");
 
-const CourseSchema = new Schema(
-  {
-    title:       { type: String, required: true, trim: true },
-    description: { type: String, default: '' },
-    number:      { type: String, default: '' },
-    image:       { type: String, default: '' },
-    published:   { type: Boolean, default: false },
-  },
-  { timestamps: true }
-);
+const courseSchema = new mongoose.Schema({
+  name: String,
+  description: String,
+  instructor: String,
+});
 
-module.exports = model('Course', CourseSchema);
+module.exports = mongoose.model("Course", courseSchema);
