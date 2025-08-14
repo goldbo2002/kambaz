@@ -22,9 +22,12 @@ import Lab6 from "./Labs/Lab6";
 import People from "./Kambaz/People/People";
 import ParamsGuard from "./Kambaz/Components/ParamsGuard";
 import TestPage from "./Kambaz/Test";
-
+import { useEffect } from "react";
 
 export default function App() {
+  useEffect(() => {
+    console.log("🔥 App root mounted");
+  }, []);
   return (
     <BrowserRouter>
       <Routes>
