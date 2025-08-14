@@ -29,6 +29,13 @@ app.use(session({
 
 
 app.get("/api/health", (req, res) => res.json({ ok: true }));
+app.get("/api/debug/session", (req, res) => {
+  res.json({
+    cookies: req.headers.cookie || null,
+    session: req.session || null,
+    user: req.session?.user || null,
+  });
+});
 
 import userRoutes from "./routes/users.js"; // adjust path if needed
 app.use("/api/users", userRoutes);
