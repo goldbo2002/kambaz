@@ -4,13 +4,12 @@ const router = express.Router();
 
 // probe to confirm the router is mounted
 router.get("/ping", (_req, res) => res.json({ ok: true, who: "users-router" }));
-
 router.post("/signup", async (req, res, next) => {
   try {
     const { username, email, password, firstName, lastName, role } = req.body;
 
     if (!username || !email || !password) {
-      return res.status(400).json({ message: "Missing required fields" });
+      return res.status(400).json({ message: "username, email, and password are required" });
     }
 
     const user = await User.create({
@@ -22,7 +21,7 @@ router.post("/signup", async (req, res, next) => {
       role: role || "STUDENT",
     });
 
-    // ✅ Save user to session
+    // ✅ Ensure session gets saved
     req.session.user = {
       _id: user._id.toString(),
       username: user.username,
@@ -30,7 +29,10 @@ router.post("/signup", async (req, res, next) => {
       role: user.role,
     };
 
-    res.status(201).json(req.session.user);
+    req.session.save((err) => {
+      if (err) return next(err);
+      res.status(201).json(req.session.user);
+    });
   } catch (err) {
     next(err);
   }
