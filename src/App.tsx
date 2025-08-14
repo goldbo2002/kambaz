@@ -28,6 +28,11 @@ export default function App() {
         <Route path="signup" element={<Signup />} />
         <Route path="profile" element={<Profile />} />
       </Route>
+    <Route path="/courses/:courseId/*" element={<CourseLayout />}>
+  <Route index element={<CourseHome />} />
+  <Route path="modules" element={<CourseModules />} />
+  <Route path="assignments" element={<Assignments />} />
+</Route>
 
       <Route path="/dashboard" element={<Dashboard />} />
 
