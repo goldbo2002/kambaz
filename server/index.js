@@ -33,7 +33,7 @@ app.use((err, req, res, next) => {
   res.status(500).json({ message: "Internal Server Error" });
 });
 
-mongoose.connect(process.env.MONGO_URI || "mongodb://localhost/kambaz")
+mongoose.connect(process.env.MONGODB_URI || "mongodb://localhost/kambaz")
   .then(() => {
     console.log("MongoDB connected");
     app.listen(PORT, () => console.log(`API listening on port ${PORT}`));
