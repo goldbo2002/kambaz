@@ -1,20 +1,31 @@
-import session from "express-session";
-import cors from "cors";
+console.log("1)    Starting server initialization");
+
 import express from "express";
+import cors from "cors";
+import session from "express-session";
 import dotenv from "dotenv";
 
 dotenv.config();
+console.log("2)    Environment variables loaded");
+
 const app = express();
+console.log("3)    Express app created");
 
-app.set("trust proxy", 1); // FIRST
+app.set("trust proxy", 1);
+console.log("4)    trust proxy set");
 
-app.use(cors({
-  origin: ["http://localhost:5173", "https://<your-netlify-site>.netlify.app"],
-  credentials: true,
-}));
+app.use(cors({ origin: ["http://localhost:5173", "https://your-netlify.app"], credentials: true }));
+console.log("5)    CORS middleware applied");
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+console.log("6)    Body parsers enabled");
+
+if (!process.env.SESSION_SECRET) {
+  console.error("⚠️ SESSION_SECRET not set!");
+} else {
+  console.log("7)    SESSION_SECRET is set");
+}
 
 app.use(session({
   secret: process.env.SESSION_SECRET,
@@ -25,6 +36,19 @@ app.use(session({
     secure: true,
   },
 }));
+console.log("8)    Session middleware applied");
 
+// Import routes
 import userRoutes from "./routes/users.js";
+console.log("9)    userRoutes imported");
+
 app.use("/api/users", userRoutes);
+console.log("10)   Routes mounted");
+
+app.get("/api/debug/session", (req, res) => {
+  console.log("11)   debug endpoint hit", { cookies: req.headers.cookie, session: req.session });
+  res.json({ cookies: req.headers.cookie, session: req.session, user: req.session?.user });
+});
+
+const PORT = process.env.PORT || 4000;
+app.listen(PORT, () => console.log(`12) API listening on ${PORT}`));
