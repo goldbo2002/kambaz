@@ -39,4 +39,6 @@ app.use("/api/courses", courses);
 app.use("/api/courses", modules);
 app.use("/api/courses", assignments);
 
+app.get('/', (req, res) => res.sendStatus(200));
+
 app.listen(4000, () => console.log("Server running on port 4000"));
