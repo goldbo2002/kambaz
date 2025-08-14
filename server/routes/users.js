@@ -1,6 +1,5 @@
 import express from "express";
 const router = express.Router();
-import bcrypt from "bcrypt";
 import User from "../models/User.js"; // or adjust the path
 
 // probe to confirm the router is mounted
