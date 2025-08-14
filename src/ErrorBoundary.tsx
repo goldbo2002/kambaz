@@ -5,7 +5,7 @@ interface ErrorBoundaryProps {
 }
 
 interface ErrorBoundaryState {
-  error: Error | null;
+  error: any;
   errorInfo: ErrorInfo | null;
 }
 
@@ -15,19 +15,23 @@ class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
     this.state = { error: null, errorInfo: null };
   }
 
-  componentDidCatch(error: Error, errorInfo: ErrorInfo) {
-    console.error("❌ App crashed:", error, errorInfo);
+  componentDidCatch(error: any, errorInfo: ErrorInfo) {
+    console.error("🔥 App crashed:", error);
+    console.error("🔥 Stack trace:", errorInfo.componentStack);
     this.setState({ error, errorInfo });
   }
 
   render() {
-    if (this.state.error) {
+    const { error, errorInfo } = this.state;
+
+    if (error) {
       return (
         <div style={{ padding: "2rem", color: "red", fontFamily: "monospace" }}>
           <h1>App crashed.</h1>
-          <pre>{this.state.error.message}</pre>
-          <pre>{this.state.error.stack}</pre>
-          <pre>{this.state.errorInfo?.componentStack}</pre>
+          <pre>{JSON.stringify(error, null, 2)}</pre>
+          <pre>{error?.message}</pre>
+          <pre>{error?.stack}</pre>
+          <pre>{errorInfo?.componentStack}</pre>
         </div>
       );
     }
