@@ -63,3 +63,8 @@ const PORT = process.env.PORT || 4000;
 app.listen(PORT, "0.0.0.0", () => {
   console.log(`✅ API listening on ${PORT}`);
 });
+// Global error handler for Express
+app.use((err, req, res, next) => {
+  console.error("Unhandled server error:", err.stack || err);
+  res.status(500).json({ error: "Internal Server Error", message: err.message });
+});
