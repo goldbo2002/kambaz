@@ -1,5 +1,5 @@
-const express = require("express");
-const Module = require("../models/Module");
+import express from "express";
+import Module from "../models/Module.js";
 
 const router = express.Router();
 
@@ -67,4 +67,4 @@ router.put("/:mid", requireAuth, async (req, res, next) => {
   }
 });
 
-module.exports = router;
+export default router;

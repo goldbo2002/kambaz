@@ -1,5 +1,5 @@
-const express = require("express");
-const Assignment = require("../models/Assignment");
+import express from "express";
+import Module from "../models/Assignment.js";
 
 const router = express.Router();
 
@@ -84,4 +84,5 @@ router.delete("/:aid", requireAuth, async (req, res, next) => {
   }
 });
 
-module.exports = router;
+export default router;
+

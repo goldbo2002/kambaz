@@ -1,62 +1,48 @@
 import express from "express";
+import bcrypt from "bcrypt";
+import User from "../models/User.js";
+
 const router = express.Router();
-import User from "../models/User.js"; // or adjust the path
 
-// probe to confirm the router is mounted
-router.get("/ping", (_req, res) => res.json({ ok: true, who: "users-router" }));
-
-
-const bcrypt = require("bcrypt");
-
-router.post("/signup", async (req, res) => {
+router.post("/signup", async (req, res, next) => {
   try {
-    const { email, password, username } = req.body;
-
+    const { email, password, username, firstName, lastName } = req.body;
+    if (!email || !password || !username) {
+      return res.status(400).json({ message: "Required fields missing" });
+    }
     const hash = await bcrypt.hash(password, 10);
-    const user = new User({ email, password: hash, username });
-
-    await user.save();
-    res.status(201).send({ message: "User created", user });
-  } catch (err) {
-    console.error("Signup error:", err);
-    res.status(500).send("Error signing up");
+    const user = await User.create({ email, password: hash, username, firstName, lastName });
+    res.status(201).json({ message: "User created", user });
+  } catch (e) {
+    next(e);
   }
 });
 
-
-
-router.post("/signin", async (req, res) => {
+router.post("/signin", async (req, res, next) => {
   try {
     const { email, password } = req.body;
-
     const user = await User.findOne({ email });
-    if (!user) return res.status(401).send("Invalid email or password");
-
-    const match = await bcrypt.compare(password, user.password);
-    if (!match) return res.status(401).send("Invalid email or password");
-
+    if (!user || !(await bcrypt.compare(password, user.password))) {
+      return res.status(401).json({ message: "Invalid credentials" });
+    }
     req.session.user = user._id;
-    res.status(200).send({ message: "Signed in", user });
-  } catch (err) {
-    console.error("Signin error:", err);
-    res.status(500).send("Internal Server Error");
+    res.json({ message: "Signed in", user });
+  } catch (e) {
+    next(e);
   }
-});
-
-
-
-router.get("/me", (req, res) => {
-  if (!req.session.user) return res.status(401).json({ message: "Not signed in" });
-  res.json(req.session.user);
 });
 
 router.get("/profile", (req, res) => {
-  if (!req.session.user) return res.status(401).json({ message: "Not signed in" });
+  if (!req.session.user) return res.status(401).json({ message: "Unauthorized" });
   res.json(req.session.user);
 });
+
 router.post("/signout", (req, res) => {
-  req.session.destroy(() => res.json({ ok: true }));
+  req.session.destroy(err => {
+    if (err) return res.status(500).json({ message: "Signout failed" });
+    res.clearCookie("connect.sid");
+    res.json({ message: "Signed out" });
+  });
 });
 
 export default router;
-
