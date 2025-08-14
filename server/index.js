@@ -2,41 +2,30 @@ import express from "express";
 import cors from "cors";
 import session from "express-session";
 import dotenv from "dotenv";
-
-import modulesRouter from "./routes/modules.js";
-import assignmentsRouter from "./routes/assignments.js";
+import mongoose from "mongoose";
+import userRoutes from "./routes/users.js";
 import coursesRouter from "./routes/courses.js";
-import usersRouter from "./routes/users.js";
 
 dotenv.config();
 
 const app = express();
+const PORT = process.env.PORT || 4000;
 
 app.use(cors({
-  origin: [
-    "http://localhost:5173",
-    process.env.FRONTEND_URL, // e.g. Netlify URL
-  ],
-  credentials: true,
+  origin: [ "http://localhost:5173", process.env.FRONTEND_URL ],
+  credentials: true
 }));
-
 app.use(express.json());
-
 app.use(session({
-  secret: process.env.SESSION_SECRET,
+  secret: process.env.SESSION_SECRET || "secret123",
   resave: false,
   saveUninitialized: false,
-  cookie: {
-    sameSite: "none",
-    secure: process.env.NODE_ENV === "production",
-  },
+  cookie: { sameSite: "none", secure: process.env.NODE_ENV === "production" }
 }));
 
-app.get("/", (req, res) => res.send("Server is running"));
+app.get("/api/health", (_, res) => res.sendStatus(200));
 
-app.use("/api/users", usersRouter);
-app.use("/api/courses/:cid/modules", modulesRouter);
-app.use("/api/courses/:cid/assignments", assignmentsRouter);
+app.use("/api/users", userRoutes);
 app.use("/api/courses", coursesRouter);
 
 app.use((err, req, res, next) => {
@@ -44,5 +33,9 @@ app.use((err, req, res, next) => {
   res.status(500).json({ message: "Internal Server Error" });
 });
 
-const port = process.env.PORT || 4000;
-app.listen(port, () => console.log(`API listening on ${port}`));
+mongoose.connect(process.env.MONGO_URI || "mongodb://localhost/kambaz")
+  .then(() => {
+    console.log("MongoDB connected");
+    app.listen(PORT, () => console.log(`API listening on port ${PORT}`));
+  })
+  .catch(err => console.error("MongoDB connection error:", err));

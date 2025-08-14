@@ -22,9 +22,8 @@ router.post("/signin", async (req, res, next) => {
   try {
     const { email, password } = req.body;
     const user = await User.findOne({ email });
-    if (!user || !(await bcrypt.compare(password, user.password))) {
-      return res.status(401).json({ message: "Invalid credentials" });
-    }
+    const ok = user && (await bcrypt.compare(password, user.password));
+    if (!ok) return res.status(401).json({ message: "Invalid credentials" });
     req.session.user = user._id;
     res.json({ message: "Signed in", user });
   } catch (e) {
@@ -34,7 +33,7 @@ router.post("/signin", async (req, res, next) => {
 
 router.get("/profile", (req, res) => {
   if (!req.session.user) return res.status(401).json({ message: "Unauthorized" });
-  res.json(req.session.user);
+  res.json({ userId: req.session.user });
 });
 
 router.post("/signout", (req, res) => {
