@@ -12,15 +12,20 @@ const app = express();
 const PORT = process.env.PORT || 4000;
 
 app.use(cors({
-  origin: [ "http://localhost:5173", "https://silly-melba-c04293.netlify.app" ],
+  origin: [ "http://localhost:5173", 
+    "https://silly-melba-c04293.netlify.app", ],
   credentials: true
 }));
 app.use(express.json());
 app.use(session({
-  secret: process.env.SESSION_SECRET || "secret123",
+  secret: process.env.SESSION_SECRET || "keyboard cat",
   resave: false,
   saveUninitialized: false,
-  cookie: { sameSite: "none", secure: process.env.NODE_ENV === "production" }
+  cookie: {
+    secure: true,           
+    sameSite: "none",       //ross-site cookies
+    maxAge: 1000 * 60 * 60 * 24 * 7, 
+  },
 }));
 
 app.get("/api/health", (_, res) => res.sendStatus(200));
