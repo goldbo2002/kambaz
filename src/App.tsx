@@ -37,6 +37,8 @@ export default function App() {
         <Route path="assignments" element={<Assignments />} />
         <Route path="assignments/:assignmentId" element={<AssignmentEditor />} />
       </Route>
+    <Route path="/courses/:courseId/assignments/:assignmentId" element={<AssignmentEditor />} />
+<Route path="/courses/:courseId/assignments/new" element={<AssignmentEditor />} />
 
       <Route path="/labs/*" element={<LabLayout />}>
         <Route path="lab1" element={<Lab1 />} />

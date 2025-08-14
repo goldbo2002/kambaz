@@ -7,12 +7,12 @@ export default function Assignments() {
   const nav = useNavigate();
   const [assignments, setAssignments] = useState<any[]>([]);
 
-  useEffect(() => {
-    api.get(`/courses/${cid}/assignments`).then((res) => {
-      setAssignments(res.data);
-    });
-  }, [cid]);
-
+useEffect(() => {
+  if (!cid) return;
+  api.get(`/courses/${cid}/assignments`)
+    .then((res) => setAssignments(res.data))
+    .catch((err) => console.error("Assignments fetch failed", err));
+}, [cid]);
   return (
     <div className="container mt-4">
       <h3>Assignments</h3>
@@ -21,7 +21,7 @@ export default function Assignments() {
         <button className="btn btn-secondary me-2" onClick={() => alert("Group creation not implemented")}>
           + Group
         </button>
-        <button className="btn btn-primary" onClick={() => nav(`/Kambaz/Course/${cid}/Assignments/new`)}>
+        <button className="btn btn-primary" onClick={() => nav(`/courses/${cid}/assignments/new`)}>
           + Assignment
         </button>
       </div>
@@ -29,7 +29,7 @@ export default function Assignments() {
       <ul className="list-group">
         {assignments.map((a) => (
           <li key={a._id} className="list-group-item d-flex justify-content-between align-items-center"
-              onClick={() => nav(`/Kambaz/Course/${cid}/Assignments/${a._id}`)}
+              onClick={() => nav(`/courses/${cid}/assignments/${a._id}`)}
               style={{ cursor: "pointer" }}>
             <div>
               <div><strong>{a.title}</strong></div>

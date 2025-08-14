@@ -33,7 +33,58 @@ router.post("/:cid/assignments", requireAuth, async (req, res, next) => {
     res.status(201).json(assignment);
   } catch (e) { next(e); }
 });
+const Assignment = require("../models/Assignment");
 
+// Get single assignment
+router.get("/:cid/assignments/:aid", async (req, res, next) => {
+  try {
+    const assignment = await Assignment.findOne({
+      _id: req.params.aid,
+      courseId: req.params.cid,
+    }).lean();
+
+    if (!assignment) return res.status(404).json({ message: "Assignment not found" });
+    res.json(assignment);
+  } catch (e) {
+    next(e);
+  }
+});
+
+// Update assignment
+router.put("/:cid/assignments/:aid", requireAuth, async (req, res, next) => {
+  try {
+    const updated = await Assignment.findOneAndUpdate(
+      {
+        _id: req.params.aid,
+        courseId: req.params.cid,
+      },
+      req.body,
+      { new: true, runValidators: true }
+    ).lean();
+
+    if (!updated) return res.status(404).json({ message: "Assignment not found" });
+    res.json(updated);
+  } catch (e) {
+    next(e);
+  }
+});
+router.put("/:cid/assignments/:aid", requireAuth, async (req, res, next) => {
+  try {
+    const updated = await Assignment.findOneAndUpdate(
+      {
+        _id: req.params.aid,
+        courseId: req.params.cid,
+      },
+      req.body,
+      { new: true, runValidators: true }
+    ).lean();
+
+    if (!updated) return res.status(404).json({ message: "Assignment not found" });
+    res.json(updated);
+  } catch (e) {
+    next(e);
+  }
+});
 // 📘 Get course by ID
 router.get("/:cid", async (req, res, next) => {
   try {
