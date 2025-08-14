@@ -1,45 +1,30 @@
-import express from "express";
-import cors from "cors";
 import session from "express-session";
+import cors from "cors";
+import express from "express";
 import dotenv from "dotenv";
-dotenv.config();
 
+dotenv.config();
 const app = express();
-app.set("trust proxy", 1);
+
+app.set("trust proxy", 1); // FIRST
+
 app.use(cors({
-  origin: [
-    "http://localhost:5173",
-    "https://silly-melba-c04293.netlify.app"
-  ],
+  origin: ["http://localhost:5173", "https://<your-netlify-site>.netlify.app"],
   credentials: true,
 }));
 
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
 app.use(session({
-  secret: process.env.SESSION_SECRET,       // must be set in Render
+  secret: process.env.SESSION_SECRET,
   resave: false,
   saveUninitialized: false,
   cookie: {
     sameSite: "none",
-    secure: process.env.NODE_ENV === "production", 
-    
+    secure: true,
   },
 }));
 
-
-app.get("/api/health", (req, res) => res.json({ ok: true }));
-app.get("/api/debug/session", (req, res) => {
-  res.json({
-    cookies: req.headers.cookie || null,
-    session: req.session || null,
-    user: req.session?.user || null,
-  });
-});
-
-import userRoutes from "./routes/users.js"; // adjust path if needed
+import userRoutes from "./routes/users.js";
 app.use("/api/users", userRoutes);
-
-const PORT = process.env.PORT || 4000;
-app.listen(PORT, () => console.log(`API listening on ${PORT}`));
-

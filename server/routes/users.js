@@ -6,6 +6,8 @@ const router = express.Router();
 router.get("/ping", (_req, res) => res.json({ ok: true, who: "users-router" }));
 router.post("/signup", async (req, res, next) => {
   try {
+    console.log("🟢 Signup hit:", req.body); // Log incoming data
+
     const { username, email, password, firstName, lastName, role } = req.body;
 
     if (!username || !email || !password) {
@@ -21,7 +23,6 @@ router.post("/signup", async (req, res, next) => {
       role: role || "STUDENT",
     });
 
-    // ✅ Ensure session gets saved
     req.session.user = {
       _id: user._id.toString(),
       username: user.username,
@@ -29,14 +30,25 @@ router.post("/signup", async (req, res, next) => {
       role: user.role,
     };
 
+    // 🟡 Log before saving session
+    console.log("🟡 Saving session with user:", req.session.user);
+
     req.session.save((err) => {
-      if (err) return next(err);
+      if (err) {
+        console.error("🔴 Session save error:", err);
+        return next(err);
+      }
+
+      console.log("✅ Session saved. Sending response.");
       res.status(201).json(req.session.user);
     });
+
   } catch (err) {
+    console.error("🔴 Signup error:", err);
     next(err);
   }
 });
+
 
 router.get("/me", (req, res) => {
   if (!req.session.user) return res.status(401).json({ message: "Not signed in" });
