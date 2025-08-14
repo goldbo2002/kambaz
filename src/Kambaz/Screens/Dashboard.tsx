@@ -39,14 +39,18 @@ export default function Dashboard() {
 
         <h4>Your Courses</h4>
         <ul className="list-group">
-          {courses.map((course) => (
-            <li key={course._id} className="list-group-item d-flex justify-content-between align-items-center">
-              {course.title}
-              <Link to={`/courses/${course._id}/assignments`} className="btn btn-sm btn-primary">
-                Open
-              </Link>
-            </li>
-          ))}
+         {courses.map((course) => {
+  console.log("COURSE OBJECT:", course); // Debug here
+  return (
+    <li key={course._id} className="list-group-item d-flex justify-content-between align-items-center">
+      {course.title}
+      <Link to={`/courses/${course._id}/Home`} className="btn btn-sm btn-primary">
+        Open
+      </Link>
+    </li>
+  );
+})}
+
         </ul>
       </div>
     </div>
