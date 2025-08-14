@@ -1,6 +1,5 @@
 import express from "express";
 import bcrypt from "bcrypt";
-import mongoose from "mongoose";
 import User from "../models/User.js";
 
 const router = express.Router();
@@ -10,19 +9,26 @@ function requireAuth(req, res, next) {
   next();
 }
 
-// POST /api/users/signup
-router.post("/signup", async (req, res, next) => {
-  try {
-    const { email, password, username, firstName, lastName } = req.body;
-    if (!email || !password || !username) {
-      return res.status(400).json({ message: "Required fields missing" });
-    }
-    const hash = await bcrypt.hash(password, 10);
-    const user = await User.create({ email, password: hash, username, firstName, lastName });
-    res.status(201).json({ message: "User created", user });
-  } catch (e) {
-    next(e);
-  }
+// Debug session dump
+router.get("/debug/session", (req, res) => {
+  res.json({ session: req.session });
+});
+
+router.post("/signup", async (req, res) => {
+  const { username, email, password } = req.body;
+  const existing = await User.findOne({ email });
+  if (existing) return res.status(409).json({ message: "Email in use" });
+
+  const hash = await bcrypt.hash(password, 10);
+  const user = await User.create({ username, email, password: hash });
+
+  req.session.user = {
+    _id: user._id,
+    email: user.email,
+    username: user.username,
+  };
+
+  res.status(201).json({ message: "Signed up", user });
 });
 
 router.post("/signin", async (req, res) => {
@@ -31,7 +37,6 @@ router.post("/signin", async (req, res) => {
 
   const { email, password } = req.body;
   const user = await User.findOne({ email });
-
   if (!user) return res.status(401).json({ message: "Invalid email" });
 
   const match = await bcrypt.compare(password, user.password);
@@ -44,7 +49,6 @@ router.post("/signin", async (req, res) => {
   };
 
   console.log("SESSION AFTER:", req.session);
-
   res.json({ message: "Signed in", user });
 });
 
@@ -55,16 +59,6 @@ router.get("/profile", requireAuth, async (req, res) => {
   if (!user) return res.status(404).json({ message: "User not found" });
 
   res.json(user);
-});
-
-
-// POST /api/users/signout
-router.post("/signout", requireAuth, (req, res) => {
-  req.session.destroy(err => {
-    if (err) return res.status(500).json({ message: "Signout failed" });
-    res.clearCookie("connect.sid");
-    res.json({ message: "Signed out" });
-  });
 });
 
 export default router;

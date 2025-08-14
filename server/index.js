@@ -1,48 +1,42 @@
 import express from "express";
-import cors from "cors";
-import session from "express-session";
-import dotenv from "dotenv";
 import mongoose from "mongoose";
-import userRoutes from "./routes/users.js";
-import coursesRouter from "./routes/courses.js";
+import session from "express-session";
+import cors from "cors";
+import dotenv from "dotenv";
+import users from "./routes/users.js";
+import courses from "./routes/courses.js";
+import modules from "./routes/modules.js";
+import assignments from "./routes/assignments.js";
 
 dotenv.config();
 
 const app = express();
-const PORT = process.env.PORT || 4000;
-app.set('trust proxy', 1); //  proxy
+app.set("trust proxy", 1); // required for secure cookies on Render
+
 app.use(cors({
-  origin: [ "http://localhost:5173", 
-    "https://silly-melba-c04293.netlify.app", ],
-  credentials: true
+  origin: ["http://localhost:5173", "https://silly-melba-c04293.netlify.app"],
+  credentials: true,
 }));
+
 app.use(express.json());
+
 app.use(session({
   secret: process.env.SESSION_SECRET || "keyboard cat",
   resave: false,
   saveUninitialized: false,
   cookie: {
-    secure: process.env.NODE_ENV === 'production',           
-    sameSite: "none",       //cross-site cookies
-     httpOnly: true,
-    maxAge: 1000 * 60 * 60 * 24 * 7, 
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "none",
+    httpOnly: true,
+    maxAge: 1000 * 60 * 60 * 24 * 7,
   },
 }));
 
-app.get("/api/health", (_, res) => res.sendStatus(200));
+mongoose.connect(process.env.MONGODB_URI).then(() => console.log("MongoDB connected"));
 
+app.use("/api/users", users);
+app.use("/api/courses", courses);
+app.use("/api/courses", modules);
+app.use("/api/courses", assignments);
 
-app.use("/api/users", userRoutes);
-app.use("/api/courses", coursesRouter);
-
-app.use((err, req, res, next) => {
-  console.error(err);
-  res.status(500).json({ message: "Internal Server Error" });
-});
-
-mongoose.connect(process.env.MONGODB_URI || "mongodb://localhost/kambaz")
-  .then(() => {
-    console.log("MongoDB connected");
-    app.listen(PORT, () => console.log(`API listening on port ${PORT}`));
-  })
-  .catch(err => console.error("MongoDB connection error:", err));
+app.listen(4000, () => console.log("Server running on port 4000"));

@@ -1,4 +1,3 @@
-// src/Kambaz/Screens/AssignmentEditor.tsx
 import { useNavigate, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { api } from "../../lib/api";
@@ -18,7 +17,6 @@ export default function AssignmentEditor() {
     if (!cid) return;
 
     if (aid) {
-      // Edit mode
       setIsNew(false);
       api.get(`/courses/${cid}/assignments/${aid}`)
         .then(res => setForm(res.data))
@@ -54,56 +52,11 @@ export default function AssignmentEditor() {
     <div className="container mt-4">
       <h2>{isNew ? "New Assignment" : "Edit Assignment"}</h2>
       <form onSubmit={handleSubmit}>
-        <div className="mb-3">
-          <label className="form-label">Title</label>
-          <input
-            name="title"
-            className="form-control"
-            value={form.title}
-            onChange={handleChange}
-            required
-          />
-        </div>
-
-        <div className="mb-3">
-          <label className="form-label">Description</label>
-          <textarea
-            name="description"
-            className="form-control"
-            value={form.description}
-            onChange={handleChange}
-            rows={3}
-          />
-        </div>
-
-        <div className="mb-3">
-          <label className="form-label">Due Date</label>
-          <input
-            name="dueDate"
-            type="date"
-            className="form-control"
-            value={form.dueDate?.slice(0, 10) || ""}
-            onChange={handleChange}
-          />
-        </div>
-
-        <div className="mb-3">
-          <label className="form-label">Points</label>
-          <input
-            name="points"
-            type="number"
-            className="form-control"
-            value={form.points}
-            onChange={handleChange}
-          />
-        </div>
-
-        <button className="btn btn-primary me-2" type="submit">
-          {isNew ? "Create" : "Save"}
-        </button>
-        <button className="btn btn-secondary" type="button" onClick={() => nav(-1)}>
-          Cancel
-        </button>
+        <input type="text" name="title" value={form.title} onChange={handleChange} required />
+        <textarea name="description" value={form.description} onChange={handleChange} />
+        <input type="date" name="dueDate" value={form.dueDate} onChange={handleChange} />
+        <input type="number" name="points" value={form.points} onChange={handleChange} />
+        <button type="submit" className="btn btn-success">Save</button>
       </form>
     </div>
   );
