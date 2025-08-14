@@ -68,3 +68,8 @@ app.use((err, req, res, next) => {
   console.error("Unhandled server error:", err.stack || err);
   res.status(500).json({ error: "Internal Server Error", message: err.message });
 });
+import mongoose from "mongoose";
+
+mongoose.connect(process.env.MONGODB_URI)
+  .then(() => console.log("✅ MongoDB connected"))
+  .catch((err) => console.error("❌ MongoDB connection failed:", err));
