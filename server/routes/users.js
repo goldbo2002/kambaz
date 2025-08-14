@@ -32,5 +32,8 @@ router.get("/me", (req, res) => {
   if (!req.session.user) return res.status(401).json({ message: "Not signed in" });
   res.json(req.session.user);
 });
-
+router.get("/profile", (req, res) => {
+  if (!req.session.user) return res.status(401).json({ message: "Not signed in" });
+  res.json(req.session.user);
+});
 module.exports = router; // ← REQUIRED
