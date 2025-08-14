@@ -4,6 +4,11 @@ import express from "express";
 import cors from "cors";
 import session from "express-session";
 import dotenv from "dotenv";
+const modulesRouter = require("./routes/modules");
+
+
+app.use("/api/courses/:cid/modules", modulesRouter);
+app.use("/api/courses/:cid/assignments", assignmentsRouter);
 
 
 dotenv.config();

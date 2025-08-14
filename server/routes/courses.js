@@ -1,6 +1,7 @@
 const express = require("express");
 const Course = require("../models/Course");
 const Assignment = require("../models/Assignment");
+const Module = require("../models/Module");
 
 const router = express.Router();
 
@@ -114,6 +115,15 @@ router.delete("/:cid", requireAuth, async (req, res, next) => {
     if (!deleted) return res.status(404).json({ message: "not found" });
     res.json({ ok: true, id: deleted._id });
   } catch (e) { next(e); }
+});
+// 📦 Get all modules for a course
+router.get("/:cid/modules", async (req, res, next) => {
+  try {
+    const modules = await Module.find({ courseId: req.params.cid }).lean();
+    res.json(modules);
+  } catch (e) {
+    next(e);
+  }
 });
 
 module.exports = router;

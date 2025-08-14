@@ -3,14 +3,14 @@ const Module = require("../models/Module");
 
 const router = express.Router();
 
-// Authentication middleware
+// Middleware: requires user to be logged in
 function requireAuth(req, res, next) {
   if (!req.session?.user) return res.status(401).json({ message: "Unauthorized" });
   next();
 }
 
-// GET all modules for a course
-router.get("/courses/:cid/modules", async (req, res, next) => {
+// GET /courses/:cid/modules
+router.get("/", async (req, res, next) => {
   try {
     const modules = await Module.find({ courseId: req.params.cid }).lean();
     res.json(modules);
@@ -19,8 +19,8 @@ router.get("/courses/:cid/modules", async (req, res, next) => {
   }
 });
 
-// GET a single module
-router.get("/courses/:cid/modules/:mid", async (req, res, next) => {
+// GET /courses/:cid/modules/:mid
+router.get("/:mid", async (req, res, next) => {
   try {
     const mod = await Module.findOne({
       _id: req.params.mid,
@@ -34,8 +34,8 @@ router.get("/courses/:cid/modules/:mid", async (req, res, next) => {
   }
 });
 
-// POST create a new module
-router.post("/courses/:cid/modules", requireAuth, async (req, res, next) => {
+// POST /courses/:cid/modules
+router.post("/", requireAuth, async (req, res, next) => {
   try {
     const { title } = req.body;
     if (!title) return res.status(400).json({ message: "Title required" });
@@ -51,8 +51,8 @@ router.post("/courses/:cid/modules", requireAuth, async (req, res, next) => {
   }
 });
 
-// PUT update a module
-router.put("/courses/:cid/modules/:mid", requireAuth, async (req, res, next) => {
+// PUT /courses/:cid/modules/:mid
+router.put("/:mid", requireAuth, async (req, res, next) => {
   try {
     const updated = await Module.findOneAndUpdate(
       { _id: req.params.mid, courseId: req.params.cid },
