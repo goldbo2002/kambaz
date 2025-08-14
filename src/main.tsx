@@ -3,14 +3,16 @@ import ReactDOM from "react-dom/client";
 import { BrowserRouter } from "react-router-dom";
 import App from "./App";
 import ErrorBoundary from "./ErrorBoundary"; // ⬅️ import it
+console.log("🔥 App is about to mount");
 
 window.addEventListener("error", (e) => {
-  console.log("🔥 Uncaught error event:", e.error || e.message);
+  console.error("🔥 Uncaught error at window level:", e.error ?? e.message ?? e);
 });
 
 window.addEventListener("unhandledrejection", (e) => {
-  console.log("🔥 Unhandled Promise rejection:", e.reason);
+  console.error("🔥 Unhandled Promise rejection at window level:", e.reason ?? e);
 });
+
 
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
