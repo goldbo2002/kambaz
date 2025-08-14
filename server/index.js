@@ -49,6 +49,9 @@ app.get("/api/debug/session", (req, res) => {
   console.log("11)   debug endpoint hit", { cookies: req.headers.cookie, session: req.session });
   res.json({ cookies: req.headers.cookie, session: req.session, user: req.session?.user });
 });
+app.get("/api/health", (_req, res) => res.json({ status: "ok" }));
 
 const PORT = process.env.PORT || 4000;
-app.listen(PORT, () => console.log(`12) API listening on ${PORT}`));
+app.listen(PORT, "0.0.0.0", () => {
+  console.log(`✅ API listening on ${PORT}`);
+});
