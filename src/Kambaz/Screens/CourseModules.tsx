@@ -15,14 +15,13 @@ export default function CourseModules() {
   }, [cid]);
 
   return (
+    
     <div className="container mt-4">
       <h3>Modules</h3>
-      <button
-        className="btn btn-primary mb-3"
-        onClick={() => navigate(`/courses/${cid}/modules/new`)}
-      >
-        + Module
-      </button>
+      <button className="btn btn-primary mb-3" onClick={() => navigate(`/courses/${cid}/modules/new`)}>
+  + Module
+</button>
+
 
       <ul className="list-group">
         {modules.map((mod) => (

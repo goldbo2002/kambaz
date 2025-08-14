@@ -21,11 +21,12 @@ useEffect(() => {
         <button className="btn btn-secondary me-2" onClick={() => alert("Group creation not implemented")}>
           + Group
         </button>
-        <button className="btn btn-primary" onClick={() => nav(`/courses/${cid}/assignments/new`)}>
-          + Assignment
-        </button>
-      </div>
+       <button className="btn btn-primary mb-3" onClick={() => nav(`/courses/${cid}/assignments/new`)}>
+  + Assignment
+</button>
 
+      </div>
+      
       <ul className="list-group">
         {assignments.map((a) => (
           <li key={a._id} className="list-group-item d-flex justify-content-between align-items-center"
