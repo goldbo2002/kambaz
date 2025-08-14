@@ -20,7 +20,7 @@ export default function Sidebar() {
           <Link to="/account/profile">Profile</Link>
         </li>
         <li>
-          <Link to="/courses/1">Course Home</Link>
+          <Link to="/courses">Courses</Link>
         </li>
         <li>
           <Link to="/courses/1/modules">Modules</Link>

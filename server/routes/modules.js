@@ -1,61 +1,73 @@
 import express from "express";
+import mongoose from "mongoose";
 import Module from "../models/Module.js";
 
 const router = express.Router();
 
-// Middleware: requires user to be logged in
 function requireAuth(req, res, next) {
   if (!req.session?.user) return res.status(401).json({ message: "Unauthorized" });
   next();
 }
 
-// GET /courses/:cid/modules
 router.get("/", async (req, res, next) => {
   try {
-    const modules = await Module.find({ courseId: req.params.cid }).lean();
+    const cid = req.params.cid;
+    if (!mongoose.Types.ObjectId.isValid(cid)) {
+      return res.status(400).json({ message: "Invalid course ID" });
+    }
+
+    const modules = await Module.find({ courseId: cid }).lean();
     res.json(modules);
   } catch (e) {
     next(e);
   }
 });
 
-// GET /courses/:cid/modules/:mid
-router.get("/:mid", async (req, res, next) => {
-  try {
-    const mod = await Module.findOne({
-      _id: req.params.mid,
-      courseId: req.params.cid,
-    }).lean();
-
-    if (!mod) return res.status(404).json({ message: "Module not found" });
-    res.json(mod);
-  } catch (e) {
-    next(e);
-  }
-});
-
-// POST /courses/:cid/modules
 router.post("/", requireAuth, async (req, res, next) => {
   try {
+    const cid = req.params.cid;
     const { title } = req.body;
+
+    if (!mongoose.Types.ObjectId.isValid(cid)) {
+      return res.status(400).json({ message: "Invalid course ID" });
+    }
+
     if (!title) return res.status(400).json({ message: "Title required" });
 
-    const mod = await Module.create({
-      courseId: req.params.cid,
-      title,
-    });
-
+    const mod = await Module.create({ courseId: cid, title });
     res.status(201).json(mod);
   } catch (e) {
     next(e);
   }
 });
 
-// PUT /courses/:cid/modules/:mid
+router.get("/:mid", async (req, res, next) => {
+  try {
+    const { cid, mid } = req.params;
+
+    if (!mongoose.Types.ObjectId.isValid(cid) || !mongoose.Types.ObjectId.isValid(mid)) {
+      return res.status(400).json({ message: "Invalid ID(s)" });
+    }
+
+    const mod = await Module.findOne({ _id: mid, courseId: cid }).lean();
+    if (!mod) return res.status(404).json({ message: "Module not found" });
+
+    res.json(mod);
+  } catch (e) {
+    next(e);
+  }
+});
+
 router.put("/:mid", requireAuth, async (req, res, next) => {
   try {
+    const { cid, mid } = req.params;
+
+    if (!mongoose.Types.ObjectId.isValid(cid) || !mongoose.Types.ObjectId.isValid(mid)) {
+      return res.status(400).json({ message: "Invalid ID(s)" });
+    }
+
     const updated = await Module.findOneAndUpdate(
-      { _id: req.params.mid, courseId: req.params.cid },
+      { _id: mid, courseId: cid },
       req.body,
       { new: true, runValidators: true }
     ).lean();

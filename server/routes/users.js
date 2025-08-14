@@ -1,9 +1,16 @@
 import express from "express";
 import bcrypt from "bcrypt";
+import mongoose from "mongoose";
 import User from "../models/User.js";
 
 const router = express.Router();
 
+function requireAuth(req, res, next) {
+  if (!req.session?.user) return res.status(401).json({ message: "Unauthorized" });
+  next();
+}
+
+// POST /api/users/signup
 router.post("/signup", async (req, res, next) => {
   try {
     const { email, password, username, firstName, lastName } = req.body;
@@ -18,6 +25,7 @@ router.post("/signup", async (req, res, next) => {
   }
 });
 
+// POST /api/users/signin
 router.post("/signin", async (req, res, next) => {
   try {
     const { email, password } = req.body;
@@ -31,12 +39,13 @@ router.post("/signin", async (req, res, next) => {
   }
 });
 
-router.get("/profile", (req, res) => {
-  if (!req.session.user) return res.status(401).json({ message: "Unauthorized" });
+// GET /api/users/profile
+router.get("/profile", requireAuth, (req, res) => {
   res.json({ userId: req.session.user });
 });
 
-router.post("/signout", (req, res) => {
+// POST /api/users/signout
+router.post("/signout", requireAuth, (req, res) => {
   req.session.destroy(err => {
     if (err) return res.status(500).json({ message: "Signout failed" });
     res.clearCookie("connect.sid");
