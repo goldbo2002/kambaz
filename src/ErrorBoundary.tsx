@@ -16,10 +16,12 @@ class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
   }
 
   componentDidCatch(error: any, errorInfo: ErrorInfo) {
-    console.error("🔥 App crashed:", error);
-    console.error("🔥 Stack trace:", errorInfo.componentStack);
-    this.setState({ error, errorInfo });
-  }
+  console.log("🔥 Full error raw object:", error);
+  console.log("🔥 Full errorInfo:", errorInfo);
+  alert("App crashed. Check the browser console for raw error logs.");
+  this.setState({ error, errorInfo });
+}
+
 
   render() {
     const { error, errorInfo } = this.state;
