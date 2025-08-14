@@ -26,17 +26,17 @@ export default class ErrorBoundary extends Component<
     console.error("🛑 App Crashed 🛑", error, info);
     this.setState({ error });
   }
-
-  render() {
-    if (this.state.hasError) {
-      return (
-        <div style={{ padding: "2rem", color: "red" }}>
-          <h1>App crashed.</h1>
-          <pre>{this.state.error?.toString()}</pre>
-        </div>
-      );
-    }
-
-    return this.props.children;
+render() {
+  if (this.state.hasError) {
+    return (
+      <div style={{ padding: "2rem", color: "red" }}>
+        <h1>App crashed.</h1>
+        <pre>{this.state.error?.message}</pre>
+        <pre>{this.state.error?.stack}</pre>
+      </div>
+    );
   }
+
+  return this.props.children;
+}
 }
