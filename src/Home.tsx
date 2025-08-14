@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Home from "./Home";
 import Signin from "./Kambaz/Account/Signin";
 import Signup from "./Kambaz/Account/Signup";

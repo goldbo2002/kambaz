@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Home from "./Home";
 import Signin from "./Kambaz/Account/Signin";
 import Signup from "./Kambaz/Account/Signup";
@@ -10,37 +10,36 @@ import CourseModules from "./Kambaz/Screens/CourseModules";
 import Assignments from "./Kambaz/Screens/Assignments";
 import AssignmentEditor from "./Kambaz/Screens/AssignmentEditor";
 import AccountLayout from "./Kambaz/Account";
-import Labs from "./Labs";
 import LabLayout from "./Labs/TOC";
-import Lab1 from "./Labs/Lab1";
-import Lab2 from "./Labs/Lab2";
-import Lab3 from "./Labs/Lab3";
-import Lab4 from "./Labs/Lab4";
-import Lab5 from "./Labs/Lab5";
-import Lab6 from "./Labs/Lab6";
+import Lab1 from "./Labs/Lab1/index";
+import Lab2 from "./Labs/Lab2/index";
+import Lab3 from "./Labs/Lab3/index";
+import Lab4 from "./Labs/Lab4/index";
+import Lab5 from "./Labs/Lab5/index";
+import Lab6 from "./Labs/Lab6/index";
 
 export default function App() {
   return (
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<Home />} />
-        
-        <Route path="account" element={<AccountLayout />}>
+
+        <Route path="/account" element={<AccountLayout />}>
           <Route path="signin" element={<Signin />} />
           <Route path="signup" element={<Signup />} />
           <Route path="profile" element={<Profile />} />
         </Route>
 
-        <Route path="dashboard" element={<Dashboard />} />
+        <Route path="/dashboard" element={<Dashboard />} />
 
-        <Route path="courses/:courseId" element={<CourseLayout />}>
+        <Route path="/courses/:courseId" element={<CourseLayout />}>
           <Route index element={<CourseHome />} />
           <Route path="modules" element={<CourseModules />} />
           <Route path="assignments" element={<Assignments />} />
           <Route path="assignments/:assignmentId" element={<AssignmentEditor />} />
         </Route>
 
-        <Route path="labs" element={<LabLayout />}>
+        <Route path="/labs" element={<LabLayout />}>
           <Route path="lab1" element={<Lab1 />} />
           <Route path="lab2" element={<Lab2 />} />
           <Route path="lab3" element={<Lab3 />} />
@@ -55,4 +54,3 @@ export default function App() {
     </BrowserRouter>
   );
 }
-
