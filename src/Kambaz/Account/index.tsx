@@ -5,7 +5,7 @@ import Profile from "./Profile";
 
 export default function Account() {
   return (
-    <div id="wd-account-screen" style={{ padding: 24 }}>
+    <div className="p-3">
       <h2>Account</h2>
       <div className="mb-3">
         <Link to="/account/signin" className="btn btn-primary me-2">Sign In</Link>
@@ -13,9 +13,9 @@ export default function Account() {
       </div>
       <Routes>
         <Route path="/" element={<Navigate to="/account/signin" />} />
-        <Route path="/signin" element={<Signin />} />
-        <Route path="/signup" element={<Signup />} />
-        <Route path="/profile" element={<Profile />} />
+        <Route path="signin" element={<Signin />} />
+        <Route path="signup" element={<Signup />} />
+        <Route path="profile" element={<Profile />} />
       </Routes>
     </div>
   );

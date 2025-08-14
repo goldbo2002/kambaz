@@ -1,14 +1,12 @@
-// src/lib/api.ts
 import axios from "axios";
 
-export const SERVER =
-  import.meta.env.PROD
-    ? "https://kambaz.onrender.com"
-    : "http://localhost:4000";
+const API_BASE = import.meta.env.PROD
+  ? "https://kambaz.onrender.com"
+  : "http://localhost:4000";
 
-console.log("✅ API Base URL:", SERVER);
+console.log("✅ API Base URL:", API_BASE);
 
 export const api = axios.create({
-  baseURL: `${SERVER}/api`,
+  baseURL: `${API_BASE}/api`,
   withCredentials: true,
 });

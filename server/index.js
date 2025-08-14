@@ -1,53 +1,35 @@
 import express from "express";
 import cors from "cors";
 import session from "express-session";
-import mongoose from "mongoose";
 import dotenv from "dotenv";
-
-import userRoutes from "./users/routes.js"; // adjust path as needed
-
 dotenv.config();
 
 const app = express();
 
-app.use(
-  cors({
-    origin:["https://silly-melba-c04293.netlify.app",
-            "http://localhost:5173",], // front and local
-    credentials: true,
-  })
-);
+app.use(cors({
+  origin: [
+    "http://localhost:5173",
+    "https://silly-melba-c04293.netlify.app"
+  ],
+  credentials: true,
+}));
 
 app.use(express.json());
 
-app.use(
-  session({
-    secret: "some secret key",
-    resave: false,
-    saveUninitialized: false,
-    cookie: {
-      sameSite: "none",
-      secure: true,
-    },
-  })
-);
+app.use(session({
+  secret: "some secret key",
+  resave: false,
+  saveUninitialized: false,
+  cookie: {
+    sameSite: "none",
+    secure: true,
+  },
+}));
 
-// ✅ Health check
-app.get("/api/health", (req, res) => {
-  res.json({ ok: true });
-});
+app.get("/api/health", (req, res) => res.json({ ok: true }));
 
-// ✅ User API routes
-app.use("/api/users", userRoutes);
-
-// ✅ MongoDB connection
-const CONNECTION_STRING = process.env.DB_URI || "your-fallback-mongodb-uri";
-mongoose.connect(CONNECTION_STRING, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-});
+// import userRoutes from "./routes/users.js"; // adjust path if needed
+// app.use("/api/users", userRoutes);
 
 const PORT = process.env.PORT || 4000;
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-});
+app.listen(PORT, () => console.log(`API listening on ${PORT}`));
