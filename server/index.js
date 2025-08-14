@@ -10,7 +10,7 @@ dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 4000;
-
+app.set('trust proxy', 1); //  proxy
 app.use(cors({
   origin: [ "http://localhost:5173", 
     "https://silly-melba-c04293.netlify.app", ],
@@ -30,6 +30,7 @@ app.use(session({
 }));
 
 app.get("/api/health", (_, res) => res.sendStatus(200));
+
 
 app.use("/api/users", userRoutes);
 app.use("/api/courses", coursesRouter);
