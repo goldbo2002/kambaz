@@ -12,7 +12,7 @@ const app = express();
 const PORT = process.env.PORT || 4000;
 
 app.use(cors({
-  origin: [ "http://localhost:5173", process.env.FRONTEND_URL ],
+  origin: [ "http://localhost:5173", "https://silly-melba-c04293.netlify.app" ],
   credentials: true
 }));
 app.use(express.json());
