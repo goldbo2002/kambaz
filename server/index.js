@@ -14,8 +14,13 @@ console.log("3)    Express app created");
 app.set("trust proxy", 1);
 console.log("4)    trust proxy set");
 
-app.use(cors({ origin: ["http://localhost:5173", "https://your-netlify.app"], credentials: true }));
-console.log("5)    CORS middleware applied");
+app.use(cors({
+  origin: [
+    "http://localhost:5173",
+    "https://silly-melba-c04293.netlify.app"
+  ],
+  credentials: true,
+}));
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -49,7 +54,9 @@ app.get("/api/debug/session", (req, res) => {
   console.log("11)   debug endpoint hit", { cookies: req.headers.cookie, session: req.session });
   res.json({ cookies: req.headers.cookie, session: req.session, user: req.session?.user });
 });
-app.get("/api/health", (_req, res) => res.json({ status: "ok" }));
+app.get("/api/health", (_req, res) => {
+  res.status(200).json({ status: "ok" });
+});
 
 const PORT = process.env.PORT || 4000;
 app.listen(PORT, "0.0.0.0", () => {
