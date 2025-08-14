@@ -31,14 +31,16 @@ export default function App() {
         <Route path="/Kambaz/Signup" element={<Signup />} />
         <Route path="/Kambaz/Dashboard" element={<Dashboard />} />
         <Route path="/account/profile" element={<Profile />} />
+
         <Route path="/labs" element={<Labs />}>
-          <Route path="Lab1/*" element={<Lab1 />} />
-          <Route path="Lab2/*" element={<Lab2 />} />
-          <Route path="Lab3/*" element={<Lab3 />} />
-          <Route path="Lab4/*" element={<Lab4 />} />
-          <Route path="Lab5/*" element={<Lab5 />} />
-          <Route path="Lab6/*" element={<Lab6 />} />
+          <Route path="Lab1" element={<Lab1 />} />
+          <Route path="Lab2" element={<Lab2 />} />
+          <Route path="Lab3" element={<Lab3 />} />
+          <Route path="Lab4" element={<Lab4 />} />
+          <Route path="Lab5" element={<Lab5 />} />
+          <Route path="Lab6" element={<Lab6 />} />
         </Route>
+
         <Route path="/courses/:cid" element={<CourseLayout />}>
           <Route path="Home" element={<CourseHome />} />
           <Route path="modules" element={<CourseModules />} />

@@ -1,4 +1,4 @@
-// src/Kambaz/Screens/Sidebar.tsx
+
 import { Link, useParams } from "react-router-dom";
 
 export default function Sidebar({ cid }: { cid?: string }) {
@@ -8,6 +8,7 @@ export default function Sidebar({ cid }: { cid?: string }) {
       <ul style={{ listStyle: "none", paddingLeft: 0 }}>
         <li><Link to="/Kambaz/Dashboard">Dashboard</Link></li>
         <li><Link to="/account/profile">Profile</Link></li>
+        <li><Link to="/labs">Labs</Link></li>
         <li><Link to={`/courses/${routeCid}/Home`}>Home</Link></li>
         <li><Link to={`/courses/${routeCid}/modules`}>Modules</Link></li>
         <li><Link to={`/courses/${routeCid}/assignments`}>Assignments</Link></li>
