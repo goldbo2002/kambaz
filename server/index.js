@@ -5,6 +5,7 @@ import cors from "cors";
 import session from "express-session";
 import dotenv from "dotenv";
 
+
 dotenv.config();
 console.log("2)    Environment variables loaded");
 
