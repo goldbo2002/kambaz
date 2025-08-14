@@ -1,13 +1,8 @@
-// server/models/Module.js
-const { Schema, model, Types } = require("mongoose");
+const mongoose = require("mongoose");
 
-const ModuleSchema = new Schema(
-  {
-    course: { type: Types.ObjectId, ref: "Course", required: true, index: true },
-    name: { type: String, required: true },
-    description: String
-  },
-  { timestamps: true }
-);
+const ModuleSchema = new mongoose.Schema({
+  courseId: { type: mongoose.Schema.Types.ObjectId, ref: "Course", required: true },
+  title: { type: String, required: true }
+}, { timestamps: true });
 
-module.exports = model("Module", ModuleSchema);
+module.exports = mongoose.model("Module", ModuleSchema);

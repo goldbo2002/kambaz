@@ -3,45 +3,68 @@ const Module = require("../models/Module");
 
 const router = express.Router();
 
-router.get("/", async (_req, res, next) => {
+// Authentication middleware
+function requireAuth(req, res, next) {
+  if (!req.session?.user) return res.status(401).json({ message: "Unauthorized" });
+  next();
+}
+
+// GET all modules for a course
+router.get("/courses/:cid/modules", async (req, res, next) => {
   try {
-    const docs = await Module.find().lean();
-    res.json(docs);
-  } catch (e) { next(e); }
+    const modules = await Module.find({ courseId: req.params.cid }).lean();
+    res.json(modules);
+  } catch (e) {
+    next(e);
+  }
 });
 
-router.post("/", async (req, res, next) => {
+// GET a single module
+router.get("/courses/:cid/modules/:mid", async (req, res, next) => {
   try {
-    const created = await Module.create(req.body);
-    res.status(201).json(created);
-  } catch (e) { next(e); }
-});
-
-router.get("/:id", async (req, res, next) => {
-  try {
-    const doc = await Module.findById(req.params.id).lean();
-    if (!doc) return res.status(404).json({ message: "not found" });
-    res.json(doc);
-  } catch (e) { next(e); }
-});
-
-router.put("/:id", async (req, res, next) => {
-  try {
-    const updated = await Module.findByIdAndUpdate(req.params.id, req.body, {
-      new: true,
-      runValidators: true
+    const mod = await Module.findOne({
+      _id: req.params.mid,
+      courseId: req.params.cid,
     }).lean();
-    if (!updated) return res.status(404).json({ message: "not found" });
-    res.json(updated);
-  } catch (e) { next(e); }
+
+    if (!mod) return res.status(404).json({ message: "Module not found" });
+    res.json(mod);
+  } catch (e) {
+    next(e);
+  }
 });
 
-router.delete("/:id", async (req, res, next) => {
+// POST create a new module
+router.post("/courses/:cid/modules", requireAuth, async (req, res, next) => {
   try {
-    const deleted = await Module.findByIdAndDelete(req.params.id).lean();
-    if (!deleted) return res.status(404).json({ message: "not found" });
-    res.json({ ok: true, id: deleted._id });
-  } catch (e) { next(e); }
+    const { title } = req.body;
+    if (!title) return res.status(400).json({ message: "Title required" });
+
+    const mod = await Module.create({
+      courseId: req.params.cid,
+      title,
+    });
+
+    res.status(201).json(mod);
+  } catch (e) {
+    next(e);
+  }
+});
+
+// PUT update a module
+router.put("/courses/:cid/modules/:mid", requireAuth, async (req, res, next) => {
+  try {
+    const updated = await Module.findOneAndUpdate(
+      { _id: req.params.mid, courseId: req.params.cid },
+      req.body,
+      { new: true, runValidators: true }
+    ).lean();
+
+    if (!updated) return res.status(404).json({ message: "Module not found" });
+    res.json(updated);
+  } catch (e) {
+    next(e);
+  }
 });
 
 module.exports = router;
