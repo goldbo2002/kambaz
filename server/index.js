@@ -28,8 +28,8 @@ app.use(session({
 
 app.get("/api/health", (req, res) => res.json({ ok: true }));
 
-// import userRoutes from "./routes/users.js"; // adjust path if needed
-// app.use("/api/users", userRoutes);
+ import userRoutes from "./routes/users.js"; // adjust path if needed
+ app.use("/api/users", userRoutes);
 
 const PORT = process.env.PORT || 4000;
 app.listen(PORT, () => console.log(`API listening on ${PORT}`));

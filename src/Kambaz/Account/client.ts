@@ -1,5 +1,8 @@
 import { api } from "./api";
 
+api.get(`/Account/...`)
+
+
 export const signin = (credentials: { username: string; password: string }) =>
   api.post("/users/signin", credentials).then(r => r.data);
 
