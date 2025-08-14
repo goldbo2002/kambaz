@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import Home from "./Home";
 import Signin from "./Kambaz/Account/Signin";
 import Signup from "./Kambaz/Account/Signup";
@@ -18,46 +18,82 @@ import Lab3 from "./Labs/Lab3";
 import Lab4 from "./Labs/Lab4";
 import Lab5 from "./Labs/Lab5";
 import Lab6 from "./Labs/Lab6";
-export default function App() {
+import People from "./Kambaz/People/People";
+const ParamsGuard = require("./Kambaz/Components/ParamsGuard").default;
+function App() {
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<Home />} />
+    <Routes>
+      <Route path="/" element={<Navigate to="/Kambaz/Signin" replace />} />
+      <Route path="/Kambaz/Signin" element={<Signin />} />
+      <Route path="/Kambaz/Signup" element={<Signup />} />
+      <Route path="/Kambaz/Dashboard" element={<Dashboard />} />
 
-        {/* Auth routes */}
-        <Route path="/account/*" element={<AccountLayout />}>
-          <Route path="signin" element={<Signin />} />
-          <Route path="signup" element={<Signup />} />
-          <Route path="profile" element={<Profile />} />
-        </Route>
+      {/* Course layout */}
+      <Route path="/courses/:cid" element={<CourseLayout />}>
+        <Route path="Home" element={<CourseHome />} />
+        <Route path="Modules" element={<CourseModules />} />
+        <Route
+          path="modules/new"
+          element={
+            <ParamsGuard>
+              <ModuleEditor />
+            </ParamsGuard>
+          }
+        />
+        <Route
+          path="modules/:mid"
+          element={
+            <ParamsGuard>
+              <ModuleEditor />
+            </ParamsGuard>
+          }
+        />
+        <Route
+          path="assignments"
+          element={
+            <ParamsGuard>
+              <Assignments />
+            </ParamsGuard>
+          }
+        />
+        <Route
+          path="assignments/new"
+          element={
+            <ParamsGuard>
+              <AssignmentEditor />
+            </ParamsGuard>
+          }
+        />
+        <Route
+          path="assignments/:assignmentId"
+          element={
+            <ParamsGuard>
+              <AssignmentEditor />
+            </ParamsGuard>
+          }
+        />
+        <Route
+          path="People"
+          element={
+            <ParamsGuard>
+              <People />
+            </ParamsGuard>
+          }
+        />
+      </Route>
 
-        {/* Dashboard */}
-        <Route path="/dashboard" element={<Dashboard />} />
+      {/* Labs */}
+      <Route path="/Kambaz/Lab1" element={<Lab1 />} />
+      <Route path="/Kambaz/Lab2" element={<Lab2 />} />
+      <Route path="/Kambaz/Lab3" element={<Lab3 />} />
+      <Route path="/Kambaz/Lab4" element={<Lab4 />} />
+      <Route path="/Kambaz/Lab5" element={<Lab5 />} />
+      <Route path="/Kambaz/Lab6" element={<Lab6 />} />
 
-        {/* Course routes */}
-        <Route path="/courses/:cid/*" element={<CourseLayout />}>
-          <Route index element={<CourseHome />} />
-          <Route path="modules" element={<CourseModules />} />
-          <Route path="modules/new" element={<ModuleEditor />} />
-          <Route path="modules/:mid" element={<ModuleEditor />} />
-          <Route path="assignments" element={<Assignments />} />
-          <Route path="assignments/new" element={<AssignmentEditor />} />
-          <Route path="assignments/:assignmentId" element={<AssignmentEditor />} />
-        </Route>
-
-        {/* Labs */}
-        <Route path="/labs/*" element={<LabLayout />}>
-          <Route path="lab1" element={<Lab1 />} />
-          <Route path="lab2" element={<Lab2 />} />
-          <Route path="lab3" element={<Lab3 />} />
-          <Route path="lab4" element={<Lab4 />} />
-          <Route path="lab5" element={<Lab5 />} />
-          <Route path="lab6" element={<Lab6 />} />
-        </Route>
-
-        {/* Fallback */}
-        <Route path="*" element={<div className="p-3">Not found</div>} />
-      </Routes>
-    </BrowserRouter>
+      {/* Catch-all redirect */}
+      <Route path="*" element={<Navigate to="/Kambaz/Signin" />} />
+    </Routes>
   );
 }
+
+export default App;
