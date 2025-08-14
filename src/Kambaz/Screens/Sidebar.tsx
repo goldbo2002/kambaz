@@ -1,34 +1,25 @@
-import { Link } from "react-router-dom";
+// src/Kambaz/Screens/Sidebar.tsx
 
-export default function Sidebar() {
+import { Link, useParams } from "react-router-dom";
+
+export default function Sidebar({ cid }: { cid?: string }) {
+  const routeCid = useParams()?.cid;
+  const courseId = cid || routeCid || "";
+
   return (
-    <aside
-      style={{
-        width: "220px",
-        backgroundColor: "#f8f9fa",
-        padding: "1rem",
-        height: "100vh",
-        borderRight: "1px solid #ddd"
-      }}
-    >
-      <h4>Navigation</h4>
-      <ul style={{ listStyle: "none", paddingLeft: 0 }}>
-        <li>
-          <Link to="/dashboard">Dashboard</Link>
+    <div className="bg-light p-3" style={{ width: "250px" }}>
+      <h4>Sidebar</h4>
+      <ul className="nav flex-column">
+        <li className="nav-item">
+          <Link className="nav-link" to={`/courses/${courseId}/Home`}>Home</Link>
         </li>
-        <li>
-          <Link to="/account/profile">Profile</Link>
+        <li className="nav-item">
+          <Link className="nav-link" to={`/courses/${courseId}/Modules`}>Modules</Link>
         </li>
-        <li>
-          <Link to="/courses">Courses</Link>
-        </li>
-        <li>
-          <Link to="/courses/1/modules">Modules</Link>
-        </li>
-        <li>
-          <Link to="/courses/1/assignments">Assignments</Link>
+        <li className="nav-item">
+          <Link className="nav-link" to={`/courses/${courseId}/Assignments`}>Assignments</Link>
         </li>
       </ul>
-    </aside>
+    </div>
   );
 }
