@@ -5,7 +5,7 @@ import { api } from "../../lib/api";
 type Course = { _id: string; title: string; number?: string };
 
 export default function CourseLayout() {
-  const { cid } = useParams();
+  const { cid } = useParams<{ cid?: string }>();
   const nav = useNavigate();
   const [course, setCourse] = React.useState<Course | null>(null);
 
@@ -20,6 +20,8 @@ export default function CourseLayout() {
       .then((r) => setCourse(r.data))
       .catch(() => nav("/Kambaz/Dashboard", { replace: true }));
   }, [cid, nav]);
+
+  if (!cid) return <div>Loading...</div>;
 
   return (
     <div className="container-fluid">
@@ -38,6 +40,7 @@ export default function CourseLayout() {
     </div>
   );
 }
+
 function Item({ to, children }: { to: string; children: React.ReactNode }) {
   return (
     <NavLink end to={to} className={({ isActive }) =>

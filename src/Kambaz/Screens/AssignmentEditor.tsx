@@ -1,88 +1,50 @@
-import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import { useEffect, useState } from "react";
 import { api } from "../../lib/api";
 
-export default function AssignmentEditor() {
-  const { cid, assignmentId } = useParams();
+export default function Assignments() {
+  const { cid } = useParams<{ cid?: string }>();
   const nav = useNavigate();
-
-  const [form, setForm] = useState({
-    title: "",
-    description: "",
-    dueDate: "",
-    points: 100,
-  });
+  const [assignments, setAssignments] = useState<any[]>([]);
 
   useEffect(() => {
-    if (!cid || assignmentId === "new") return;
-    api.get(`/courses/${cid}/assignments/${assignmentId}`).then((res) => {
-      const { title, description, dueDate, points } = res.data;
-      setForm({
-        title,
-        description,
-        dueDate: dueDate?.slice(0, 10) || "",
-        points,
-      });
-    });
-  }, [cid, assignmentId]);
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
-  };
-
-  const handleSave = () => {
     if (!cid) return;
+    api.get(`/courses/${cid}/assignments`)
+      .then((res) => setAssignments(res.data))
+      .catch((err) => console.error("Assignments fetch failed", err));
+  }, [cid]);
 
-    const payload = { ...form };
-
-    const endpoint =
-      assignmentId === "new"
-        ? `/courses/${cid}/assignments`
-        : `/courses/${cid}/assignments/${assignmentId}`;
-
-    const method = assignmentId === "new" ? api.post : api.put;
-
-    method(endpoint, payload)
-      .then(() => nav(`/courses/${cid}/assignments`))
-      .catch((err) => alert("Save failed: " + err.message));
-  };
+  if (!cid) return <div>Loading...</div>;
 
   return (
     <div className="container mt-4">
-      <h2>{assignmentId === "new" ? "New Assignment" : "Edit Assignment"}</h2>
+      <h3>Assignments</h3>
       <div className="mb-3">
-        <input
-          className="form-control mb-2"
-          placeholder="Title"
-          name="title"
-          value={form.title}
-          onChange={handleChange}
-        />
-        <input
-          className="form-control mb-2"
-          type="date"
-          name="dueDate"
-          value={form.dueDate}
-          onChange={handleChange}
-        />
-        <input
-          className="form-control mb-2"
-          type="number"
-          name="points"
-          value={form.points}
-          onChange={handleChange}
-        />
-        <textarea
-          className="form-control mb-2"
-          placeholder="Description"
-          name="description"
-          value={form.description}
-          onChange={handleChange}
-        />
-        <button className="btn btn-primary" onClick={handleSave}>
-          Save Assignment
+        <button className="btn btn-secondary me-2" onClick={() => alert("Group creation not implemented")}>
+          + Group
+        </button>
+        <button className="btn btn-primary mb-3" onClick={() => nav(`/courses/${cid}/assignments/new`)}>
+          + Assignment
         </button>
       </div>
+      <ul className="list-group">
+        {assignments.map((a) => (
+          <li
+            key={a._id}
+            className="list-group-item d-flex justify-content-between align-items-center"
+            onClick={() => nav(`/courses/${cid}/assignments/${a._id}`)}
+            style={{ cursor: "pointer" }}
+          >
+            <div>
+              <div><strong>{a.title}</strong></div>
+              <div className="text-muted small">
+                Due: {a.dueDate?.slice(0, 10) || "N/A"} • {a.points} pts
+              </div>
+            </div>
+            <i className="bi bi-chevron-right"></i>
+          </li>
+        ))}
+      </ul>
     </div>
   );
 }
