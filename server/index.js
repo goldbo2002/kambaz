@@ -5,7 +5,7 @@ import dotenv from "dotenv";
 dotenv.config();
 
 const app = express();
-
+app.set("trust proxy", 1);
 app.use(cors({
   origin: [
     "http://localhost:5173",
@@ -17,12 +17,13 @@ app.use(cors({
 app.use(express.json());
 
 app.use(session({
-  secret: process.env.SESSION_SECRET,
+  secret: process.env.SESSION_SECRET,       // must be set in Render
   resave: false,
   saveUninitialized: false,
   cookie: {
     sameSite: "none",
-    secure: true,
+    secure: process.env.NODE_ENV === "production", 
+    
   },
 }));
 
@@ -34,4 +35,4 @@ app.use("/api/users", userRoutes);
 
 const PORT = process.env.PORT || 4000;
 app.listen(PORT, () => console.log(`API listening on ${PORT}`));
-app.set("trust proxy", 1); // Add this line
+
