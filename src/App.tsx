@@ -19,7 +19,8 @@ import Lab4 from "./Labs/Lab4";
 import Lab5 from "./Labs/Lab5";
 import Lab6 from "./Labs/Lab6";
 import People from "./Kambaz/People/People";
-const ParamsGuard = require("./Kambaz/Components/ParamsGuard");
+import ParamsGuard from "./Kambaz/Components/ParamsGuard";
+
 function App() {
   return (
     <Routes>
