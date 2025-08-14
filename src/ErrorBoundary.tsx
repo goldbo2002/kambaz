@@ -1,42 +1,39 @@
-import { Component, ErrorInfo, ReactNode } from "react";
+import React, { Component, ErrorInfo, ReactNode } from "react";
 
 interface ErrorBoundaryProps {
   children: ReactNode;
 }
 
 interface ErrorBoundaryState {
-  hasError: boolean;
-  error?: Error;
+  error: Error | null;
+  errorInfo: ErrorInfo | null;
 }
 
-export default class ErrorBoundary extends Component<
-  ErrorBoundaryProps,
-  ErrorBoundaryState
-> {
+class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
   constructor(props: ErrorBoundaryProps) {
     super(props);
-    this.state = { hasError: false, error: undefined };
+    this.state = { error: null, errorInfo: null };
   }
 
-  static getDerivedStateFromError(error: Error): ErrorBoundaryState {
-    return { hasError: true, error };
+  componentDidCatch(error: Error, errorInfo: ErrorInfo) {
+    console.error("❌ App crashed:", error, errorInfo);
+    this.setState({ error, errorInfo });
   }
 
-  componentDidCatch(error: Error, info: ErrorInfo): void {
-    console.error("🛑 App Crashed 🛑", error, info);
-    this.setState({ error });
-  }
-render() {
-  if (this.state.hasError) {
-    return (
-      <div style={{ padding: "2rem", color: "red" }}>
-        <h1>App crashed.</h1>
-        <pre>{this.state.error?.message}</pre>
-        <pre>{this.state.error?.stack}</pre>
-      </div>
-    );
-  }
+  render() {
+    if (this.state.error) {
+      return (
+        <div style={{ padding: "2rem", color: "red", fontFamily: "monospace" }}>
+          <h1>App crashed.</h1>
+          <pre>{this.state.error.message}</pre>
+          <pre>{this.state.error.stack}</pre>
+          <pre>{this.state.errorInfo?.componentStack}</pre>
+        </div>
+      );
+    }
 
-  return this.props.children;
+    return this.props.children;
+  }
 }
-}
+
+export default ErrorBoundary;
