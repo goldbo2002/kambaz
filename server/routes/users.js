@@ -7,25 +7,23 @@ import User from "../models/User.js"; // or adjust the path
 router.get("/ping", (_req, res) => res.json({ ok: true, who: "users-router" }));
 
 
+const bcrypt = require("bcrypt");
+
 router.post("/signup", async (req, res) => {
   try {
-    console.log("📨 Signup request body:", req.body); // <== ADD THIS HERE
+    const { email, password, username } = req.body;
 
-    const newUser = new User(req.body); // Make sure you're passing the full req.body
-    await newUser.save();
+    const hash = await bcrypt.hash(password, 10);
+    const user = new User({ email, password: hash, username });
 
-    req.session.user = {
-      id: newUser._id,
-      username: newUser.username,
-      email: newUser.email,
-    };
-
-    res.status(201).json({ message: "User created", user: req.session.user });
+    await user.save();
+    res.status(201).send({ message: "User created", user });
   } catch (err) {
-    console.error("❌ Signup error:", err); // <== LOG THE FULL ERROR
-    res.status(500).json({ message: "Signup failed", error: err.message });
+    console.error("Signup error:", err);
+    res.status(500).send("Error signing up");
   }
 });
+
 
 
 router.post("/signin", async (req, res) => {
@@ -45,6 +43,7 @@ router.post("/signin", async (req, res) => {
     res.status(500).send("Internal Server Error");
   }
 });
+
 
 
 router.get("/me", (req, res) => {
