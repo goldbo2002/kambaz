@@ -1,56 +1,57 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import Home from "./Home";
-import Signin from "./Kambaz/Account/Signin";
-import Signup from "./Kambaz/Account/Signup";
-import Profile from "./Kambaz/Account/Profile";
-import Dashboard from "./Kambaz/Screens/Dashboard";
-import CourseLayout from "./Kambaz/Screens/CourseLayout";
-import CourseHome from "./Kambaz/Screens/CourseHome";
-import CourseModules from "./Kambaz/Screens/CourseModules";
-import Assignments from "./Kambaz/Screens/Assignments";
-import AssignmentEditor from "./Kambaz/Screens/AssignmentEditor";
-import AccountLayout from "./Kambaz/Account";
-import LabLayout from "./Labs/TOC";
-import Lab1 from "./Labs/Lab1/index";
-import Lab2 from "./Labs/Lab2/index";
-import Lab3 from "./Labs/Lab3/index";
-import Lab4 from "./Labs/Lab4/index";
-import Lab5 from "./Labs/Lab5/index";
-import Lab6 from "./Labs/Lab6/index";
+import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
+import { api } from "./lib/api"; // adjust path if needed
 
-export default function App() {
+export default function Home() {
+  const [user, setUser] = useState<any>(null);
+  const [quote, setQuote] = useState<string>("");
+
+  useEffect(() => {
+    // Fetch user session
+    api
+      .get("/users/profile")
+      .then((res) => setUser(res.data))
+      .catch(() => setUser(null));
+
+    // Dynamic content
+    const quotes = [
+      "Learning never exhausts the mind.",
+      "Build something great today.",
+      "Welcome to Kambaz — your learning HQ.",
+      "Make progress every day.",
+      "Keep pushing forward.",
+    ];
+    setQuote(quotes[Math.floor(Math.random() * quotes.length)]);
+  }, []);
+
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<Home />} />
-
-        <Route path="/account" element={<AccountLayout />}>
-          <Route path="signin" element={<Signin />} />
-          <Route path="signup" element={<Signup />} />
-          <Route path="profile" element={<Profile />} />
-        </Route>
-
-        <Route path="/dashboard" element={<Dashboard />} />
-
-        <Route path="/courses/:courseId" element={<CourseLayout />}>
-          <Route index element={<CourseHome />} />
-          <Route path="modules" element={<CourseModules />} />
-          <Route path="assignments" element={<Assignments />} />
-          <Route path="assignments/:assignmentId" element={<AssignmentEditor />} />
-        </Route>
-
-        <Route path="/labs" element={<LabLayout />}>
-          <Route path="lab1" element={<Lab1 />} />
-          <Route path="lab2" element={<Lab2 />} />
-          <Route path="lab3" element={<Lab3 />} />
-          <Route path="lab4" element={<Lab4 />} />
-          <Route path="lab5" element={<Lab5 />} />
-          <Route path="lab6" element={<Lab6 />} />
-          <Route path="modules" element={<CourseModules />} />
-        </Route>
-
-        <Route path="*" element={<div className="p-3">Not found</div>} />
-      </Routes>
-    </BrowserRouter>
+    <div className="container mt-5">
+      <div className="jumbotron bg-light p-5 rounded">
+        <h1 className="display-4">
+          {user
+            ? `Welcome back, ${user.firstName || user.username}!`
+            : "Welcome to Kambaz"}
+        </h1>
+        <p className="lead">{quote}</p>
+        {!user ? (
+          <>
+            <p className="mt-3">
+              Kambaz helps you manage your courses, assignments, and learning
+              materials efficiently.
+            </p>
+            <Link to="/account/signup" className="btn btn-primary me-2">
+              Sign Up
+            </Link>
+            <Link to="/account/signin" className="btn btn-outline-secondary">
+              Sign In
+            </Link>
+          </>
+        ) : (
+          <Link to="/dashboard" className="btn btn-success mt-3">
+            Go to Dashboard
+          </Link>
+        )}
+      </div>
+    </div>
   );
 }
