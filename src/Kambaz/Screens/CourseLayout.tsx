@@ -4,6 +4,11 @@ import Sidebar from "./Sidebar";
 
 export default function CourseLayout({ children }: { children?: React.ReactNode }) {
   const { cid } = useParams<{ cid?: string }>();
+  if (!cid) {
+  console.error("❌ Missing CID in CourseLayout");
+  return <div>Invalid course. Missing Course ID.</div>;
+}
+
   if (!cid) return <div>Invalid course. Missing Course ID.</div>;
   return (
     <div style={{ display: "flex", minHeight: "100vh" }}>

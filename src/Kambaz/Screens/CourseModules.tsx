@@ -8,13 +8,15 @@ export default function CourseModules() {
   const [modules, setModules] = useState<{ _id: string; title: string }[]>([]);
 
   useEffect(() => {
-    if (!cid) return;
-    api.get(`/modules/${cid}`)
-      .then((res) => setModules(res.data))
-      .catch((err) => console.error("Failed to load modules:", err));
-  }, [cid]);
+  if (!cid) {
+    console.error("❌ Missing course ID in Modules");
+    return;
+  }
 
-  if (!cid) return <div>Loading...</div>;
+  api.get(`/modules/${cid}`)
+    .then((res) => setModules(res.data))
+    .catch((err) => console.error("🔥 Failed to fetch modules", err));
+}, [cid]);
 
   return (
     <div className="container mt-4">

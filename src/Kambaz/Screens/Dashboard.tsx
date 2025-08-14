@@ -6,18 +6,19 @@ export default function Dashboard() {
   const [user, setUser] = useState<any>(null);
   const [courses, setCourses] = useState<any[]>([]);
 
-  useEffect(() => {
-    api.get("/users/profile")
-      .then(res => {
-        setUser(res.data);
-        return api.get("/courses");
-      })
-      .then(res => setCourses(res.data))
-      .catch(() => {
-        setUser(null);
-        setCourses([]);
-      });
-  }, []);
+useEffect(() => {
+  api.get("/users/profile")
+    .then((res) => {
+      setUser(res.data);
+      return api.get("/courses");
+    })
+    .then((res) => setCourses(res.data))
+    .catch((err) => {
+      console.error("🔥 Failed to load dashboard data", err);
+      setUser(null);
+      setCourses([]);
+    });
+}, []);
 
   if (!user) return <p>Loading or unauthorized...</p>;
   return (
