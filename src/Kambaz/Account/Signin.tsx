@@ -1,65 +1,59 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import type { ChangeEvent, FormEvent } from "react";
-import { AxiosError } from "axios";
-import { api } from "../../lib/api";
+import axios from "axios";
 
-type SigninForm = {
-  username?: string;
-  email?: string;
-  password: string;
-};
+const SERVER = "https://kambaz.onrender.com";
 
 export default function Signin() {
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
   const navigate = useNavigate();
-  const [form, setForm] = useState<SigninForm>({ username: "", email: "", password: "" });
-  const [error, setError] = useState<string>("");
 
-  const onChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setForm((f) => ({ ...f, [e.target.name]: e.target.value }));
-  };
-
-  const onSubmit = async (e: FormEvent<HTMLFormElement>) => {
+  const handleSignin = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
+
     try {
-      const payload: SigninForm = { password: form.password };
-      if (form.email) payload.email = form.email;
-      else payload.username = form.username;
-      await api.post("/users/signin", payload);
-      navigate("/Kambaz/Dashboard");
-    } catch (err: unknown) {
-      const ax = err as AxiosError<{ message?: string }>;
-      setError(ax.response?.data?.message || ax.message || "Signin failed");
+      const response = await axios.post(
+        `${SERVER}/api/users/signin`,
+        { username, password },
+        { withCredentials: true }
+      );
+      if (response.data) {
+        navigate("/dashboard");
+      }
+    } catch (err: any) {
+      setError(err.response?.data?.message || "Signin failed.");
     }
   };
 
   return (
-    <div className="container my-4">
-      <h2>Sign In</h2>
+    <div className="container mt-4" style={{ maxWidth: 400 }}>
+      <h2 className="mb-3">Sign In</h2>
       {error && <div className="alert alert-danger">{error}</div>}
-
-      <form onSubmit={onSubmit} style={{ maxWidth: 480 }}>
-        <div className="mb-2">
-          <label className="form-label" htmlFor="username">Username</label>
-          <input id="username" name="username" className="form-control"
-                 value={form.username || ""} onChange={onChange} type="text" />
-          <small className="text-muted">Or use email below</small>
+      <form onSubmit={handleSignin}>
+        <div className="form-group mb-3">
+          <label>Username</label>
+          <input
+            type="text"
+            className="form-control"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+            required
+          />
         </div>
-
-        <div className="mb-2">
-          <label className="form-label" htmlFor="email">Email</label>
-          <input id="email" name="email" className="form-control"
-                 value={form.email || ""} onChange={onChange} type="email" />
+        <div className="form-group mb-3">
+          <label>Password</label>
+          <input
+            type="password"
+            className="form-control"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+          />
         </div>
-
-        <div className="mb-3">
-          <label className="form-label" htmlFor="password">Password</label>
-          <input id="password" name="password" className="form-control"
-                 value={form.password} onChange={onChange} type="password" required />
-        </div>
-
-        <button className="btn btn-primary" type="submit">Sign In</button>
+        <button className="btn btn-primary w-100">Sign In</button>
       </form>
     </div>
   );
