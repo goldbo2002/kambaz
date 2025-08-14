@@ -4,7 +4,7 @@ services:
     rootDir: server
     env: bun
     buildCommand: "bun install"
-    startCommand: "bun index.js"
+    startCommand: "bun run check-file"
     envVars:
       - key: DATABASE_CONNECTION_STRING
         value: "mongodb+srv://k_user:Poncho@cluster0.d8gziux.mongodb.net/kambaz?retryWrites=true&w=majority&appName=Cluster0"
