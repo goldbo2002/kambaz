@@ -12,6 +12,7 @@ import Assignments from "./Kambaz/Screens/Assignments";
 import AssignmentEditor from "./Kambaz/Screens/AssignmentEditor";
 import AccountLayout from "./Kambaz/Account";
 import LabLayout from "./Labs/TOC";
+import Labs from "./Labs";
 import Lab1 from "./Labs/Lab1";
 import Lab2 from "./Labs/Lab2";
 import Lab3 from "./Labs/Lab3";
@@ -20,25 +21,30 @@ import Lab5 from "./Labs/Lab5";
 import Lab6 from "./Labs/Lab6";
 import People from "./Kambaz/People/People";
 import ParamsGuard from "./Kambaz/Components/ParamsGuard";
+
 export default function App() {
   return (
-    <Route>
+    <BrowserRouter>
       <Routes>
         <Route path="/" element={<Navigate to="/Kambaz/Signin" replace />} />
         <Route path="/Kambaz/Signin" element={<Signin />} />
         <Route path="/Kambaz/Signup" element={<Signup />} />
         <Route path="/Kambaz/Dashboard" element={<Dashboard />} />
-
-        <Route path="/courses/:cid/*" element={<CourseLayout />}>
+        <Route path="/account/profile" element={<Profile />} />
+        <Route path="/labs" element={<Labs />}>
+          <Route path="Lab1/*" element={<Lab1 />} />
+          <Route path="Lab2/*" element={<Lab2 />} />
+          <Route path="Lab3/*" element={<Lab3 />} />
+          <Route path="Lab4/*" element={<Lab4 />} />
+          <Route path="Lab5/*" element={<Lab5 />} />
+          <Route path="Lab6/*" element={<Lab6 />} />
+        </Route>
+        <Route path="/courses/:cid" element={<CourseLayout />}>
           <Route path="Home" element={<CourseHome />} />
           <Route path="modules" element={<CourseModules />} />
           <Route path="assignments" element={<Assignments />} />
-          <Route path="assignments/:aid" element={<AssignmentEditor />} />
         </Route>
-
-        {/* Test route to validate routing */}
-        <Route path="/test" element={<div style={{ padding: 20 }}>Test route working!</div>} />
       </Routes>
-    </Route>
+    </BrowserRouter>
   );
 }
