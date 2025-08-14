@@ -12,7 +12,7 @@ export default function CourseRoutes() {
         <Route path="" element={<Dashboard />} />
         <Route path="Modules" element={<CourseModules />} />
         <Route path="Assignments" element={<Assignments />} />
-        <Route path="Assignments/:aid" element={<AssignmentEditor />} />
+        <Route path=":cid/Assignments/:aid" element={<AssignmentEditor />} />
       </Route>
     </Routes>
   );
