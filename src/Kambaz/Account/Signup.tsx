@@ -45,7 +45,7 @@ export default function Signup() {
       });
       // success → go to dashboard (or profile)
       console.log("Signup success:", res.data);
-      navigate("/Kambaz/Dashboard");
+      navigate("/Dashboard");
     } catch (err: unknown) {
       const axErr = err as AxiosError<{ message?: string }>;
       const msg =

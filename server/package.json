@@ -6,7 +6,7 @@
   "type": "commonjs",
   "scripts": {
     "dev": "nodemon index.js",
-     "start": "bun index.ts"
+     "start": "bun index.js"
   },
   "dependencies": {
     "cors": "^2.8.5",
