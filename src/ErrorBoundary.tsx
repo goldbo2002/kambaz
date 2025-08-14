@@ -16,24 +16,21 @@ class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
   }
 
   componentDidCatch(error: any, errorInfo: ErrorInfo) {
-  console.log("🔥 Full error raw object:", error);
-  console.log("🔥 Full errorInfo:", errorInfo);
-  alert("App crashed. Check the browser console for raw error logs.");
-  this.setState({ error, errorInfo });
-}
-
+    console.log("🔥 Full error raw object:", error);
+    console.log("🔥 Full errorInfo:", errorInfo);
+    this.setState({ error, errorInfo });
+  }
 
   render() {
-    const { error, errorInfo } = this.state;
-
-    if (error) {
+    if (this.state.error) {
       return (
         <div style={{ padding: "2rem", color: "red", fontFamily: "monospace" }}>
-          <h1>App crashed.</h1>
-          <pre>{JSON.stringify(error, null, 2)}</pre>
-          <pre>{error?.message}</pre>
-          <pre>{error?.stack}</pre>
-          <pre>{errorInfo?.componentStack}</pre>
+          <h1>🔥 App crashed.</h1>
+          <p><strong>{this.state.error.name}</strong></p>
+          <pre>{this.state.error.message}</pre>
+          <hr />
+          <pre>{this.state.error.stack}</pre>
+          <pre>{this.state.errorInfo?.componentStack}</pre>
         </div>
       );
     }
