@@ -30,30 +30,22 @@ router.post("/signup", async (req, res) => {
 
 router.post("/signin", async (req, res) => {
   try {
-    const newUser = new User(req.body);  // ✅ Make sure it's req.body
-  await newUser.save();
+    const { email, password } = req.body;
 
+    const user = await User.findOne({ email });
+    if (!user) return res.status(401).send("Invalid email or password");
 
-    // Find user
-    const user = await User.findOne({ username });
-    if (!user) return res.status(401).json({ message: "Invalid username or password" });
-
-    // Check password
     const match = await bcrypt.compare(password, user.password);
-    if (!match) return res.status(401).json({ message: "Invalid username or password" });
+    if (!match) return res.status(401).send("Invalid email or password");
 
-    // Save session
-    req.session.user = {
-      _id: user._id,
-      username: user.username,
-    };
-
-    res.json(req.session.user);
+    req.session.user = user._id;
+    res.status(200).send({ message: "Signed in", user });
   } catch (err) {
     console.error("Signin error:", err);
-    res.status(500).json({ message: "Signin failed" });
+    res.status(500).send("Internal Server Error");
   }
 });
+
 
 router.get("/me", (req, res) => {
   if (!req.session.user) return res.status(401).json({ message: "Not signed in" });
