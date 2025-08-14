@@ -1,5 +1,6 @@
 const express = require("express");
 const Course = require("../models/Course");
+const Assignment = require("../models/Assignment");
 
 const router = express.Router();
 
@@ -8,23 +9,32 @@ function requireAuth(req, res, next) {
   next();
 }
 
-router.get("/", async (_req, res, next) => {
+// 🔍 Get all assignments for a course
+router.get("/:cid/assignments", async (req, res, next) => {
   try {
-    const docs = await Course.find().lean();
-    res.json(docs);
+    const assignments = await Assignment.find({ courseId: req.params.cid }).lean();
+    res.json(assignments);
   } catch (e) { next(e); }
 });
 
-router.post("/", requireAuth, async (req, res, next) => {
+// 📝 Create new assignment
+router.post("/:cid/assignments", requireAuth, async (req, res, next) => {
   try {
-    const { title, description = "", number = "", image = "" } = req.body || {};
+    const { title, dueDate, description } = req.body;
     if (!title) return res.status(400).json({ message: "title required" });
 
-    const created = await Course.create({ title, description, number, image });
-    res.status(201).json(created);
+    const assignment = await Assignment.create({
+      courseId: req.params.cid,
+      title,
+      dueDate,
+      description
+    });
+
+    res.status(201).json(assignment);
   } catch (e) { next(e); }
 });
 
+// 📘 Get course by ID
 router.get("/:cid", async (req, res, next) => {
   try {
     const doc = await Course.findById(req.params.cid).lean();
@@ -33,6 +43,7 @@ router.get("/:cid", async (req, res, next) => {
   } catch (e) { next(e); }
 });
 
+// ✏️ Update course
 router.put("/:cid", requireAuth, async (req, res, next) => {
   try {
     const updated = await Course.findByIdAndUpdate(
@@ -45,6 +56,7 @@ router.put("/:cid", requireAuth, async (req, res, next) => {
   } catch (e) { next(e); }
 });
 
+// 🗑️ Delete course
 router.delete("/:cid", requireAuth, async (req, res, next) => {
   try {
     const deleted = await Course.findByIdAndDelete(req.params.cid).lean();

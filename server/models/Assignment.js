@@ -1,15 +1,10 @@
-// server/models/Assignment.js
-const { Schema, model, Types } = require("mongoose");
+const mongoose = require("mongoose");
 
-const AssignmentSchema = new Schema(
-  {
-    course: { type: Types.ObjectId, ref: "Course", required: true, index: true },
-    title: { type: String, required: true },
-    points: { type: Number, default: 100 },
-    dueDate: Date,
-    description: String
-  },
-  { timestamps: true }
-);
+const AssignmentSchema = new mongoose.Schema({
+  courseId: { type: mongoose.Schema.Types.ObjectId, ref: "Course", required: true },
+  title: { type: String, required: true },
+  dueDate: { type: Date },
+  description: { type: String }
+}, { timestamps: true });
 
-module.exports = model("Assignment", AssignmentSchema);
+module.exports = mongoose.model("Assignment", AssignmentSchema);
