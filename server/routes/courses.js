@@ -125,5 +125,13 @@ router.get("/:cid/modules", async (req, res, next) => {
     next(e);
   }
 });
+router.get("/", requireAuth, async (req, res, next) => {
+  try {
+    const courses = await Course.find({}).lean();
+    res.json(courses);
+  } catch (e) {
+    next(e);
+  }
+});
 
 module.exports = router;

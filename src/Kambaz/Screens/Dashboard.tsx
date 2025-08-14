@@ -1,14 +1,23 @@
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import { api } from "../../lib/api";
-import Sidebar from "./Sidebar"; // 👈 this line added
+import Sidebar from "./Sidebar";
 
 export default function Dashboard() {
   const [user, setUser] = useState<any>(null);
+  const [courses, setCourses] = useState<any[]>([]);
 
   useEffect(() => {
     api.get("/users/profile")
-      .then(res => setUser(res.data))
-      .catch(() => setUser(null));
+      .then(res => {
+        setUser(res.data);
+        return api.get("/courses");
+      })
+      .then(res => setCourses(res.data))
+      .catch(() => {
+        setUser(null);
+        setCourses([]);
+      });
   }, []);
 
   const name = user
@@ -19,7 +28,7 @@ export default function Dashboard() {
 
   return (
     <div style={{ display: "flex", minHeight: "100vh" }}>
-      <Sidebar /> {/* 👈 now rendering the sidebar */}
+      <Sidebar />
       <div className="container mt-4" style={{ flexGrow: 1 }}>
         <h2 className="mb-4">Dashboard</h2>
         {user ? (
@@ -27,7 +36,18 @@ export default function Dashboard() {
         ) : (
           <div className="alert alert-warning">Not signed in.</div>
         )}
-        <p>Use the sidebar to navigate your courses, profile, and assignments.</p>
+
+        <h4>Your Courses</h4>
+        <ul className="list-group">
+          {courses.map((course) => (
+            <li key={course._id} className="list-group-item d-flex justify-content-between align-items-center">
+              {course.title}
+              <Link to={`/courses/${course._id}/Home`} className="btn btn-sm btn-primary">
+                Open
+              </Link>
+            </li>
+          ))}
+        </ul>
       </div>
     </div>
   );
