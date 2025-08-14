@@ -17,7 +17,7 @@ app.use(cors({
 app.use(express.json());
 
 app.use(session({
-  secret: "some secret key",
+  secret: process.env.SESSION_SECRET,
   resave: false,
   saveUninitialized: false,
   cookie: {
@@ -26,10 +26,12 @@ app.use(session({
   },
 }));
 
+
 app.get("/api/health", (req, res) => res.json({ ok: true }));
 
- import userRoutes from "./routes/users.js"; // adjust path if needed
- app.use("/api/users", userRoutes);
+import userRoutes from "./routes/users.js"; // adjust path if needed
+app.use("/api/users", userRoutes);
 
 const PORT = process.env.PORT || 4000;
 app.listen(PORT, () => console.log(`API listening on ${PORT}`));
+app.set("trust proxy", 1); // Add this line
