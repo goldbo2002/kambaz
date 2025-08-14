@@ -17,7 +17,7 @@ export default function Assignments() {
   useEffect(() => {
     if (!cid) return;
     api
-      .get(`/courses/${cid}/assignments`)
+      .get(`/assignments/${cid}`)
       .then((res) => setAssignments(res.data))
       .catch((err) => console.error("Assignments fetch failed", err));
   }, [cid]);

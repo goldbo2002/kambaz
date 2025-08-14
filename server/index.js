@@ -36,8 +36,9 @@ mongoose.connect(process.env.MONGODB_URI).then(() => console.log("MongoDB connec
 
 app.use("/api/users", users);
 app.use("/api/courses", courses);
-app.use("/api/courses", modules);
-app.use("/api/courses", assignments);
+app.use("/api/modules", modules);
+app.use("/api/assignments", assignments);
+
 
 app.get('/', (req, res) => res.sendStatus(200));
 

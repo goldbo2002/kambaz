@@ -18,7 +18,7 @@ export default function AssignmentEditor() {
 
     if (aid) {
       setIsNew(false);
-      api.get(`/courses/${cid}/assignments/${aid}`)
+      api.get(`/assignments/${cid}/${aid}`)
         .then(res => setForm(res.data))
         .catch(err => console.error("Failed to load assignment", err));
     }

@@ -13,7 +13,7 @@ export default function ModuleEditor() {
 
   useEffect(() => {
     if (!isNew && cid && mid) {
-      api.get(`/courses/${cid}/modules/${mid}`)
+      api.get(`/modules/${cid}/${mid}`)
         .then((res) => setTitle(res.data.title))
         .catch(() => {});
     }

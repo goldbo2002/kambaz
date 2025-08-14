@@ -9,7 +9,7 @@ export default function CourseModules() {
 
   useEffect(() => {
     if (!cid) return;
-    api.get(`/courses/${cid}/modules`)
+    api.get(`/modules/${cid}`)
       .then((res) => setModules(res.data))
       .catch((err) => console.error("Failed to load modules:", err));
   }, [cid]);

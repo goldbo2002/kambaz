@@ -21,6 +21,8 @@ import Lab5 from "./Labs/Lab5";
 import Lab6 from "./Labs/Lab6";
 import People from "./Kambaz/People/People";
 import ParamsGuard from "./Kambaz/Components/ParamsGuard";
+import TestPage from "./Kambaz/Test";
+
 
 export default function App() {
   return (
@@ -30,6 +32,13 @@ export default function App() {
         <Route path="/Kambaz/Signin" element={<Signin />} />
         <Route path="/Kambaz/Signup" element={<Signup />} />
         <Route path="/Kambaz/Dashboard" element={<Dashboard />} />
+        <Route path="/courses/:cid" element={<CourseLayout />}>
+          <Route path="home" element={<CourseHome />} />
+          <Route path="modules" element={<CourseModules />} />
+          <Route path="assignments" element={<Assignments />} />
+          <Route path="labs" element={<Labs />} />
+        </Route>
+        <Route path="/test" element={<TestPage />} />
         <Route path="/account/profile" element={<Profile />} />
 
         <Route path="/labs" element={<Labs />}>
