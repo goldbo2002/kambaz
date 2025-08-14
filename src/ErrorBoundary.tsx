@@ -15,9 +15,12 @@ class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoundarySta
     return { hasError: true };
   }
 
-  componentDidCatch(error: Error, info: React.ErrorInfo) {
-    console.error("Uncaught error:", error, info);
-  }
+ componentDidCatch(error: Error, info: React.ErrorInfo) {
+  console.error("🛑 App Crashed 🛑");
+  console.error("Error:", error.message);
+  console.error("Stack:", error.stack);
+  console.error("Component Stack:", info.componentStack);
+}
 
   render() {
     if (this.state.hasError) {
