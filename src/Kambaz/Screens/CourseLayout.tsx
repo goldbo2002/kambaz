@@ -11,7 +11,7 @@ export default function CourseLayout() {
 
   React.useEffect(() => {
     if (!cid) return;
-    // if not a 24-hex MongoID, bounce to Dashboard
+    // Redirect if cid is not a valid 24-char hex MongoDB ObjectID
     if (!/^[0-9a-fA-F]{24}$/.test(cid)) {
       nav("/Kambaz/Dashboard", { replace: true });
       return;
@@ -25,26 +25,28 @@ export default function CourseLayout() {
 
   return (
     <div className="container-fluid">
-      <h2 className="mb-3">{course ? `${course.number ?? ""} ${course.title}`.trim() : "Course"}</h2>
+      <h2 className="mb-3">
+        {course ? `${course.number ?? ""} ${course.title}`.trim() : "Course"}
+      </h2>
       <div className="row">
-        <div className="col-12 col-md-3 col-lg-2">
-          <div className="list-group">
-            <Item to="Home">Home</Item>
-            <Item to="Modules">Modules</Item>
-            <Item to="Assignments">Assignments</Item>
-            <Item to="People">People</Item>
-          </div>
+        <div className="col-3">
+          <ul>
+            <li>
+              <NavLink to={`/courses/${cid}/assignments`}>
+                Assignments
+              </NavLink>
+            </li>
+            <li>
+              <NavLink to={`/courses/${cid}/modules`}>
+                Modules
+              </NavLink>
+            </li>
+          </ul>
         </div>
-        <div className="col-12 col-md-9 col-lg-10"><Outlet /></div>
+        <div className="col">
+          <Outlet />
+        </div>
       </div>
     </div>
-  );
-}
-
-function Item({ to, children }: { to: string; children: React.ReactNode }) {
-  return (
-    <NavLink end to={to} className={({ isActive }) =>
-      "list-group-item list-group-item-action " + (isActive ? "active" : "")
-    }>{children}</NavLink>
   );
 }
