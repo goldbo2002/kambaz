@@ -20,81 +20,25 @@ import Lab5 from "./Labs/Lab5";
 import Lab6 from "./Labs/Lab6";
 import People from "./Kambaz/People/People";
 import ParamsGuard from "./Kambaz/Components/ParamsGuard";
-
-function App() {
+export default function App() {
   return (
-    <Routes>
-      <Route path="/" element={<Navigate to="/Kambaz/Signin" replace />} />
-      <Route path="/Kambaz/Signin" element={<Signin />} />
-      <Route path="/Kambaz/Signup" element={<Signup />} />
-      <Route path="/Kambaz/Dashboard" element={<Dashboard />} />
+    <Route>
+      <Routes>
+        <Route path="/" element={<Navigate to="/Kambaz/Signin" replace />} />
+        <Route path="/Kambaz/Signin" element={<Signin />} />
+        <Route path="/Kambaz/Signup" element={<Signup />} />
+        <Route path="/Kambaz/Dashboard" element={<Dashboard />} />
 
-      {/* Course layout */}
-      <Route path="/courses/:cid" element={<CourseLayout />}>
-        <Route path="Home" element={<CourseHome />} />
-        <Route path="Modules" element={<CourseModules />} />
-        <Route
-          path="modules/new"
-          element={
-            <ParamsGuard>
-              <ModuleEditor />
-            </ParamsGuard>
-          }
-        />
-        <Route
-          path="modules/:mid"
-          element={
-            <ParamsGuard>
-              <ModuleEditor />
-            </ParamsGuard>
-          }
-        />
-        <Route
-          path="assignments"
-          element={
-            <ParamsGuard>
-              <Assignments />
-            </ParamsGuard>
-          }
-        />
-        <Route
-          path="assignments/new"
-          element={
-            <ParamsGuard>
-              <AssignmentEditor />
-            </ParamsGuard>
-          }
-        />
-        <Route
-          path="assignments/:assignmentId"
-          element={
-            <ParamsGuard>
-              <AssignmentEditor />
-            </ParamsGuard>
-          }
-        />
-        <Route
-          path="People"
-          element={
-            <ParamsGuard>
-              <People />
-            </ParamsGuard>
-          }
-        />
-      </Route>
+        <Route path="/courses/:cid/*" element={<CourseLayout />}>
+          <Route path="Home" element={<CourseHome />} />
+          <Route path="modules" element={<CourseModules />} />
+          <Route path="assignments" element={<Assignments />} />
+          <Route path="assignments/:aid" element={<AssignmentEditor />} />
+        </Route>
 
-      {/* Labs */}
-      <Route path="/Kambaz/Lab1" element={<Lab1 />} />
-      <Route path="/Kambaz/Lab2" element={<Lab2 />} />
-      <Route path="/Kambaz/Lab3" element={<Lab3 />} />
-      <Route path="/Kambaz/Lab4" element={<Lab4 />} />
-      <Route path="/Kambaz/Lab5" element={<Lab5 />} />
-      <Route path="/Kambaz/Lab6" element={<Lab6 />} />
-
-      {/* Catch-all redirect */}
-      <Route path="*" element={<Navigate to="/Kambaz/Signin" />} />
-    </Routes>
+        {/* Test route to validate routing */}
+        <Route path="/test" element={<div style={{ padding: 20 }}>Test route working!</div>} />
+      </Routes>
+    </Route>
   );
 }
-
-export default App;
