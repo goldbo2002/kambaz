@@ -2,7 +2,6 @@ services:
   - type: web
     name: kambaz-api
     rootDir: server
-    env: bun
     buildCommand: "bun install"
     startCommand: "bun run check-file"
     envVars:
