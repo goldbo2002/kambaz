@@ -31,7 +31,7 @@ app.use(session({
     maxAge: 1000 * 60 * 60 * 24 * 7,
   },
 }));
-app.use("/api/users", users);
+app.use("/api/users", usersRouter);
 app.use("/api/courses", courses);
 app.use("/api/modules", modules);
 app.use("/api/assignments", assignments);
