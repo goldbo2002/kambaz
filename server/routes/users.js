@@ -60,7 +60,7 @@ router.get("/profile", requireAuth, async (req, res) => {
 
   res.json(user);
 });
-import express from "express";
+
 
 // 
 router.get("/me", (req, res) => {
