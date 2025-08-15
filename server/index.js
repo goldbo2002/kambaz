@@ -21,7 +21,7 @@ app.use(cors({
 app.use(express.json());
 
 app.use(session({
-  secret: process.env.SESSION_SECRET || "keyboard cat",
+  secret: process.env.SESSION_SECRET || "keyboard",
   resave: false,
   saveUninitialized: false,
   cookie: {
@@ -31,15 +31,15 @@ app.use(session({
     maxAge: 1000 * 60 * 60 * 24 * 7,
   },
 }));
-
-mongoose.connect(process.env.MONGODB_URI).then(() => console.log("MongoDB connected"));
-
 app.use("/api/users", users);
 app.use("/api/courses", courses);
 app.use("/api/modules", modules);
 app.use("/api/assignments", assignments);
 
+mongoose.connect(process.env.MONGODB_URI).then(() => console.log("MongoDB connected"));
+
 
 app.get('/', (req, res) => res.sendStatus(200));
 
-app.listen(4000, () => console.log("Server running on port 4000"));
+const PORT = process.env.PORT || 4000;
+app.listen(PORT, () => console.log(`Server running on port ${PORT}`));

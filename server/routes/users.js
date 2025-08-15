@@ -28,7 +28,7 @@ router.post("/signup", async (req, res) => {
     username: user.username,
   };
 
-  res.status(201).json({ message: "Signed up", user });
+  res.status(201).json({user});
 });
 
 router.post("/signin", async (req, res) => {
@@ -59,6 +59,15 @@ router.get("/profile", requireAuth, async (req, res) => {
   if (!user) return res.status(404).json({ message: "User not found" });
 
   res.json(user);
+});
+import express from "express";
+
+// 
+router.get("/me", (req, res) => {
+  if (req.session?.user) {
+    return res.json(req.session.user);
+  }
+  res.status(404).json({ message: "Not authenticated" });
 });
 
 export default router;

@@ -5,6 +5,6 @@ const API_BASE = import.meta.env.PROD
   : "http://localhost:4000/api";
 
 export const api = axios.create({
-  baseURL: "https://kambaz.onrender.com/api",
+  baseURL: import.meta.env.VITE_API_URL || "https://kambaz.onrender.com/api",
   withCredentials: true,
 });

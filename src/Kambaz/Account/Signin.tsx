@@ -1,64 +1,68 @@
-import { useState } from "react";
-import { useNavigate, Link } from "react-router-dom";
-import { api } from "../../lib/api";
+import React, { useState } from "react";
+import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { AppDispatch } from "../../redux/store";
+import { signin } from "../../redux/authSlice";
+import { api } from "@/lib/api";
 
-export default function Signin() {
-  const nav = useNavigate();
+const Signin = () => {
+  const dispatch = useDispatch<AppDispatch>();
+  const navigate = useNavigate();
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [err, setErr] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
-  const handleSignin = async (e: React.FormEvent) => {
-    e.preventDefault();
-    try {
-      await api.post("/users/signin", { email, password });
-      nav("/Kambaz/Dashboard");
-    } catch (err: unknown) {
-      const msg =
-        typeof err === "object" &&
-        err !== null &&
-        "response" in err &&
-        typeof (err as any).response?.data === "string"
-          ? (err as any).response.data
-          : "Signin failed";
-      setErr(msg);
-    }
-  };
+  const handleSubmit = async (e: React.FormEvent) => {
+  e.preventDefault();
+  try {
+    const res = await api.post("/users/signin", { email, password });
+    console.log("Signin success:", res.data);
+    navigate("/Kambaz/Dashboard");
+  } catch (err: any) {
+    console.error("Signin failed:", err);
+    setError(err.response?.data?.message || "Unknown error");
+  }
+};
+
 
   return (
-    <div className="container mt-5" style={{ maxWidth: 400 }}>
+    <div style={{ maxWidth: "400px", margin: "2rem auto" }}>
       <h2>Sign In</h2>
-      <form onSubmit={handleSignin}>
-        <div className="mb-3">
-          <label className="form-label">Email</label>
+      <form onSubmit={handleSubmit}>
+        <div>
+          <label>Email</label>
           <input
             type="email"
-            className="form-control"
-            required
             value={email}
             onChange={(e) => setEmail(e.target.value)}
+            required
           />
         </div>
-
-        <div className="mb-3">
-          <label className="form-label">Password</label>
+        <div>
+          <label>Password</label>
           <input
             type="password"
-            className="form-control"
-            required
             value={password}
             onChange={(e) => setPassword(e.target.value)}
+            required
           />
         </div>
-
-        {err && <div className="alert alert-danger">{err}</div>}
-
-        <button className="btn btn-primary w-100">Sign In</button>
+        <button type="submit" disabled={loading}>
+          {loading ? "Signing in..." : "Sign In"}
+        </button>
       </form>
 
-      <p className="mt-3 text-center">
-        Don’t have an account? <Link to="/Kambaz/Signup">Sign up here</Link>
+      {error && <p style={{ color: "red" }}>{error}</p>}
+
+      {/* ✅ Add this for navigation to Signup */}
+      <p style={{ marginTop: "1rem" }}>
+        Don't have an account?{" "}
+        <a href="/Kambaz/Signup">Sign Up</a>
       </p>
     </div>
   );
-}
+};
+
+export default Signin;

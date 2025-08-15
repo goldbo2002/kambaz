@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import type { ChangeEvent, FormEvent } from "react";
 import { AxiosError } from "axios";
-import { api } from "../../lib/api";
+import { api } from "@/lib/api";
 
 type SignupForm = {
   username: string;
@@ -34,7 +34,7 @@ export default function Signup() {
     try {
       const res = await api.post("/users/signup", { ...form });
       console.log("Signup success:", res.data);
-      navigate("/dashboard"); // <<< correct route
+      navigate("/Kambaz/Dashboard"); 
     } catch (err: unknown) {
       const axErr = err as AxiosError<{ message?: string }>;
       const msg = axErr.response?.data?.message || axErr.message || "Signup failed. Please try again.";

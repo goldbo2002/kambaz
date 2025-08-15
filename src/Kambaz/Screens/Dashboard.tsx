@@ -7,16 +7,11 @@ export default function Dashboard() {
   const [courses, setCourses] = useState<any[]>([]);
 
 useEffect(() => {
-  api.get("/users/profile")
-    .then((res) => {
-      setUser(res.data);
-      return api.get("/courses");
-    })
-    .then((res) => setCourses(res.data))
-    .catch((err) => {
-      console.error("🔥 Failed to load dashboard data", err);
-      setUser(null);
-      setCourses([]);
+  api
+    .get("/courses")
+    .then((res: { data: any[] }) => setCourses(res.data))
+    .catch((err: unknown) => {
+      console.error("🔥 Failed to fetch courses", err);
     });
 }, []);
 
